@@ -5,6 +5,7 @@ data class Lifehack(
     val title: String,
     val description: String,
     val category: Category,
+    val author: User,
     val mediaType: MediaType,
     val mediaUrl: String?,
 )

@@ -1,4 +1,8 @@
 package app.iesjdlc.tipslab.models.domain
 
-class User {
-}
+data class User(
+    val id: String,
+    val username: String,
+    val email: String,
+    val avatarUrl: String?,
+)
