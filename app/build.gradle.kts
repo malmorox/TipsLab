@@ -41,7 +41,6 @@ android {
 }
 
 dependencies {
-
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
@@ -70,4 +69,10 @@ dependencies {
     implementation("io.github.jan-tennert.supabase:storage-kt:2.6.1")
     implementation("io.ktor:ktor-client-android:2.3.12")
 
+    // Coil
+    implementation("io.coil-kt.coil3:coil-compose:3.4.0")
+    implementation("io.coil-kt.coil3:coil-network-okhttp:3.4.0")
+
+    // Compressor
+    implementation("id.zelory:compressor:3.0.1")
 }
