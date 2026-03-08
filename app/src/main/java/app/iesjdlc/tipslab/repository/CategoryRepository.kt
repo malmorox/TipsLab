@@ -1,5 +1,6 @@
 package app.iesjdlc.tipslab.repository
 
+import android.util.Log
 import app.iesjdlc.tipslab.mappers.CategoryMapper
 import app.iesjdlc.tipslab.models.domain.Category
 import app.iesjdlc.tipslab.models.dto.CategoryDto
@@ -12,8 +13,7 @@ class CategoryRepository {
 
     suspend fun getCategoryById(id: String): Category {
         val doc = db.collection("categories").document(id).get().await()
-        return mapper.toDomain(
-            doc.toObject(CategoryDto::class.java) ?: throw Exception("Categoría no encontrada")
-        )
+        return doc.toObject(CategoryDto::class.java)?.let { mapper.toDomain(it) }
+            ?: throw Exception("Categoría no encontrada")
     }
 }
