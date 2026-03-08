@@ -1,5 +1,6 @@
 package app.iesjdlc.tipslab.navigation
 
+import MainScaffold
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Box
