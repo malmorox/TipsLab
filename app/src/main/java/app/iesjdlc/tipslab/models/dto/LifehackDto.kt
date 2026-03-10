@@ -8,4 +8,5 @@ data class LifehackDto(
     val author_id: String = "",
     val media_type: String = "NONE",
     val media_url: String? = null,
+    val likes_count: Int = 0,
 )

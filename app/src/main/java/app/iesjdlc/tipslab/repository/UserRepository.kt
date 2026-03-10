@@ -11,10 +11,14 @@ class UserRepository {
     private val db = FirebaseClient.db
     private val mapper = UserMapper()
 
-    suspend fun getUserById(id: String): User {
-        val doc = db.collection("users").document(id).get().await()
-        return doc.toObject(UserDto::class.java)?.let { mapper.toDomain(it) }
-            ?: throw Exception("Usuario no encontrado")
+    suspend fun getUserById(id: String): Result<User> {
+        return try {
+            val doc = db.collection("users").document(id).get().await()
+            doc.toObject(UserDto::class.java)?.let { Result.success(mapper.toDomain(it)) }
+                ?: Result.failure(Exception("Usuario no encontrado"))
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
     }
 
     suspend fun updateUserProfile(user: User): Result<Unit> {
