@@ -75,4 +75,13 @@ dependencies {
 
     // Compressor
     implementation("id.zelory:compressor:3.0.1")
+
+    // ExoPlayer
+    implementation("androidx.media3:media3-exoplayer:1.9.2")
+    implementation("androidx.media3:media3-exoplayer-dash:1.9.2")
+    implementation("androidx.media3:media3-ui:1.9.2")
+    implementation("androidx.media3:media3-ui-compose:1.9.2")
+
+    // Youtube Player
+    implementation("com.pierfrancescosoffritti.androidyoutubeplayer:core:13.0.0")
 }
