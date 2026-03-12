@@ -5,14 +5,9 @@ import app.iesjdlc.tipslab.models.domain.Lifehack
 import app.iesjdlc.tipslab.models.domain.MediaType
 import app.iesjdlc.tipslab.models.domain.User
 import app.iesjdlc.tipslab.models.dto.LifehackDto
-import app.iesjdlc.tipslab.repository.CategoryRepository
-import app.iesjdlc.tipslab.repository.UserRepository
 
-class LifehackMapper(
-    private val categoryRepository: CategoryRepository = CategoryRepository(),
-    private val userRepository: UserRepository = UserRepository()
-) {
-    suspend fun toDomain(dto: LifehackDto, category: Category, author: User): Lifehack {
+class LifehackMapper {
+    fun toDomain(dto: LifehackDto, category: Category, author: User): Lifehack {
         return Lifehack(
             id = dto.id,
             title = dto.title,
@@ -21,7 +16,7 @@ class LifehackMapper(
             author = author,
             mediaType = MediaType.valueOf(dto.media_type),
             mediaUrl = dto.media_url,
-            likesCount = dto.likes_count,
+            savedCount = dto.saved_count,
         )
     }
 
@@ -33,6 +28,6 @@ class LifehackMapper(
         author_id = domain.author.id,
         media_type = domain.mediaType.name,
         media_url = domain.mediaUrl,
-        likes_count = domain.likesCount,
+        saved_count = domain.savedCount,
     )
 }

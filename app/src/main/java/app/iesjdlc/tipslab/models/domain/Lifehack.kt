@@ -8,7 +8,7 @@ data class Lifehack(
     val author: User,
     val mediaType: MediaType,
     val mediaUrl: String?,
-    val likesCount: Int,
+    val savedCount: Int,
 )
 
 enum class MediaType {

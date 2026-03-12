@@ -3,17 +3,7 @@ package app.iesjdlc.tipslab.navigation
 import MainScaffold
 import android.os.Build
 import androidx.annotation.RequiresApi
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
@@ -34,10 +24,8 @@ fun AppNavigation(){
         // Pantalla de Splash
         composable(Routes.Splash.route) {
             SplashScreen(
-                onFinish = { isLogged ->
-                    navController.navigate(
-                        if (isLogged) Routes.Main.route else Routes.AuthGraph.route
-                    ) {
+                onFinish = {
+                    navController.navigate(Routes.AuthGraph.route) {
                         popUpTo(Routes.Splash.route) { inclusive = true }
                         launchSingleTop = true
                     }

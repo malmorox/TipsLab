@@ -73,8 +73,11 @@ dependencies {
     implementation("io.coil-kt.coil3:coil-compose:3.4.0")
     implementation("io.coil-kt.coil3:coil-network-okhttp:3.4.0")
 
-    // Compressor
+    // Compressor (imágenes)
     implementation("id.zelory:compressor:3.0.1")
+
+    // Compressor (videos)
+
 
     // ExoPlayer
     implementation("androidx.media3:media3-exoplayer:1.9.2")
