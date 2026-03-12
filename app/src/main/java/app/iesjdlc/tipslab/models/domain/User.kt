@@ -5,8 +5,7 @@ data class User(
     val email: String = "",
     val username: String = "",
     val photoUrl: String = "",
-    val provider: ProviderType = ProviderType.BASIC,
-    val favorites: List<String> = emptyList()
+    val provider: ProviderType = ProviderType.BASIC
 )
 
 enum class ProviderType {

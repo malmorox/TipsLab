@@ -6,5 +6,4 @@ data class UserDto(
     val username: String = "",
     val photo_url: String = "",
     val provider: String = "BASIC",
-    val favorites: List<String> = emptyList()
 )
