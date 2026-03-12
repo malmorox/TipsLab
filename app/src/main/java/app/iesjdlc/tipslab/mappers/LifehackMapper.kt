@@ -16,7 +16,7 @@ class LifehackMapper {
             author = author,
             mediaType = MediaType.valueOf(dto.media_type),
             mediaUrl = dto.media_url,
-            likesCount = dto.likes_count,
+            savedCount = dto.saved_count,
         )
     }
 
@@ -28,6 +28,6 @@ class LifehackMapper {
         author_id = domain.author.id,
         media_type = domain.mediaType.name,
         media_url = domain.mediaUrl,
-        likes_count = domain.likesCount,
+        saved_count = domain.savedCount,
     )
 }
