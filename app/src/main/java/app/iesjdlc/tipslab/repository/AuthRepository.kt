@@ -7,7 +7,6 @@ import androidx.compose.runtime.setValue
 import app.iesjdlc.tipslab.mappers.UserMapper
 import app.iesjdlc.tipslab.models.domain.User
 import app.iesjdlc.tipslab.models.dto.UserDto
-import app.iesjdlc.tipslab.utils.AuthUtils
 import app.iesjdlc.tipslab.utils.FirebaseClient
 import com.google.firebase.auth.GoogleAuthProvider
 import kotlinx.coroutines.tasks.await
@@ -17,7 +16,6 @@ class AuthRepository {
     private val db = FirebaseClient.db
 
     private val mapper = UserMapper()
-    private val authUtils = AuthUtils()
 
 
     // Para guardar los datos del usuario en memoria
@@ -50,7 +48,21 @@ class AuthRepository {
         emailOrUsername: String,
         password: String
     ): Result<String> {
-        return Result.success("")
+        return try {
+            val email = if (emailOrUsername.contains("@")) {
+                emailOrUsername
+            } else {
+                getEmailByUsername(emailOrUsername) ?: return Result.failure(Exception("Nombre de usuario no encontrado"))
+            }
+
+            val result = auth.signInWithEmailAndPassword(email, password).await()
+            val firebaseUser = result.user ?: return Result.failure(Exception("Usuario nulo"))
+
+            fetchUserData(firebaseUser.uid)
+            Result.success(firebaseUser.uid)
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
     }
 
     suspend fun signUp(
@@ -59,10 +71,10 @@ class AuthRepository {
         password: String
     ): Result<String> {
         return try {
-            if (authUtils.existsUsername(username))
+            if (existsUsername(username))
                 return Result.failure(Exception("El nombre de usuario ya está en uso"))
 
-            if (authUtils.existsEmail(email))
+            if (existsEmail(email))
                 return Result.failure(Exception("El email ya está en uso"))
 
             val result = auth.createUserWithEmailAndPassword(email, password).await()
@@ -125,4 +137,29 @@ class AuthRepository {
     }
 
     fun isLoggedIn(): Boolean = auth.currentUser != null
+
+    // Funciones de utilidad para verificar si un email o username ya están en uso
+    suspend fun existsEmail(email: String): Boolean {
+        val snapshot = db.collection("users")
+            .whereEqualTo("email", email)
+            .get()
+            .await()
+        return !snapshot.isEmpty
+    }
+
+    suspend fun existsUsername(username: String): Boolean {
+        val snapshot = db.collection("users")
+            .whereEqualTo("username", username)
+            .get()
+            .await()
+        return !snapshot.isEmpty
+    }
+
+    suspend fun getEmailByUsername(username: String): String? {
+        val snapshot = db.collection("users")
+            .whereEqualTo("username", username)
+            .get()
+            .await()
+        return snapshot.documents.firstOrNull()?.getString("email")
+    }
 }
