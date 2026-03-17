@@ -1,6 +1,5 @@
 package app.iesjdlc.tipslab.navigation
 
-import MainScaffold
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.runtime.Composable
@@ -59,14 +58,14 @@ fun AppNavigation(){
             // Pantalla de SignUp
             composable(Routes.Signup.route) {
                 SignupScreen(
-                    onSignUp = {
+                    onSignUpSuccess = {
                         navController.navigate(Routes.Main.route) {
                             popUpTo(Routes.AuthGraph.route) { inclusive = true }
                             launchSingleTop = true
                         }
                     },
-                    onBackToLogin = {
-                        navController.popBackStack() // vuelve al Login
+                    onSignUpError = {
+                        navController.popBackStack() // vuelve al Login si falla la creación de prueba
                     }
                 )
             }

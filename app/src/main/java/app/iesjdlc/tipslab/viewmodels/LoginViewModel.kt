@@ -3,6 +3,7 @@ package app.iesjdlc.tipslab.viewmodels
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import app.iesjdlc.tipslab.repository.AuthRepository
+import app.iesjdlc.tipslab.usecases.LoginUseCase
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -37,7 +38,7 @@ sealed interface LoginEffect {
 }
 
 class LoginViewModel(
-    private val authRepository: AuthRepository = AuthRepository()
+    private val loginUseCase: LoginUseCase = LoginUseCase()
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(LoginUiState())
@@ -103,7 +104,7 @@ class LoginViewModel(
                 )
             }
 
-            val result = authRepository.login(
+            val result = loginUseCase(
                 emailOrUsername = state.emailOrUsername.trim(),
                 password = state.password
             )
