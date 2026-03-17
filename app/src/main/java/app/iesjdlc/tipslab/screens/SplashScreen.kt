@@ -9,10 +9,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 
 @Composable
-fun SplashScreen(onFinish: (Boolean) -> Unit) {
+fun SplashScreen(onFinish: () -> Unit) {
     LaunchedEffect(Unit) {
         kotlinx.coroutines.delay(600) // opcional
-        onFinish(true)
+        onFinish()
     }
 
     Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {

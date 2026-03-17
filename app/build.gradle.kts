@@ -70,8 +70,8 @@ dependencies {
     implementation("io.ktor:ktor-client-android:2.3.12")
 
     // Coil
-    implementation("io.coil-kt.coil3:coil-compose:3.4.0")
-    implementation("io.coil-kt.coil3:coil-network-okhttp:3.4.0")
+    implementation("io.coil-kt.coil3:coil-compose:3.3.0")
+    implementation("io.coil-kt.coil3:coil-network-okhttp:3.3.0")
 
     // Compressor (imágenes)
     implementation("id.zelory:compressor:3.0.1")
