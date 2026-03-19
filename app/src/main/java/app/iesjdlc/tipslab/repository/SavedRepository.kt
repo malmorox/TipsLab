@@ -1,16 +1,21 @@
 package app.iesjdlc.tipslab.repository
 
+import app.iesjdlc.tipslab.models.domain.Lifehack
+import app.iesjdlc.tipslab.models.dto.LifehackDto
 import app.iesjdlc.tipslab.utils.FirebaseClient
+import app.iesjdlc.tipslab.utils.LifehackResolver
 import com.google.firebase.firestore.Query
 import kotlinx.coroutines.tasks.await
 
-class SavedRepository {
+class SavedRepository(
+    private val resolver: LifehackResolver = LifehackResolver()
+) {
     private val db = FirebaseClient.db
     private val auth = FirebaseClient.auth
 
     private fun savedCollection(userId: String) = db.collection("users").document(userId).collection("saved")
 
-    suspend fun getSavedIds(): Result<List<String>> {
+    private suspend fun getSavedIds(): Result<List<String>> {
         return try {
             val userId = auth.currentUser?.uid
                 ?: return Result.failure(Exception("No user logged in"))
@@ -21,6 +26,21 @@ class SavedRepository {
                 .await()
 
             Result.success(snapshot.documents.map { it.id })
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+
+    suspend fun getSavedLifehacks(): Result<List<Lifehack>> {
+        return try {
+            val savedIds = getSavedIds().getOrThrow()
+            val lifehacks = db.collection("lifehacks")
+                .whereIn("id", savedIds)
+                .get()
+                .await()
+            val dtos =
+                lifehacks.documents.mapNotNull { doc -> doc.toObject(LifehackDto::class.java) }
+            Result.success(resolver.resolve(dtos))
         } catch (e: Exception) {
             Result.failure(e)
         }

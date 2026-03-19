@@ -1,35 +1,28 @@
 package app.iesjdlc.tipslab.screens.auth
 
-import androidx.compose.foundation.layout.Column
-import androidx.compose.material3.Button
-import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.lifecycle.viewmodel.compose.viewModel
+import app.iesjdlc.tipslab.viewmodels.SignupEffect
+import app.iesjdlc.tipslab.viewmodels.SignupViewModel
 
 @Composable
 fun SignupScreen(
-    onSignUp: () -> Unit,
-    onBackToLogin: () -> Unit
+    onSignUpSuccess: () -> Unit,
+    onSignUpError: (String) -> Unit
 ) {
-    var email by remember { mutableStateOf("") }
-    var pass by remember { mutableStateOf("") }
+    val viewModel: SignupViewModel = viewModel()
 
-    Column {
-        OutlinedTextField(email, { email = it }, label = { Text("Email") })
-        OutlinedTextField(pass, { pass = it }, label = { Text("Password") })
+    LaunchedEffect(Unit) {
+        viewModel.runTestSignupIfNeeded()
+    }
 
-        Button(onClick = {
-            true
-            onSignUp()
-        }) {
-            Text("Crear cuenta")
+    LaunchedEffect(viewModel) {
+        viewModel.effects.collect { effect ->
+            when (effect) {
+                SignupEffect.NavigateToMain -> onSignUpSuccess()
+                is SignupEffect.ShowError -> onSignUpError(effect.message)
+            }
         }
-
-        TextButton(onClick = onBackToLogin) { Text("Volver") }
     }
 }
