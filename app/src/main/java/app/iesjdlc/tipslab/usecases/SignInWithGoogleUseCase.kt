@@ -1,5 +1,7 @@
 package app.iesjdlc.tipslab.usecases
 
+import app.iesjdlc.tipslab.models.domain.ProviderType
+import app.iesjdlc.tipslab.models.domain.User
 import app.iesjdlc.tipslab.repository.AuthRepository
 import app.iesjdlc.tipslab.repository.GoogleAuthResult
 import app.iesjdlc.tipslab.repository.UserRepository
@@ -15,12 +17,14 @@ class SignInWithGoogleUseCase(
                 is GoogleAuthResult.ExistingUser -> Unit // perfil ya cargado en el repositorio
                 is GoogleAuthResult.NewUser -> {
                     val username = generateUniqueUsername(info.displayName, info.email)
-                    userRepository.createGoogleUser(
-                        uid = info.uid,
+                    val newUser = User(
+                        id = info.uid,
                         email = info.email,
                         username = username,
-                        photoUrl = info.photoUrl ?: ""
-                    ).getOrThrow()
+                        photoUrl = info.photoUrl ?: "",
+                        provider = ProviderType.GOOGLE
+                    )
+                    userRepository.createGoogleUser(newUser)
                 }
             }
 

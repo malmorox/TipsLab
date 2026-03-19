@@ -41,16 +41,14 @@ fun AppNavigation(){
             // Pantalla de Login
             composable(Routes.Login.route) {
                 LoginScreen(
-                    onGoToSignup = {
-                        navController.navigate(Routes.Signup.route) {
-                            launchSingleTop = true
-                        }
-                    },
-                    onLogin = {
+                    onLoginSuccess = {
                         navController.navigate(Routes.Main.route) {
                             popUpTo(Routes.AuthGraph.route) { inclusive = true }
                             launchSingleTop = true
                         }
+                    },
+                    onLoginError = {
+                        // En este flujo de prueba no mostramos UI de error.
                     }
                 )
             }

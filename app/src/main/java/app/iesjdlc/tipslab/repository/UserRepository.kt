@@ -77,21 +77,10 @@ class UserRepository {
     }
 
     // Crea el documento de un nuevo usuario de Google en Firestore
-    suspend fun createGoogleUser(
-        uid: String,
-        email: String,
-        username: String,
-        photoUrl: String
-    ): Result<Unit> {
+    suspend fun createGoogleUser(user: User): Result<Unit> {
         return try {
-            val dto = UserDto(
-                id = uid,
-                email = email,
-                username = username,
-                photo_url = photoUrl,
-                provider = "GOOGLE"
-            )
-            db.collection("users").document(uid).set(dto).await()
+            val dto = mapper.toDto(user)
+            db.collection("users").document(dto.id).set(dto).await()
             Result.success(Unit)
         } catch (e: Exception) {
             Result.failure(e)

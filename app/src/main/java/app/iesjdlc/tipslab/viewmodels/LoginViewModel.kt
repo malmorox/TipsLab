@@ -1,9 +1,10 @@
 package app.iesjdlc.tipslab.viewmodels
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import app.iesjdlc.tipslab.repository.AuthRepository
 import app.iesjdlc.tipslab.usecases.LoginUseCase
+import app.iesjdlc.tipslab.usecases.SignInWithGoogleUseCase
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -18,6 +19,7 @@ data class LoginUiState(
     val password: String = "",
     val emailOrUsernameError: String? = null,
     val passwordError: String? = null,
+    val started: Boolean = false,
     val isLoading: Boolean = false,
     val errorMessage: String? = null
 ) {
@@ -38,8 +40,13 @@ sealed interface LoginEffect {
 }
 
 class LoginViewModel(
-    private val loginUseCase: LoginUseCase = LoginUseCase()
+    private val loginUseCase: LoginUseCase = LoginUseCase(),
+    private val signInWithGoogleUseCase: SignInWithGoogleUseCase = SignInWithGoogleUseCase()
 ) : ViewModel() {
+
+    companion object {
+        private const val TAG = "LoginViewModel"
+    }
 
     private val _uiState = MutableStateFlow(LoginUiState())
     val uiState: StateFlow<LoginUiState> = _uiState.asStateFlow()
@@ -73,6 +80,37 @@ class LoginViewModel(
 
             LoginEvent.DismissError -> {
                 _uiState.update { it.copy(errorMessage = null) }
+            }
+        }
+    }
+
+    fun signInWithGoogle(idToken: String) {
+        if (_uiState.value.isLoading) return
+
+        viewModelScope.launch {
+            _uiState.update {
+                it.copy(
+                    isLoading = true,
+                    errorMessage = null
+                )
+            }
+
+            val result = signInWithGoogleUseCase(idToken)
+
+            result.onSuccess {
+                Log.i(TAG, "Login con Google correcto")
+                _uiState.update { current -> current.copy(isLoading = false) }
+                _effects.send(LoginEffect.NavigateToMain)
+            }.onFailure { throwable ->
+                val message = throwable.message ?: "No se pudo iniciar sesion con Google"
+                Log.e(TAG, "Login con Google fallido", throwable)
+                _uiState.update {
+                    it.copy(
+                        isLoading = false,
+                        errorMessage = message
+                    )
+                }
+                _effects.send(LoginEffect.ShowMessage(message))
             }
         }
     }

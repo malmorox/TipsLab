@@ -1,34 +1,66 @@
 package app.iesjdlc.tipslab.screens.auth
 
-import androidx.compose.foundation.layout.Column
-import androidx.compose.material3.Button
-import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
+import android.app.Activity
+import android.util.Log
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.ui.platform.LocalContext
+import androidx.credentials.CredentialManager
+import androidx.credentials.GetCredentialRequest
+import androidx.credentials.PublicKeyCredential
+import androidx.lifecycle.viewmodel.compose.viewModel
+import app.iesjdlc.tipslab.viewmodels.LoginEffect
+import app.iesjdlc.tipslab.viewmodels.LoginViewModel
+import com.google.android.libraries.identity.googleid.GetGoogleIdOption
+import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential
 
 @Composable
 fun LoginScreen(
-    onGoToSignup: () -> Unit,
-    onLogin: () -> Unit
+    onLoginSuccess: () -> Unit,
+    onLoginError: (String) -> Unit
 ) {
-    var email by remember { mutableStateOf("") }
-    var pass by remember { mutableStateOf("") }
+    val viewModel: LoginViewModel = viewModel()
+    val context = LocalContext.current
 
-    Column {
-        OutlinedTextField(email, { email = it }, label = { Text("Email") })
-        OutlinedTextField(pass, { pass = it }, label = { Text("Password") })
+    // Efecto que lanza el flujo de Google al abrir la pantalla
+    LaunchedEffect(Unit) {
+        try {
+            val credentialManager = CredentialManager.create(context)
 
-        Button(onClick = {
-            onLogin()
-        }) {
-            Text("Entrar")
+            val googleIdOption = GetGoogleIdOption.Builder()
+                .setFilterByAuthorizedAccounts(false)
+                .setServerClientId("177275042936-95u9er25hp4utb2dbohv0aluthi8esrp.apps.googleusercontent.com") // el de Firebase Console > Auth > Google > Web client ID
+                .build()
+
+            val request = GetCredentialRequest.Builder()
+                .addCredentialOption(googleIdOption)
+                .build()
+
+            val result = credentialManager.getCredential(
+                request = request,
+                context = context as Activity
+            )
+
+            val credential = result.credential
+            if (credential is PublicKeyCredential) return@LaunchedEffect
+
+            val googleCredential = GoogleIdTokenCredential.createFrom(credential.data)
+            val idToken = googleCredential.idToken
+
+            Log.d("TEST_TOKEN", "Token: $idToken") // Por si quieres copiarlo
+            viewModel.signInWithGoogle(idToken)
+
+        } catch (e: Exception) {
+            onLoginError(e.message ?: "Error Google Sign-In")
         }
+    }
 
-        TextButton(onClick = onGoToSignup) { Text("Crear cuenta") }
+    LaunchedEffect(viewModel) {
+        viewModel.effects.collect { effect ->
+            when (effect) {
+                LoginEffect.NavigateToMain -> onLoginSuccess()
+                is LoginEffect.ShowMessage -> onLoginError(effect.message)
+            }
+        }
     }
 }
