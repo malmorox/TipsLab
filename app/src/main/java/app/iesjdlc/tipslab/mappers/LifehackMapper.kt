@@ -14,7 +14,9 @@ class LifehackMapper {
             description = dto.description,
             category = category,
             author = author,
-            mediaType = MediaType.valueOf(dto.media_type),
+            mediaType = dto.media_type?.let {
+                runCatching { MediaType.valueOf(it.uppercase()) }.getOrNull()
+            },
             mediaUrl = dto.media_url,
             savedCount = dto.saved_count,
         )
@@ -26,7 +28,7 @@ class LifehackMapper {
         description = domain.description,
         category_id = domain.category.id,
         author_id = domain.author.id,
-        media_type = domain.mediaType.name,
+        media_type = domain.mediaType?.name,
         media_url = domain.mediaUrl,
         saved_count = domain.savedCount,
     )

@@ -61,8 +61,9 @@ class LifehackRepository(
 
     suspend fun createLifehack(lifehack: Lifehack): Result<String> {
         return try {
-            val dto = mapper.toDto(lifehack)
-            val docRef = db.collection("lifehacks").add(dto).await()
+            val docRef = db.collection("lifehacks").document()
+            val dto = mapper.toDto(lifehack).copy(id = docRef.id)
+            docRef.set(dto).await()
             Result.success(docRef.id)
         } catch (e: Exception) {
             Result.failure(e)
