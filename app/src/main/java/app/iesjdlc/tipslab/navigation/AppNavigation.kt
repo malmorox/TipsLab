@@ -3,6 +3,7 @@ package app.iesjdlc.tipslab.navigation
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.runtime.Composable
+import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
@@ -10,6 +11,7 @@ import androidx.navigation.compose.rememberNavController
 import app.iesjdlc.tipslab.screens.SplashScreen
 import app.iesjdlc.tipslab.screens.auth.LoginScreen
 import app.iesjdlc.tipslab.screens.auth.SignupScreen
+import app.iesjdlc.tipslab.utils.FirebaseClient
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
@@ -23,12 +25,8 @@ fun AppNavigation(){
         // Pantalla de Splash
         composable(Routes.Splash.route) {
             SplashScreen(
-                onFinish = {
-                    navController.navigate(Routes.AuthGraph.route) {
-                        popUpTo(Routes.Splash.route) { inclusive = true }
-                        launchSingleTop = true
-                    }
-                }
+                onNavigateToMain = { navController.navigateFromSplash(Routes.Main.route) },
+                onNavigateToLogin = { navController.navigateFromSplash(Routes.AuthGraph.route) }
             )
         }
 
@@ -73,5 +71,12 @@ fun AppNavigation(){
         composable(Routes.Main.route) {
             MainScaffold(rootNavController = navController)
         }
+    }
+}
+
+private fun NavController.navigateFromSplash(destination: String) {
+    navigate(destination) {
+        popUpTo(Routes.Splash.route) { inclusive = true }
+        launchSingleTop = true
     }
 }
