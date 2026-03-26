@@ -2,10 +2,17 @@ package app.iesjdlc.tipslab.ui.theme
 
 import androidx.compose.ui.graphics.Color
 
-val Purple80 = Color(0xFFD0BCFF)
-val PurpleGrey80 = Color(0xFFCCC2DC)
-val Pink80 = Color(0xFFEFB8C8)
+val BrandPrimary = Color(0xFF7C3AED) // botones, iconos activos
+val BrandDeep = Color(0xFF5B3DF5) // degradado inicio, header
+val BrandLight = Color(0xFFC084FC) // degradado fin, hover
 
-val Purple40 = Color(0xFF6650a4)
-val PurpleGrey40 = Color(0xFF625b71)
-val Pink40 = Color(0xFF7D5260)
+// Fondos
+val BackgroundApp = Color(0xFFF5F3FF) // fondo principal
+val SurfaceCard = Color(0xFFFFFFFF) // cards, inputs
+
+// Texto
+val TextPrimary = Color(0xFF1F1B2E) // títulos, descripciones
+val TextSecondary = Color(0xFF6B7280) // metadata, categorías
+
+// Interacción
+val SaveHeart = Color(0xFFEC4899) // guardado

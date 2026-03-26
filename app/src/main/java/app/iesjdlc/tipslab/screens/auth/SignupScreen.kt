@@ -9,7 +9,7 @@ import app.iesjdlc.tipslab.viewmodels.SignupViewModel
 @Composable
 fun SignupScreen(
     onSignUpSuccess: () -> Unit,
-    onSignUpError: (String) -> Unit
+    onNavigateBack: (String) -> Unit
 ) {
     val viewModel: SignupViewModel = viewModel()
 
@@ -21,7 +21,7 @@ fun SignupScreen(
         viewModel.effects.collect { effect ->
             when (effect) {
                 SignupEffect.NavigateToMain -> onSignUpSuccess()
-                is SignupEffect.ShowError -> onSignUpError(effect.message)
+                is SignupEffect.ShowError -> onNavigateBack(effect.message)
             }
         }
     }

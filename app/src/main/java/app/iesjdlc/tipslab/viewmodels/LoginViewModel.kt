@@ -40,13 +40,9 @@ sealed interface LoginEffect {
 }
 
 class LoginViewModel(
-    private val loginUseCase: LoginUseCase = LoginUseCase(),
-    private val signInWithGoogleUseCase: SignInWithGoogleUseCase = SignInWithGoogleUseCase()
+    private val loginUseCase: LoginUseCase,
+    private val signInWithGoogleUseCase: SignInWithGoogleUseCase
 ) : ViewModel() {
-
-    companion object {
-        private const val TAG = "LoginViewModel"
-    }
 
     private val _uiState = MutableStateFlow(LoginUiState())
     val uiState: StateFlow<LoginUiState> = _uiState.asStateFlow()
@@ -98,12 +94,12 @@ class LoginViewModel(
             val result = signInWithGoogleUseCase(idToken)
 
             result.onSuccess {
-                Log.i(TAG, "Login con Google correcto")
+                Log.i("LoginViewModel", "Login con Google correcto")
                 _uiState.update { current -> current.copy(isLoading = false) }
                 _effects.send(LoginEffect.NavigateToMain)
             }.onFailure { throwable ->
                 val message = throwable.message ?: "No se pudo iniciar sesion con Google"
-                Log.e(TAG, "Login con Google fallido", throwable)
+                Log.e("LoginViewModel", "Login con Google fallido", throwable)
                 _uiState.update {
                     it.copy(
                         isLoading = false,

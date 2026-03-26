@@ -11,37 +11,33 @@ import androidx.navigation.compose.rememberNavController
 import app.iesjdlc.tipslab.screens.SplashScreen
 import app.iesjdlc.tipslab.screens.auth.LoginScreen
 import app.iesjdlc.tipslab.screens.auth.SignupScreen
-import app.iesjdlc.tipslab.utils.FirebaseClient
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun AppNavigation(){
-    val navController = rememberNavController()
+    val rootNavController = rememberNavController()
 
     NavHost(
-        navController = navController,
-        startDestination = Routes.Splash.route
+        navController = rootNavController,
+        startDestination = Route.Splash
     ) {
         // Pantalla de Splash
-        composable(Routes.Splash.route) {
+        composable<Route.Splash> {
             SplashScreen(
-                onNavigateToMain = { navController.navigateFromSplash(Routes.Main.route) },
-                onNavigateToLogin = { navController.navigateFromSplash(Routes.AuthGraph.route) }
+                onNavigateToMain = { rootNavController.navigateFromSplash(Route.MainGraph) },
+                onNavigateToLogin = { rootNavController.navigateFromSplash(Route.AuthGraph) }
             )
         }
 
         // Navegación entre pantallas de autenticación
-        navigation(
-            route = Routes.AuthGraph.route,
-            startDestination = Routes.Login.route
-        ) {
+        navigation<Route.AuthGraph>(startDestination = Route.Login) {
 
             // Pantalla de Login
-            composable(Routes.Login.route) {
+            composable<Route.Login> {
                 LoginScreen(
                     onLoginSuccess = {
-                        navController.navigate(Routes.Main.route) {
-                            popUpTo(Routes.AuthGraph.route) { inclusive = true }
+                        rootNavController.navigate(Route.MainGraph) {
+                            popUpTo<Route.AuthGraph> { inclusive = true }
                             launchSingleTop = true
                         }
                     },
@@ -52,31 +48,38 @@ fun AppNavigation(){
             }
 
             // Pantalla de SignUp
-            composable(Routes.Signup.route) {
+            composable<Route.Signup> {
                 SignupScreen(
                     onSignUpSuccess = {
-                        navController.navigate(Routes.Main.route) {
-                            popUpTo(Routes.AuthGraph.route) { inclusive = true }
+                        rootNavController.navigate(Route.MainGraph) {
+                            popUpTo<Route.AuthGraph> { inclusive = true }
                             launchSingleTop = true
                         }
                     },
-                    onSignUpError = {
-                        navController.popBackStack() // vuelve al Login si falla la creación de prueba
+                    onNavigateBack = {
+                        rootNavController.popBackStack() // vuelve al Login si falla la creación de prueba
                     }
                 )
             }
         }
 
         // Navegación entre pantallas una vez autenticado
-        composable(Routes.Main.route) {
-            MainScaffold(rootNavController = navController)
+        composable<Route.MainGraph> {
+            MainScaffold(
+                onLogout = {
+                    rootNavController.navigate(Route.AuthGraph) {
+                        popUpTo<Route.MainGraph> { inclusive = true }
+                        launchSingleTop = true
+                    }
+                }
+            )
         }
     }
 }
 
-private fun NavController.navigateFromSplash(destination: String) {
+private fun NavController.navigateFromSplash(destination: Route) {
     navigate(destination) {
-        popUpTo(Routes.Splash.route) { inclusive = true }
+        popUpTo<Route.Splash> { inclusive = true }
         launchSingleTop = true
     }
 }
