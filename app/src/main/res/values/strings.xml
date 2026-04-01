@@ -1,3 +1,17 @@
 <resources>
     <string name="app_name">TipsLab</string>
+
+    //Login
+    <string name="login">Iniciar sesión</string>
+    <string name="email">Email</string>
+    <string name="password">Contraseña</string>
+    <string name="account">¿No tienes cuenta? Crear cuenta</string>
+    <string name="logo_description">Logo aplicación</string>
+
+    //Singup
+    <string name="createAccount">Crear cuenta</string>
+    <string name="user">Usuario</string>
+    <string name="repeatPsswd">Repetir contraseña</string>
+    <string name="signup">Registrarse</string>
+
 </resources>
