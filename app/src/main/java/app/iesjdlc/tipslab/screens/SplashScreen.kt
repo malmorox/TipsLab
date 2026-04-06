@@ -28,6 +28,7 @@ fun SplashScreen(
         Modifier.fillMaxSize(),
         contentAlignment = Alignment.Center
     ) {
+        // Poner logo de la app / animación de carga
         CircularProgressIndicator()
     }
 }

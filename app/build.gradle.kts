@@ -94,4 +94,7 @@ dependencies {
 
     // Youtube Player
     implementation("com.pierfrancescosoffritti.androidyoutubeplayer:core:13.0.0")
+
+    // +Iconos de material
+    implementation("androidx.compose.material:material-icons-extended")
 }

@@ -3,6 +3,9 @@ package app.iesjdlc.tipslab.screens
 import androidx.compose.runtime.Composable
 
 @Composable
-fun ExploreTab() {
+fun ExploreTab(
+    onLifehackClick: (String) -> Unit,
+    onCategoryClick: (String) -> Unit
+) {
 
 }

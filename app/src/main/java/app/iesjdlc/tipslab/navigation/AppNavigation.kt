@@ -1,25 +1,27 @@
 package app.iesjdlc.tipslab.navigation
 
-import android.os.Build
-import androidx.annotation.RequiresApi
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.toRoute
+import app.iesjdlc.tipslab.screens.EditLifehackScreen
+import app.iesjdlc.tipslab.screens.EditProfileScreen
+import app.iesjdlc.tipslab.screens.LifehackDetailScreen
+import app.iesjdlc.tipslab.screens.LifehacksByCategoryScreen
 import app.iesjdlc.tipslab.screens.SplashScreen
 import app.iesjdlc.tipslab.screens.auth.LoginScreen
 import app.iesjdlc.tipslab.screens.auth.SignupScreen
 
-@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun AppNavigation(){
     val rootNavController = rememberNavController()
 
     NavHost(
         navController = rootNavController,
-        startDestination = Route.Splash
+        startDestination = Route.MainGraph
     ) {
         // Pantalla de Splash
         composable<Route.Splash> {
@@ -66,6 +68,7 @@ fun AppNavigation(){
         // Navegación entre pantallas una vez autenticado
         composable<Route.MainGraph> {
             MainScaffold(
+                rootNavController = rootNavController,
                 onLogout = {
                     rootNavController.navigate(Route.AuthGraph) {
                         popUpTo<Route.MainGraph> { inclusive = true }
@@ -73,6 +76,26 @@ fun AppNavigation(){
                     }
                 }
             )
+        }
+
+        // Pantallas de destino
+        composable<Route.LifehackDetail> { backStackEntry ->
+            val lifehackId = backStackEntry.toRoute<Route.LifehackDetail>().lifehackId
+            LifehackDetailScreen(lifehackId = lifehackId)
+        }
+
+        composable<Route.LifehacksByCategory> {
+            val categoryId = it.toRoute<Route.LifehacksByCategory>().categoryId
+            LifehacksByCategoryScreen(categoryId = categoryId)
+        }
+
+        composable<Route.EditLifehack> {
+            val lifehackId = it.toRoute<Route.EditLifehack>().lifehackId
+            EditLifehackScreen(lifehackId = lifehackId)
+        }
+
+        composable<Route.EditProfile> {
+            EditProfileScreen()
         }
     }
 }
