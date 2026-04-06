@@ -4,7 +4,9 @@ import android.util.Log
 import androidx.compose.runtime.Composable
 
 @Composable
-fun HomeTab() {
+fun HomeTab(
+    onLifehackClick: (String) -> Unit
+) {
 
 }
 

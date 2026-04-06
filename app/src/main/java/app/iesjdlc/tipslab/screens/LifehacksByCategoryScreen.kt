@@ -3,6 +3,8 @@ package app.iesjdlc.tipslab.screens
 import androidx.compose.runtime.Composable
 
 @Composable
-fun LifehackByCategoryScreen() {
+fun LifehacksByCategoryScreen(
+    categoryId: String
+) {
 
 }
