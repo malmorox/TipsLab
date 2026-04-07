@@ -4,7 +4,9 @@ import androidx.compose.runtime.Composable
 
 @Composable
 fun LifehacksByCategoryScreen(
-    categoryId: String
+    categoryId: String,
+    onNavigateBack: () -> Unit,
+    onLifehackClick: (String) -> Unit
 ) {
 
 }

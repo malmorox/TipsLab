@@ -4,7 +4,11 @@ import androidx.compose.runtime.Composable
 
 @Composable
 fun LifehackDetailScreen(
-    lifehackId: String
+    lifehackId: String,
+    onNavigateBack: () -> Unit,
+    onEditLifehack: () -> Unit,
+    onDeleteLifehack: () -> Unit,
+    onOpenCategory: (String) -> Unit
 ) {
 
 }
