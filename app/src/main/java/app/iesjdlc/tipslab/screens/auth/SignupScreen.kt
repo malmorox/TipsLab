@@ -35,26 +35,14 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import app.iesjdlc.tipslab.R
 import app.iesjdlc.tipslab.viewmodels.SignupEffect
 import app.iesjdlc.tipslab.viewmodels.SignupViewModel
+import app.iesjdlc.tipslab.ui.theme.*
 
 @Composable
 fun SignupScreen(
     onSignUpSuccess: () -> Unit,
-    onNavigateBack: (String) -> Unit
+    onNavigateBack: () -> Unit
 ) {
-    val viewModel: SignupViewModel = viewModel()
-
-    LaunchedEffect(Unit) {
-        viewModel.runTestSignupIfNeeded()
-    }
-
-    LaunchedEffect(viewModel) {
-        viewModel.effects.collect { effect ->
-            when (effect) {
-                SignupEffect.NavigateToMain -> onSignUpSuccess()
-                is SignupEffect.ShowError -> onNavigateBack(effect.message)
-            }
-        }
-    }
+    SignUpScreenUI()
 }
 
 @Composable
@@ -128,7 +116,7 @@ fun SignUpScreenUI() {
                     value = "",
                     onValueChange = {},
                     placeholder = {
-                        Text(text = stringResource(id = R.string.user), color = TextSecondary)
+                        Text(text = stringResource(id = R.string.username), color = TextSecondary)
                     },
                     shape = RoundedCornerShape(12.dp),
                     modifier = Modifier.fillMaxWidth(),
@@ -165,7 +153,7 @@ fun SignUpScreenUI() {
                     value = "",
                     onValueChange = {},
                     placeholder = {
-                        Text(text = stringResource(id = R.string.repeatPsswd), color = TextSecondary)
+                        Text(text = stringResource(R.string.repeat_password), color = TextSecondary)
                     },
                     shape = RoundedCornerShape(12.dp),
                     visualTransformation = PasswordVisualTransformation(),

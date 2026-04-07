@@ -1,12 +1,11 @@
 package app.iesjdlc.tipslab.screens.auth
 
-import android.app.Activity
-import android.util.Log
 import app.iesjdlc.tipslab.R
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -19,84 +18,27 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.credentials.CredentialManager
-import androidx.credentials.GetCredentialRequest
-import androidx.credentials.PublicKeyCredential
-import androidx.lifecycle.viewmodel.compose.viewModel
-import app.iesjdlc.tipslab.viewmodels.LoginEffect
-import app.iesjdlc.tipslab.viewmodels.LoginViewModel
-import com.google.android.libraries.identity.googleid.GetGoogleIdOption
-import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential
 import app.iesjdlc.tipslab.ui.theme.*
 
-@Preview
 @Composable
 fun LoginScreen(
     onLoginSuccess: () -> Unit,
-    onLoginError: (String) -> Unit
+    onNavigateToSignup: () -> Unit
 ) {
-    val viewModel: LoginViewModel = viewModel()
-    val context = LocalContext.current
-
-    // Efecto que lanza el flujo de Google al abrir la pantalla
-    LaunchedEffect(Unit) {
-        try {
-            val credentialManager = CredentialManager.create(context)
-
-            val googleIdOption = GetGoogleIdOption.Builder()
-                .setFilterByAuthorizedAccounts(false)
-                .setServerClientId("177275042936-95u9er25hp4utb2dbohv0aluthi8esrp.apps.googleusercontent.com") // el de Firebase Console > Auth > Google > Web client ID
-                .build()
-
-            val request = GetCredentialRequest.Builder()
-                .addCredentialOption(googleIdOption)
-                .build()
-
-            val result = credentialManager.getCredential(
-                request = request,
-                context = context as Activity
-            )
-
-            val credential = result.credential
-            if (credential is PublicKeyCredential) return@LaunchedEffect
-
-            val googleCredential = GoogleIdTokenCredential.createFrom(credential.data)
-            val idToken = googleCredential.idToken
-
-            Log.d("TEST_TOKEN", "Token: $idToken") // Por si quieres copiarlo
-            viewModel.signInWithGoogle(idToken)
-
-        } catch (e: Exception) {
-            onLoginError(e.message ?: "Error Google Sign-In")
-        }
-    }
-
-    LaunchedEffect(viewModel) {
-        viewModel.effects.collect { effect ->
-            when (effect) {
-                LoginEffect.NavigateToMain -> onLoginSuccess()
-                is LoginEffect.ShowMessage -> onLoginError(effect.message)
-            }
-        }
-    }
 
     LoginScreenUI()
 }
@@ -132,7 +74,7 @@ fun LoginScreenUI() {
             ) {
 
                 Icon(
-                    painter = painterResource(id = R.drawable.logo),
+                    painter = painterResource(R.drawable.logo),
                     contentDescription = null,
                     tint = BrandPrimary,
                     modifier = Modifier.size(80.dp)
@@ -141,7 +83,7 @@ fun LoginScreenUI() {
                 Spacer(modifier = Modifier.height(16.dp))
 
                 Text(
-                    text = stringResource(id = R.string.login),
+                    text = stringResource(R.string.sign_in),
                     fontSize = 26.sp,
                     fontWeight = FontWeight.SemiBold,
                     color = BrandPrimary
@@ -149,12 +91,14 @@ fun LoginScreenUI() {
 
                 Spacer(modifier = Modifier.height(24.dp))
 
-                // Email
                 OutlinedTextField(
                     value = "",
                     onValueChange = {},
                     placeholder = {
-                        Text(text = stringResource(id = R.string.email), color = TextSecondary)
+                        Text(
+                            text = stringResource(R.string.email),
+                            color = TextSecondary
+                        )
                     },
                     shape = RoundedCornerShape(12.dp),
                     modifier = Modifier.fillMaxWidth(),
@@ -167,7 +111,6 @@ fun LoginScreenUI() {
 
                 Spacer(modifier = Modifier.height(12.dp))
 
-                // Contraseña
                 OutlinedTextField(
                     value = "",
                     onValueChange = {},
@@ -186,7 +129,6 @@ fun LoginScreenUI() {
 
                 Spacer(modifier = Modifier.height(20.dp))
 
-                // Botón Login con degradado
                 Button(
                     onClick = {  },
                     shape = RoundedCornerShape(16.dp),
@@ -214,7 +156,7 @@ fun LoginScreenUI() {
                         contentAlignment = Alignment.Center
                     ) {
                         Text(
-                            text = stringResource(id = R.string.login),
+                            text = stringResource(R.string.login_button),
                             color = Color.White,
                             fontWeight = FontWeight.Bold
                         )
@@ -223,11 +165,19 @@ fun LoginScreenUI() {
 
                 Spacer(modifier = Modifier.height(14.dp))
 
-                Text(
-                    text = stringResource(id = R.string.account),
-                    fontSize = 14.sp,
-                    color = TextSecondary
-                )
+                Row {
+                    Text(
+                        text = stringResource(R.string.dont_have_account),
+                        fontSize = 14.sp,
+                        color = TextSecondary
+                    )
+                    Text(
+                        text = stringResource(R.string.here),
+                        fontSize = 14.sp,
+                        color = BrandPrimary,
+                    )
+                }
+
             }
         }
     }

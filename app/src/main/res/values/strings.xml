@@ -1,17 +1,22 @@
 <resources>
-    <string name="app_name">TipsLab</string>
+    <string name="app_name" translatable="false">TipsLab</string>
 
-    //Login
-    <string name="login">Iniciar sesión</string>
-    <string name="email">Email</string>
+    <!-- Login -->
+    <string name="sign_in">Inicia sesión</string>
+    <string name="email_or_username">Email o nombre de usuario</string>
     <string name="password">Contraseña</string>
-    <string name="account">¿No tienes cuenta? Crear cuenta</string>
-    <string name="logo_description">Logo aplicación</string>
+    <string name="toggle_password_visibility">Alternar visibilidad de la contraseña</string>
+    <string name="dont_have_account">¿No tienes cuenta? Crea una&#160;</string>
+    <string name="here">aquí</string>
+    <string name="or">O</string>
+    <string name="continue_with_google">Continua con Google</string>
+    <string name="login_button">Acceder</string>
 
-    //Singup
-    <string name="createAccount">Crear cuenta</string>
-    <string name="user">Usuario</string>
-    <string name="repeatPsswd">Repetir contraseña</string>
+    <!-- SignUp -->
+    <string name="createAccount">Crea una cuenta</string>
+    <string name="username">Nombre de usuario</string>
+    <string name="email">Correo electrónico</string>
+    <string name="repeat_password">Repetir contraseña</string>
     <string name="signup">Registrarse</string>
 
 </resources>
