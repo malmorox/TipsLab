@@ -4,7 +4,9 @@ import androidx.compose.runtime.Composable
 
 @Composable
 fun EditLifehackScreen(
-    lifehackId: String
+    lifehackId: String,
+    onNavigateBack: () -> Unit,
+    onLifehackEdited: () -> Unit
 ) {
 
 }

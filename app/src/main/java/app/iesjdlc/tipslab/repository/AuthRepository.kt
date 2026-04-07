@@ -114,8 +114,6 @@ class AuthRepository {
         auth.signOut()
         userProfile = null
     }
-
-    fun isLoggedIn(): Boolean = auth.currentUser != null
 }
 
 sealed class GoogleAuthResult {

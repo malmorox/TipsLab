@@ -16,12 +16,12 @@ import app.iesjdlc.tipslab.screens.auth.LoginScreen
 import app.iesjdlc.tipslab.screens.auth.SignupScreen
 
 @Composable
-fun AppNavigation(){
+fun AppNavigation() {
     val rootNavController = rememberNavController()
 
     NavHost(
         navController = rootNavController,
-        startDestination = Route.MainGraph
+        startDestination = Route.Splash
     ) {
         // Pantalla de Splash
         composable<Route.Splash> {
@@ -43,8 +43,10 @@ fun AppNavigation(){
                             launchSingleTop = true
                         }
                     },
-                    onLoginError = {
-                        // En este flujo de prueba no mostramos UI de error.
+                    onNavigateToSignup = {
+                        rootNavController.navigate(Route.Signup) {
+                            launchSingleTop = true
+                        }
                     }
                 )
             }
@@ -59,7 +61,7 @@ fun AppNavigation(){
                         }
                     },
                     onNavigateBack = {
-                        rootNavController.popBackStack() // vuelve al Login si falla la creación de prueba
+                        rootNavController.popBackStack()
                     }
                 )
             }
@@ -81,21 +83,44 @@ fun AppNavigation(){
         // Pantallas de destino
         composable<Route.LifehackDetail> { backStackEntry ->
             val lifehackId = backStackEntry.toRoute<Route.LifehackDetail>().lifehackId
-            LifehackDetailScreen(lifehackId = lifehackId)
+            LifehackDetailScreen(
+                lifehackId = lifehackId,
+                onNavigateBack = { rootNavController.popBackStack() },
+                onEditLifehack = { rootNavController.navigate(Route.EditLifehack(lifehackId)) },
+                onDeleteLifehack = { rootNavController.popBackStack() },
+                onOpenCategory = { categoryId ->
+                    rootNavController.navigate(Route.LifehacksByCategory(categoryId))
+                }
+            )
         }
 
         composable<Route.LifehacksByCategory> {
             val categoryId = it.toRoute<Route.LifehacksByCategory>().categoryId
-            LifehacksByCategoryScreen(categoryId = categoryId)
+            LifehacksByCategoryScreen(
+                categoryId = categoryId,
+                onNavigateBack = { rootNavController.popBackStack() },
+                onLifehackClick = { id -> rootNavController.navigate(Route.LifehackDetail(id)) }
+            )
         }
 
         composable<Route.EditLifehack> {
             val lifehackId = it.toRoute<Route.EditLifehack>().lifehackId
-            EditLifehackScreen(lifehackId = lifehackId)
+            EditLifehackScreen(
+                lifehackId = lifehackId,
+                onNavigateBack = { rootNavController.popBackStack() },
+                onLifehackEdited = {
+                    rootNavController.navigate(Route.LifehackDetail(lifehackId)) {
+                        popUpTo<Route.EditLifehack> { inclusive = true }
+                        launchSingleTop = true
+                    }
+                }
+            )
         }
 
         composable<Route.EditProfile> {
-            EditProfileScreen()
+            EditProfileScreen(
+                onNavigateBack = { rootNavController.popBackStack() }
+            )
         }
     }
 }
