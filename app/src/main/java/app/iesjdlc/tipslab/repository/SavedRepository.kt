@@ -1,18 +1,16 @@
 package app.iesjdlc.tipslab.repository
 
-import app.iesjdlc.tipslab.models.domain.Lifehack
 import app.iesjdlc.tipslab.models.dto.LifehackDto
 import app.iesjdlc.tipslab.utils.FirebaseClient
-import app.iesjdlc.tipslab.utils.LifehackResolver
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
 import kotlinx.coroutines.tasks.await
 
 class SavedRepository(
-    private val resolver: LifehackResolver = LifehackResolver()
+    private val db: FirebaseFirestore = FirebaseClient.db,
+    private val auth: FirebaseAuth = FirebaseClient.auth
 ) {
-    private val db = FirebaseClient.db
-    private val auth = FirebaseClient.auth
-
     private fun savedCollection(userId: String) = db.collection("users").document(userId).collection("saved")
 
     private suspend fun getSavedIds(): Result<List<String>> {
@@ -31,7 +29,7 @@ class SavedRepository(
         }
     }
 
-    suspend fun getSavedLifehacks(): Result<List<Lifehack>> {
+    suspend fun getSavedLifehacks(): Result<List<LifehackDto>> {
         return try {
             val savedIds = getSavedIds().getOrThrow()
             val lifehacks = db.collection("lifehacks")
@@ -40,7 +38,7 @@ class SavedRepository(
                 .await()
             val dtos =
                 lifehacks.documents.mapNotNull { doc -> doc.toObject(LifehackDto::class.java) }
-            Result.success(resolver.resolve(dtos))
+            Result.success(dtos)
         } catch (e: Exception) {
             Result.failure(e)
         }

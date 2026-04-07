@@ -1,16 +1,16 @@
 package app.iesjdlc.tipslab.repository
 
-import android.util.Log
 import app.iesjdlc.tipslab.mappers.CategoryMapper
 import app.iesjdlc.tipslab.models.domain.Category
 import app.iesjdlc.tipslab.models.dto.CategoryDto
 import app.iesjdlc.tipslab.utils.FirebaseClient
+import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.tasks.await
 
-class CategoryRepository {
-    private val db = FirebaseClient.db
-    private val mapper = CategoryMapper()
-
+class CategoryRepository(
+    private val db: FirebaseFirestore = FirebaseClient.db,
+    private val mapper: CategoryMapper = CategoryMapper()
+) {
     suspend fun getAllCategories(): Result<List<Category>> {
         return try {
             val snapshot = db.collection("categories").get().await()

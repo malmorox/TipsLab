@@ -87,7 +87,7 @@ fun AppNavigation() {
                 lifehackId = lifehackId,
                 onNavigateBack = { rootNavController.popBackStack() },
                 onEditLifehack = { rootNavController.navigate(Route.EditLifehack(lifehackId)) },
-                onDeleteLifehack = { rootNavController.popBackStack() },
+                onDeleteLifehack = { /* TODO implementar lógica de borrado */ },
                 onOpenCategory = { categoryId ->
                     rootNavController.navigate(Route.LifehacksByCategory(categoryId))
                 }

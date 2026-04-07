@@ -5,12 +5,13 @@ import app.iesjdlc.tipslab.mappers.UserMapper
 import app.iesjdlc.tipslab.models.domain.User
 import app.iesjdlc.tipslab.models.dto.UserDto
 import app.iesjdlc.tipslab.utils.FirebaseClient
+import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.tasks.await
 
-class UserRepository {
-    private val db = FirebaseClient.db
-    private val mapper = UserMapper()
-
+class UserRepository(
+    private val db: FirebaseFirestore = FirebaseClient.db,
+    private val mapper: UserMapper = UserMapper()
+) {
     suspend fun existsUser(uid: String): Result<Boolean> {
         return try {
             val doc = db.collection("users").document(uid).get().await()

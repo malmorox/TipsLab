@@ -5,11 +5,15 @@ import android.net.Uri
 import app.iesjdlc.tipslab.utils.SupabaseClient
 import id.zelory.compressor.Compressor
 import id.zelory.compressor.constraint.default
+import io.github.jan.supabase.storage.Storage
 import io.github.jan.supabase.storage.storage
 import java.io.File
 
-class MediaRepository(private val context: Context) {
-    private val storage = SupabaseClient.supabase.storage
+class MediaRepository(
+    context: Context,
+    private val storage: Storage = SupabaseClient.supabase.storage
+) {
+    private val context = context.applicationContext
 
     suspend fun uploadProfilePhoto(uid: String, imageUri: Uri): Result<String> {
         return try {

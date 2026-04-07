@@ -4,52 +4,53 @@ import app.iesjdlc.tipslab.mappers.LifehackMapper
 import app.iesjdlc.tipslab.models.domain.Lifehack
 import app.iesjdlc.tipslab.models.dto.LifehackDto
 import app.iesjdlc.tipslab.utils.FirebaseClient
-import app.iesjdlc.tipslab.utils.LifehackResolver
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.tasks.await
 
 class LifehackRepository(
-    private val resolver: LifehackResolver = LifehackResolver()
+    private val db: FirebaseFirestore = FirebaseClient.db,
+    private val auth: FirebaseAuth = FirebaseClient.auth,
+    private val mapper: LifehackMapper = LifehackMapper()
 ) {
-    private val db = FirebaseClient.db
-    private val auth = FirebaseClient.auth
-    private val mapper = LifehackMapper()
-
-    suspend fun getMyLifehacks(): Result<List<Lifehack>> {
+    suspend fun getMyLifehacks(): Result<List<LifehackDto>> {
         return try {
             val uid = auth.currentUser?.uid ?: return Result.failure(Exception("No autenticado"))
             val snapshot = db.collection("lifehacks")
                 .whereEqualTo("author_id", uid)
                 .get().await()
             val dtos = snapshot.documents.mapNotNull { doc -> doc.toObject(LifehackDto::class.java) }
-            Result.success(resolver.resolve(dtos))
+            Result.success(dtos)
         } catch (e: Exception) {
             Result.failure(e)
         }
     }
 
-    suspend fun getLifehackById(id: String): Result<Lifehack> {
+    suspend fun getLifehackById(id: String): Result<LifehackDto> {
         return try {
             val snapshot = db.collection("lifehacks")
                 .document(id)
                 .get()
                 .await()
             val dto = snapshot.toObject(LifehackDto::class.java)
-                ?: return Result.failure(Exception("No encontrado"))
-            Result.success(resolver.resolveOne(dto)
-                ?: return Result.failure(Exception("No encontrado")))
+            if (dto != null) {
+                Result.success(dto)
+            } else {
+                Result.failure(Exception("Lifehack no encontrado"))
+            }
         } catch (e: Exception) {
             Result.failure(e)
         }
     }
 
-    suspend fun getLifehacksByCategory(categoryId: String): Result<List<Lifehack>> {
+    suspend fun getLifehacksByCategory(categoryId: String): Result<List<LifehackDto>> {
         return try {
             val snapshot = db.collection("lifehacks")
                 .whereEqualTo("category_id", categoryId)
                 .get()
                 .await()
             val dtos = snapshot.documents.mapNotNull { doc -> doc.toObject(LifehackDto::class.java) }
-            Result.success(resolver.resolve(dtos))
+            Result.success(dtos)
         } catch (e: Exception) {
             Result.failure(e)
         }

@@ -7,14 +7,16 @@ import app.iesjdlc.tipslab.mappers.UserMapper
 import app.iesjdlc.tipslab.models.domain.User
 import app.iesjdlc.tipslab.models.dto.UserDto
 import app.iesjdlc.tipslab.utils.FirebaseClient
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.GoogleAuthProvider
+import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.tasks.await
 
-class AuthRepository {
-    private val auth = FirebaseClient.auth
-    private val db = FirebaseClient.db
-
+class AuthRepository(
+    private val auth: FirebaseAuth = FirebaseClient.auth,
+    private val db: FirebaseFirestore = FirebaseClient.db
+) {
     private val mapper = UserMapper()
 
     // Para guardar los datos del usuario en memoria
