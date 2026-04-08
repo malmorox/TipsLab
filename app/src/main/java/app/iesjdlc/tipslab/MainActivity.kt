@@ -6,7 +6,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.annotation.RequiresApi
-import app.iesjdlc.tipslab.navigation.AppNavigation
+import app.iesjdlc.tipslab.ui.navigation.AppNavigation
 import app.iesjdlc.tipslab.ui.theme.TipsLabTheme
 
 class MainActivity : ComponentActivity() {
