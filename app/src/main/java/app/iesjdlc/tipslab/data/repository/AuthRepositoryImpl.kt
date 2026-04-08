@@ -16,10 +16,9 @@ import kotlinx.coroutines.tasks.await
 
 class AuthRepositoryImpl(
     private val auth: FirebaseAuth = FirebaseClient.auth,
-    private val db: FirebaseFirestore = FirebaseClient.db
+    private val db: FirebaseFirestore = FirebaseClient.db,
+    private val mapper: UserMapper = UserMapper()
 ) : AuthRepository {
-    private val mapper = UserMapper()
-
     // Para guardar los datos del usuario en memoria
     var userProfile by mutableStateOf<User?>(null)
         private set
@@ -47,11 +46,11 @@ class AuthRepositoryImpl(
     }
 
     // Función para cargar el perfil del usuario desde UseCases
-    suspend fun loadProfile(uid: String) {
+    override suspend fun loadProfile(uid: String) {
         fetchUserData(uid)
     }
 
-    suspend fun login(
+    override suspend fun login(
         email: String,
         password: String
     ): Result<FirebaseUser> {
@@ -64,7 +63,7 @@ class AuthRepositoryImpl(
         }
     }
 
-    suspend fun signUp(
+    override suspend fun signUp(
         email: String,
         password: String
     ): Result<FirebaseUser> {
@@ -82,7 +81,7 @@ class AuthRepositoryImpl(
      * Si ya existe, carga su perfil. Si es nuevo, devuelve isNewUser = true
      * sin crear ningún documento (eso lo hace el UseCase).
      */
-    suspend fun authenticateWithGoogle(idToken: String): Result<GoogleAuthResult> {
+    override suspend fun authenticateWithGoogle(idToken: String): Result<GoogleAuthResult> {
         return try {
             val credential = GoogleAuthProvider.getCredential(idToken, null)
             val result = auth.signInWithCredential(credential).await()
@@ -113,7 +112,7 @@ class AuthRepositoryImpl(
         }
     }
 
-    fun logout() {
+    override fun logout() {
         auth.signOut()
         userProfile = null
     }

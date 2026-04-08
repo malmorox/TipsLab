@@ -2,13 +2,13 @@ package app.iesjdlc.tipslab.domain.usecase
 
 import app.iesjdlc.tipslab.domain.model.ProviderType
 import app.iesjdlc.tipslab.domain.model.User
-import app.iesjdlc.tipslab.data.repository.AuthRepository
 import app.iesjdlc.tipslab.data.repository.GoogleAuthResult
 import app.iesjdlc.tipslab.data.repository.UserRepositoryImpl
 import app.iesjdlc.tipslab.core.utils.StringUtils
+import app.iesjdlc.tipslab.data.repository.AuthRepositoryImpl
 
 class SignInWithGoogleUseCase(
-    private val authRepository: AuthRepository = AuthRepository(),
+    private val authRepository: AuthRepositoryImpl = AuthRepositoryImpl(),
     private val userRepository: UserRepositoryImpl = UserRepositoryImpl()
 ) {
     suspend operator fun invoke(idToken: String): Result<Unit> {

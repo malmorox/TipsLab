@@ -5,13 +5,13 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import app.iesjdlc.tipslab.data.repository.AuthRepository
+import app.iesjdlc.tipslab.data.repository.AuthRepositoryImpl
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 class SplashViewModel(
     // Cambiar a DI
-    authRepository: AuthRepository = AuthRepository()
+    authRepository: AuthRepositoryImpl = AuthRepositoryImpl()
 ) : ViewModel() {
     var isLoggedIn by mutableStateOf<Boolean?>(null)
         private set

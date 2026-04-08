@@ -1,10 +1,10 @@
 package app.iesjdlc.tipslab.domain.usecase
 
-import app.iesjdlc.tipslab.data.repository.AuthRepository
+import app.iesjdlc.tipslab.data.repository.AuthRepositoryImpl
 import app.iesjdlc.tipslab.data.repository.UserRepositoryImpl
 
 class LoginUseCase(
-    private val authRepository: AuthRepository = AuthRepository(),
+    private val authRepository: AuthRepositoryImpl = AuthRepositoryImpl(),
     private val userRepository: UserRepositoryImpl = UserRepositoryImpl()
 ) {
     suspend operator fun invoke(
