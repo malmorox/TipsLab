@@ -3,7 +3,9 @@ plugins {
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.kotlin.serialization)
-    id("com.google.gms.google-services")
+    alias(libs.plugins.google.services)
+    alias(libs.plugins.ksp)
+    alias(libs.plugins.hilt.android)
 }
 
 android {
@@ -63,38 +65,43 @@ dependencies {
     implementation(libs.kotlinx.serialization.json)
 
     // Credenciales (Google)
-    implementation("androidx.credentials:credentials:1.3.0")
-    implementation("androidx.credentials:credentials-play-services-auth:1.3.0")
+    implementation(libs.androidx.credentials)
+    implementation(libs.androidx.credentials.auth)
 
     // Firebase
-    implementation(platform("com.google.firebase:firebase-bom:34.9.0"))
-    implementation("com.google.firebase:firebase-analytics")
-    implementation("com.google.firebase:firebase-auth")
-    implementation("com.google.firebase:firebase-firestore")
+    implementation(platform(libs.firebase.bom))
+    implementation(libs.firebase.analytics)
+    implementation(libs.firebase.auth)
+    implementation(libs.firebase.firestore)
+
 
     // Supabase
-    implementation("io.github.jan-tennert.supabase:storage-kt:2.6.1")
-    implementation("io.ktor:ktor-client-android:2.3.12")
+    implementation(libs.supabase.storage)
+    implementation(libs.ktor.client.android)
+
+    // CameraX
+    implementation(libs.bundles.camerax)
 
     // Coil
-    implementation("io.coil-kt.coil3:coil-compose:3.3.0")
-    implementation("io.coil-kt.coil3:coil-network-okhttp:3.3.0")
+    implementation(libs.coil.compose)
+    implementation(libs.coil.network.okhttp)
 
     // Compressor (imágenes)
-    implementation("id.zelory:compressor:3.0.1")
+    implementation(libs.compressor)
 
     // Compressor (videos)
 
 
-    // ExoPlayer
-    implementation("androidx.media3:media3-exoplayer:1.9.2")
-    implementation("androidx.media3:media3-exoplayer-dash:1.9.2")
-    implementation("androidx.media3:media3-ui:1.9.2")
-    implementation("androidx.media3:media3-ui-compose:1.9.2")
+    // Media3 / ExoPlayer
+    implementation(libs.bundles.media3)
 
     // Youtube Player
-    implementation("com.pierfrancescosoffritti.androidyoutubeplayer:core:13.0.0")
+    implementation(libs.youtube.player)
 
     // +Iconos de material
-    implementation("androidx.compose.material:material-icons-extended")
+    implementation(libs.material.icons.extended)
+
+    // Hilt (DI)
+    implementation(libs.hilt.android)
+    ksp(libs.hilt.compiler)
 }

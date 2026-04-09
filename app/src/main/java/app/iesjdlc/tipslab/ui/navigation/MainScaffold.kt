@@ -13,7 +13,7 @@ import app.iesjdlc.tipslab.ui.screens.lifehack.CreateLifehackTab
 import app.iesjdlc.tipslab.ui.screens.explore.ExploreTab
 import app.iesjdlc.tipslab.ui.screens.home.HomeTab
 import app.iesjdlc.tipslab.ui.screens.profile.ProfileTab
-import app.iesjdlc.tipslab.ui.screens.SavedTab
+import app.iesjdlc.tipslab.ui.screens.saved.SavedTab
 
 @Composable
 fun MainScaffold(

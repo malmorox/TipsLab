@@ -12,7 +12,7 @@ class UserRepositoryImpl(
     private val db: FirebaseFirestore = FirebaseClient.db,
     private val mapper: UserMapper = UserMapper()
 ) : UserRepository {
-    suspend fun existsUser(uid: String): Result<Boolean> {
+    override suspend fun existsUser(uid: String): Result<Boolean> {
         return try {
             val doc = db.collection("users").document(uid).get().await()
             Result.success(doc.exists())
@@ -21,7 +21,7 @@ class UserRepositoryImpl(
         }
     }
 
-    suspend fun existsEmail(email: String): Result<Boolean> {
+    override suspend fun existsEmail(email: String): Result<Boolean> {
         return try {
             val snapshot = db.collection("users")
                 .whereEqualTo("email", email)
@@ -33,7 +33,7 @@ class UserRepositoryImpl(
         }
     }
 
-    suspend fun existsUsername(username: String): Result<Boolean> {
+    override suspend fun existsUsername(username: String): Result<Boolean> {
         return try {
             val snapshot = db.collection("users")
                 .whereEqualTo("username", username)
@@ -45,7 +45,7 @@ class UserRepositoryImpl(
         }
     }
 
-    suspend fun getEmailByUsername(username: String): Result<String?> {
+    override suspend fun getEmailByUsername(username: String): Result<String?> {
         return try {
             val snapshot = db.collection("users")
                 .whereEqualTo("username", username)
@@ -79,7 +79,7 @@ class UserRepositoryImpl(
     }
 
     // Crea el documento de un nuevo usuario de Google en Firestore
-    suspend fun createGoogleUser(user: User): Result<Unit> {
+    override suspend fun createGoogleUser(user: User): Result<Unit> {
         return try {
             val dto = mapper.toDto(user)
             db.collection("users").document(dto.id).set(dto).await()
@@ -89,7 +89,7 @@ class UserRepositoryImpl(
         }
     }
 
-    suspend fun updateUserProfile(user: User): Result<Unit> {
+    override suspend fun updateUserProfile(user: User): Result<Unit> {
         return try {
             val dto = mapper.toDto(user)
             db.collection("users").document(user.id).set(dto).await()

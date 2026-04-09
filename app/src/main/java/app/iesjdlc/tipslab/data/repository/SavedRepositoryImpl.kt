@@ -2,6 +2,8 @@ package app.iesjdlc.tipslab.data.repository
 
 import app.iesjdlc.tipslab.data.model.LifehackDto
 import app.iesjdlc.tipslab.data.remote.firebase.FirebaseClient
+import app.iesjdlc.tipslab.data.resolver.LifehackResolver
+import app.iesjdlc.tipslab.domain.model.Lifehack
 import app.iesjdlc.tipslab.domain.repository.SavedRepository
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FieldValue
@@ -11,7 +13,8 @@ import kotlinx.coroutines.tasks.await
 
 class SavedRepositoryImpl(
     private val db: FirebaseFirestore = FirebaseClient.db,
-    private val auth: FirebaseAuth = FirebaseClient.auth
+    private val auth: FirebaseAuth = FirebaseClient.auth,
+    private val resolver: LifehackResolver = LifehackResolver()
 ) : SavedRepository {
     private fun savedCollection(userId: String) = db.collection("users").document(userId).collection("saved")
 
@@ -31,7 +34,7 @@ class SavedRepositoryImpl(
         }
     }
 
-    suspend fun getSavedLifehacks(): Result<List<LifehackDto>> {
+    override suspend fun getSavedLifehacks(): Result<List<Lifehack>> {
         return try {
             val savedIds = getSavedIds().getOrThrow()
             val lifehacks = db.collection("lifehacks")
@@ -40,13 +43,13 @@ class SavedRepositoryImpl(
                 .await()
             val dtos =
                 lifehacks.documents.mapNotNull { doc -> doc.toObject(LifehackDto::class.java) }
-            Result.success(dtos)
+            Result.success(resolver.resolve(dtos))
         } catch (e: Exception) {
             Result.failure(e)
         }
     }
 
-    suspend fun isSaved(lifehackId: String): Result<Boolean> {
+    override suspend fun isSaved(lifehackId: String): Result<Boolean> {
         return try {
             val userId = auth.currentUser?.uid
                 ?: return Result.failure(Exception("No user logged in"))
@@ -58,7 +61,7 @@ class SavedRepositoryImpl(
         }
     }
 
-    suspend fun toggleSaved(lifehackId: String): Result<Boolean> {
+    override suspend fun toggleSaved(lifehackId: String): Result<Boolean> {
         return try {
             val userId = auth.currentUser?.uid
                 ?: return Result.failure(Exception("No user logged in"))
@@ -85,7 +88,7 @@ class SavedRepositoryImpl(
         }
     }
 
-    suspend fun getSavedCount(): Result<Int> {
+    override suspend fun getSavedCount(): Result<Int> {
         return try {
             val userId = auth.currentUser?.uid
                 ?: return Result.failure(Exception("No user logged in"))
