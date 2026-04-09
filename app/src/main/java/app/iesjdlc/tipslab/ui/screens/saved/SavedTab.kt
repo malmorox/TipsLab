@@ -1,4 +1,4 @@
-package app.iesjdlc.tipslab.ui.screens
+package app.iesjdlc.tipslab.ui.screens.saved
 
 import androidx.compose.runtime.Composable
 
