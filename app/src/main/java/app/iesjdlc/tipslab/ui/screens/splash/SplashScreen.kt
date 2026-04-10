@@ -7,14 +7,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.lifecycle.viewmodel.compose.viewModel
-import app.iesjdlc.tipslab.ui.screens.splash.SplashViewModel
+import androidx.hilt.navigation.compose.hiltViewModel
 
 @Composable
 fun SplashScreen(
+    viewModel: SplashViewModel = hiltViewModel(),
     onNavigateToMain: () -> Unit,
-    onNavigateToLogin: () -> Unit,
-    viewModel: SplashViewModel = viewModel()
+    onNavigateToLogin: () -> Unit
 ) {
     LaunchedEffect(viewModel.isLoggedIn) {
         when (viewModel.isLoggedIn) {

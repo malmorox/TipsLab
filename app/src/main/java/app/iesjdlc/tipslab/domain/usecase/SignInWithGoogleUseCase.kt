@@ -6,10 +6,11 @@ import app.iesjdlc.tipslab.data.repository.GoogleAuthResult
 import app.iesjdlc.tipslab.data.repository.UserRepositoryImpl
 import app.iesjdlc.tipslab.core.utils.StringUtils
 import app.iesjdlc.tipslab.data.repository.AuthRepositoryImpl
+import javax.inject.Inject
 
-class SignInWithGoogleUseCase(
-    private val authRepository: AuthRepositoryImpl = AuthRepositoryImpl(),
-    private val userRepository: UserRepositoryImpl = UserRepositoryImpl()
+class SignInWithGoogleUseCase @Inject constructor(
+    private val authRepository: AuthRepositoryImpl,
+    private val userRepository: UserRepositoryImpl
 ) {
     suspend operator fun invoke(idToken: String): Result<Unit> {
         return try {

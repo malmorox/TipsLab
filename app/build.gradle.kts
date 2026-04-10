@@ -74,7 +74,6 @@ dependencies {
     implementation(libs.firebase.auth)
     implementation(libs.firebase.firestore)
 
-
     // Supabase
     implementation(libs.supabase.storage)
     implementation(libs.ktor.client.android)
@@ -103,5 +102,6 @@ dependencies {
 
     // Hilt (DI)
     implementation(libs.hilt.android)
+    implementation(libs.hilt.navigation.compose)
     ksp(libs.hilt.compiler)
 }

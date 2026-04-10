@@ -16,7 +16,7 @@ class MediaRepositoryImpl(
 ) : MediaRepository {
     private val context = context.applicationContext
 
-    suspend fun uploadProfilePhoto(uid: String, imageUri: Uri): Result<String> {
+    override suspend fun uploadProfilePhoto(uid: String, imageUri: Uri): Result<String> {
         return try {
             // Convertimos la URI a File de forma temporal
             val file = File(context.cacheDir, "temp_image_${uid}.jpg")
@@ -46,7 +46,7 @@ class MediaRepositoryImpl(
         }
     }
 
-    suspend fun uploadMediaToLifehack(
+    override suspend fun uploadMediaToLifehack(
         lifehackId: String,
         mediaUri: Uri
     ): Result<String?> {

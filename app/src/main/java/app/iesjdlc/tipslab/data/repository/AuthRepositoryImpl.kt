@@ -24,7 +24,7 @@ class AuthRepositoryImpl(
         private set
 
     // Verificamos si hay ya un usuario al iniciar la aplicación
-    suspend fun checkUserSession(): Boolean {
+    override suspend fun checkUserSession(): Boolean {
         val firebaseUser = auth.currentUser
         if (firebaseUser != null) {
             // Si hay sesión, cargamos sus datos de Firestore
@@ -76,11 +76,6 @@ class AuthRepositoryImpl(
         }
     }
 
-    /**
-     * Solo autentica con Firebase y comprueba si el usuario existe en Firestore.
-     * Si ya existe, carga su perfil. Si es nuevo, devuelve isNewUser = true
-     * sin crear ningún documento (eso lo hace el UseCase).
-     */
     override suspend fun authenticateWithGoogle(idToken: String): Result<GoogleAuthResult> {
         return try {
             val credential = GoogleAuthProvider.getCredential(idToken, null)

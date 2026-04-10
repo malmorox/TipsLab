@@ -2,10 +2,11 @@ package app.iesjdlc.tipslab.domain.usecase
 
 import app.iesjdlc.tipslab.data.repository.AuthRepositoryImpl
 import app.iesjdlc.tipslab.data.repository.UserRepositoryImpl
+import javax.inject.Inject
 
-class LoginUseCase(
-    private val authRepository: AuthRepositoryImpl = AuthRepositoryImpl(),
-    private val userRepository: UserRepositoryImpl = UserRepositoryImpl()
+class LoginUseCase @Inject constructor(
+    private val authRepository: AuthRepositoryImpl,
+    private val userRepository: UserRepositoryImpl
 ) {
     suspend operator fun invoke(
         emailOrUsername: String,
