@@ -8,10 +8,10 @@
             <InsightsFilterSettings>
               <option name="connection">
                 <ConnectionSetting>
-                  <option name="appId" value="app.iesjdlc.tipslab" />
-                  <option name="mobileSdkAppId" value="1:177275042936:android:9bec82f97677f47d30c18d" />
-                  <option name="projectId" value="tipslab-e748c" />
-                  <option name="projectNumber" value="177275042936" />
+                  <option name="appId" value="PLACEHOLDER" />
+                  <option name="mobileSdkAppId" value="" />
+                  <option name="projectId" value="" />
+                  <option name="projectNumber" value="" />
                 </ConnectionSetting>
               </option>
               <option name="signal" value="SIGNAL_UNSPECIFIED" />
