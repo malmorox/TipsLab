@@ -2,21 +2,19 @@ package app.iesjdlc.tipslab.data.repository
 
 import android.content.Context
 import android.net.Uri
-import app.iesjdlc.tipslab.data.remote.supabase.SupabaseClient
 import app.iesjdlc.tipslab.domain.repository.MediaRepository
+import dagger.hilt.android.qualifiers.ApplicationContext
 import id.zelory.compressor.Compressor
 import id.zelory.compressor.constraint.default
 import io.github.jan.supabase.storage.Storage
-import io.github.jan.supabase.storage.storage
 import java.io.File
+import javax.inject.Inject
 
-class MediaRepositoryImpl(
-    context: Context,
-    private val storage: Storage = SupabaseClient.supabase.storage
+class MediaRepositoryImpl @Inject constructor(
+    @ApplicationContext private val context: Context,
+    private val storage: Storage
 ) : MediaRepository {
-    private val context = context.applicationContext
-
-    suspend fun uploadProfilePhoto(uid: String, imageUri: Uri): Result<String> {
+    override suspend fun uploadProfilePhoto(uid: String, imageUri: Uri): Result<String> {
         return try {
             // Convertimos la URI a File de forma temporal
             val file = File(context.cacheDir, "temp_image_${uid}.jpg")
@@ -46,7 +44,7 @@ class MediaRepositoryImpl(
         }
     }
 
-    suspend fun uploadMediaToLifehack(
+    override suspend fun uploadMediaToLifehack(
         lifehackId: String,
         mediaUri: Uri
     ): Result<String?> {

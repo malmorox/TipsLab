@@ -6,7 +6,7 @@
     <string name="email_or_username">Email o nombre de usuario</string>
     <string name="password">Contraseña</string>
     <string name="toggle_password_visibility">Alternar visibilidad de la contraseña</string>
-    <string name="dont_have_account">¿No tienes cuenta? Crea una&#160;</string>
+    <string name="dont_have_account">Si no tienes cuenta, crea una&#160;</string>
     <string name="here">aquí</string>
     <string name="or">O</string>
     <string name="continue_with_google">Continua con Google</string>
@@ -18,5 +18,12 @@
     <string name="email">Correo electrónico</string>
     <string name="repeat_password">Repetir contraseña</string>
     <string name="signup">Registrarse</string>
+    <string name="back_to_login">¿Ya tienes cuenta? Inicia sesión</string>
+
+    <!-- Home -->
+
+    <!-- Explore -->
+
+    <!-- Create lifehack -->
 
 </resources>

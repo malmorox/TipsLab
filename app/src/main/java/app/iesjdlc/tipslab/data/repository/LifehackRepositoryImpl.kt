@@ -3,18 +3,18 @@ package app.iesjdlc.tipslab.data.repository
 import app.iesjdlc.tipslab.data.mapper.LifehackMapper
 import app.iesjdlc.tipslab.domain.model.Lifehack
 import app.iesjdlc.tipslab.data.model.LifehackDto
-import app.iesjdlc.tipslab.data.remote.firebase.FirebaseClient
 import app.iesjdlc.tipslab.data.resolver.LifehackResolver
 import app.iesjdlc.tipslab.domain.repository.LifehackRepository
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.tasks.await
+import javax.inject.Inject
 
-class LifehackRepositoryImpl(
-    private val db: FirebaseFirestore = FirebaseClient.db,
-    private val auth: FirebaseAuth = FirebaseClient.auth,
-    private val mapper: LifehackMapper = LifehackMapper(),
-    private val resolver: LifehackResolver = LifehackResolver()
+class LifehackRepositoryImpl @Inject constructor(
+    private val auth: FirebaseAuth,
+    private val db: FirebaseFirestore,
+    private val mapper: LifehackMapper,
+    private val resolver: LifehackResolver
 ) : LifehackRepository {
     override suspend fun getMyLifehacks(): Result<List<Lifehack>> {
         return try {

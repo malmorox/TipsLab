@@ -8,7 +8,9 @@ import androidx.activity.enableEdgeToEdge
 import androidx.annotation.RequiresApi
 import app.iesjdlc.tipslab.ui.navigation.AppNavigation
 import app.iesjdlc.tipslab.ui.theme.TipsLabTheme
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {

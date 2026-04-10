@@ -5,8 +5,11 @@ import app.iesjdlc.tipslab.domain.model.Lifehack
 import app.iesjdlc.tipslab.domain.model.MediaType
 import app.iesjdlc.tipslab.domain.model.User
 import app.iesjdlc.tipslab.data.model.LifehackDto
+import javax.inject.Inject
+import javax.inject.Singleton
 
-class LifehackMapper {
+@Singleton
+class LifehackMapper @Inject constructor() {
     fun toDomain(dto: LifehackDto, category: Category, author: User): Lifehack {
         return Lifehack(
             id = dto.id,

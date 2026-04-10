@@ -1,6 +1,7 @@
 package app.iesjdlc.tipslab.ui.screens.auth.signup
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -30,12 +31,12 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.hilt.navigation.compose.hiltViewModel
 import app.iesjdlc.tipslab.R
 
 @Composable
 fun SignupScreen(
-    viewModel: SignupViewModel = viewModel(),
+    viewModel: SignupViewModel = hiltViewModel(),
     onSignUpSuccess: () -> Unit,
     onNavigateBack: () -> Unit
 ) {
@@ -74,7 +75,7 @@ fun SignUpScreenUI(
         ) {
 
             Icon(
-                painter = painterResource(id = R.drawable.logo),
+                painter = painterResource(R.drawable.logo),
                 contentDescription = null,
                 tint = MaterialTheme.colorScheme.primary,
                 modifier = Modifier.size(120.dp)
@@ -83,7 +84,7 @@ fun SignUpScreenUI(
             Spacer(modifier = Modifier.height(16.dp))
 
             Text(
-                text = stringResource(id = R.string.createAccount),
+                text = stringResource(R.string.createAccount),
                 fontSize = 26.sp,
                 fontWeight = FontWeight.SemiBold,
                 color = MaterialTheme.colorScheme.primary
@@ -96,7 +97,7 @@ fun SignUpScreenUI(
                 onValueChange = onEmailChange,
                 placeholder = {
                     Text(
-                        text = stringResource(id = R.string.email),
+                        text = stringResource(R.string.email),
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
                 },
@@ -117,7 +118,7 @@ fun SignUpScreenUI(
                 onValueChange = onUsernameChange,
                 placeholder = {
                     Text(
-                        text = stringResource(id = R.string.username),
+                        text = stringResource(R.string.username),
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
                 },
@@ -138,7 +139,7 @@ fun SignUpScreenUI(
                 onValueChange = onPasswordChange,
                 placeholder = {
                     Text(
-                        text = stringResource(id = R.string.password),
+                        text = stringResource(R.string.password),
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
                 },
@@ -204,7 +205,7 @@ fun SignUpScreenUI(
                     contentAlignment = Alignment.Center
                 ) {
                     Text(
-                        text = stringResource(id = R.string.signup),
+                        text = stringResource(R.string.signup),
                         color = Color.White,
                         fontWeight = FontWeight.Bold
                     )
@@ -212,6 +213,15 @@ fun SignUpScreenUI(
             }
 
             Spacer(modifier = Modifier.height(14.dp))
+
+            Text(
+                text = stringResource(R.string.back_to_login),
+                fontSize = 14.sp,
+                color = MaterialTheme.colorScheme.primary,
+                modifier = Modifier.clickable {
+                    onBackToLogin()
+                }
+            )
         }
     }
 }

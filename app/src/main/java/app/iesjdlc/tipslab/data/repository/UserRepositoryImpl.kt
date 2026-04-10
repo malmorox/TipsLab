@@ -3,14 +3,14 @@ package app.iesjdlc.tipslab.data.repository
 import app.iesjdlc.tipslab.data.mapper.UserMapper
 import app.iesjdlc.tipslab.domain.model.User
 import app.iesjdlc.tipslab.data.model.UserDto
-import app.iesjdlc.tipslab.data.remote.firebase.FirebaseClient
 import app.iesjdlc.tipslab.domain.repository.UserRepository
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.tasks.await
+import javax.inject.Inject
 
-class UserRepositoryImpl(
-    private val db: FirebaseFirestore = FirebaseClient.db,
-    private val mapper: UserMapper = UserMapper()
+class UserRepositoryImpl @Inject constructor(
+    private val db: FirebaseFirestore,
+    private val mapper: UserMapper
 ) : UserRepository {
     override suspend fun existsUser(uid: String): Result<Boolean> {
         return try {

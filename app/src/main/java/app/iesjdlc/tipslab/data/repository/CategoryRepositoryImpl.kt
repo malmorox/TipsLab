@@ -3,14 +3,14 @@ package app.iesjdlc.tipslab.data.repository
 import app.iesjdlc.tipslab.data.mapper.CategoryMapper
 import app.iesjdlc.tipslab.domain.model.Category
 import app.iesjdlc.tipslab.data.model.CategoryDto
-import app.iesjdlc.tipslab.data.remote.firebase.FirebaseClient
 import app.iesjdlc.tipslab.domain.repository.CategoryRepository
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.tasks.await
+import javax.inject.Inject
 
-class CategoryRepositoryImpl(
-    private val db: FirebaseFirestore = FirebaseClient.db,
-    private val mapper: CategoryMapper = CategoryMapper()
+class CategoryRepositoryImpl @Inject constructor(
+    private val db: FirebaseFirestore,
+    private val mapper: CategoryMapper
 ) : CategoryRepository {
     suspend fun getAllCategories(): Result<List<Category>> {
         return try {

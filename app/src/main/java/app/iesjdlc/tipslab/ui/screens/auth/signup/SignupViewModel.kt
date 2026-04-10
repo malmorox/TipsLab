@@ -3,14 +3,17 @@ package app.iesjdlc.tipslab.ui.screens.auth.signup
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import app.iesjdlc.tipslab.domain.usecase.SignUpUseCase
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class SignupViewModel(
-	private val signUpUseCase: SignUpUseCase = SignUpUseCase()
+@HiltViewModel
+class SignupViewModel @Inject constructor(
+	private val signUpUseCase: SignUpUseCase
 ) : ViewModel() {
 	private val _uiState = MutableStateFlow(SignupUiState())
 	val uiState: StateFlow<SignupUiState> = _uiState.asStateFlow()

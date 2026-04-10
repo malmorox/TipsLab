@@ -6,25 +6,25 @@ import androidx.compose.runtime.setValue
 import app.iesjdlc.tipslab.data.mapper.UserMapper
 import app.iesjdlc.tipslab.domain.model.User
 import app.iesjdlc.tipslab.data.model.UserDto
-import app.iesjdlc.tipslab.data.remote.firebase.FirebaseClient
 import app.iesjdlc.tipslab.domain.repository.AuthRepository
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.tasks.await
+import javax.inject.Inject
 
-class AuthRepositoryImpl(
-    private val auth: FirebaseAuth = FirebaseClient.auth,
-    private val db: FirebaseFirestore = FirebaseClient.db,
-    private val mapper: UserMapper = UserMapper()
+class AuthRepositoryImpl @Inject constructor(
+    private val auth: FirebaseAuth,
+    private val db: FirebaseFirestore,
+    private val mapper: UserMapper
 ) : AuthRepository {
     // Para guardar los datos del usuario en memoria
     var userProfile by mutableStateOf<User?>(null)
         private set
 
     // Verificamos si hay ya un usuario al iniciar la aplicación
-    suspend fun checkUserSession(): Boolean {
+    override suspend fun checkUserSession(): Boolean {
         val firebaseUser = auth.currentUser
         if (firebaseUser != null) {
             // Si hay sesión, cargamos sus datos de Firestore
@@ -76,11 +76,6 @@ class AuthRepositoryImpl(
         }
     }
 
-    /**
-     * Solo autentica con Firebase y comprueba si el usuario existe en Firestore.
-     * Si ya existe, carga su perfil. Si es nuevo, devuelve isNewUser = true
-     * sin crear ningún documento (eso lo hace el UseCase).
-     */
     override suspend fun authenticateWithGoogle(idToken: String): Result<GoogleAuthResult> {
         return try {
             val credential = GoogleAuthProvider.getCredential(idToken, null)
