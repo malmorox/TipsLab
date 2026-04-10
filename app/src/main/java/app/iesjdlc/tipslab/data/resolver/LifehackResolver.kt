@@ -6,17 +6,19 @@ import app.iesjdlc.tipslab.data.mapper.UserMapper
 import app.iesjdlc.tipslab.data.model.CategoryDto
 import app.iesjdlc.tipslab.data.model.LifehackDto
 import app.iesjdlc.tipslab.data.model.UserDto
-import app.iesjdlc.tipslab.data.remote.firebase.FirebaseClient
 import app.iesjdlc.tipslab.domain.model.Lifehack
 import com.google.firebase.firestore.FieldPath
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.tasks.await
+import javax.inject.Inject
+import javax.inject.Singleton
 
-class LifehackResolver(
-    private val db: FirebaseFirestore = FirebaseClient.db,
-    private val lifehackMapper: LifehackMapper = LifehackMapper(),
-    private val categoryMapper: CategoryMapper = CategoryMapper(),
-    private val userMapper: UserMapper = UserMapper()
+@Singleton
+class LifehackResolver @Inject constructor(
+    private val db: FirebaseFirestore,
+    private val lifehackMapper: LifehackMapper,
+    private val categoryMapper: CategoryMapper,
+    private val userMapper: UserMapper
 ) {
     suspend fun resolve(dtos: List<LifehackDto>): List<Lifehack> {
         if (dtos.isEmpty()) return emptyList()

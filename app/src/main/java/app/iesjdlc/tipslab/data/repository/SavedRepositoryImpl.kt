@@ -1,7 +1,6 @@
 package app.iesjdlc.tipslab.data.repository
 
 import app.iesjdlc.tipslab.data.model.LifehackDto
-import app.iesjdlc.tipslab.data.remote.firebase.FirebaseClient
 import app.iesjdlc.tipslab.data.resolver.LifehackResolver
 import app.iesjdlc.tipslab.domain.model.Lifehack
 import app.iesjdlc.tipslab.domain.repository.SavedRepository
@@ -10,11 +9,12 @@ import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
 import kotlinx.coroutines.tasks.await
+import javax.inject.Inject
 
-class SavedRepositoryImpl(
-    private val db: FirebaseFirestore = FirebaseClient.db,
-    private val auth: FirebaseAuth = FirebaseClient.auth,
-    private val resolver: LifehackResolver = LifehackResolver()
+class SavedRepositoryImpl @Inject constructor(
+    private val auth: FirebaseAuth,
+    private val db: FirebaseFirestore,
+    private val resolver: LifehackResolver
 ) : SavedRepository {
     private fun savedCollection(userId: String) = db.collection("users").document(userId).collection("saved")
 

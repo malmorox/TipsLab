@@ -6,18 +6,18 @@ import androidx.compose.runtime.setValue
 import app.iesjdlc.tipslab.data.mapper.UserMapper
 import app.iesjdlc.tipslab.domain.model.User
 import app.iesjdlc.tipslab.data.model.UserDto
-import app.iesjdlc.tipslab.data.remote.firebase.FirebaseClient
 import app.iesjdlc.tipslab.domain.repository.AuthRepository
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.tasks.await
+import javax.inject.Inject
 
-class AuthRepositoryImpl(
-    private val auth: FirebaseAuth = FirebaseClient.auth,
-    private val db: FirebaseFirestore = FirebaseClient.db,
-    private val mapper: UserMapper = UserMapper()
+class AuthRepositoryImpl @Inject constructor(
+    private val auth: FirebaseAuth,
+    private val db: FirebaseFirestore,
+    private val mapper: UserMapper
 ) : AuthRepository {
     // Para guardar los datos del usuario en memoria
     var userProfile by mutableStateOf<User?>(null)
