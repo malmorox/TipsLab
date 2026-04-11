@@ -12,9 +12,13 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.Visibility
+import androidx.compose.material.icons.rounded.VisibilityOff
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
@@ -30,6 +34,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -47,16 +52,18 @@ fun LoginScreen(
         state = uiState,
         onEmailOrUsernameChange = { viewModel.onEmailOrUsernameChanged(it) },
         onPasswordChange = { viewModel.onPasswordChanged(it) },
+        onTogglePasswordVisibility = { viewModel.onTogglePasswordVisibility() },
         onLoginClick = { viewModel.onLoginClick { onLoginSuccess() } },
         onNavigateToSignup = onNavigateToSignup
     )
 }
 
 @Composable
-fun LoginScreenUI(
+private fun LoginScreenUI(
     state: LoginUiState,
     onEmailOrUsernameChange: (String) -> Unit,
     onPasswordChange: (String) -> Unit,
+    onTogglePasswordVisibility: () -> Unit,
     onLoginClick: () -> Unit,
     onNavigateToSignup: () -> Unit
 ) {
@@ -92,15 +99,16 @@ fun LoginScreenUI(
                 OutlinedTextField(
                     value = state.emailOrUsername,
                     onValueChange = onEmailOrUsernameChange,
-                    placeholder = {
+                    label = {
                         Text(
                             text = stringResource(R.string.email_or_username),
                             color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
                     },
+                    singleLine = true,
                     enabled = !state.isLoading,
-                    shape = MaterialTheme.shapes.medium,
                     modifier = Modifier.fillMaxWidth(),
+                    shape = MaterialTheme.shapes.medium,
                     colors = OutlinedTextFieldDefaults.colors(
                         focusedBorderColor = MaterialTheme.colorScheme.primary,
                         unfocusedBorderColor = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.4f),
@@ -113,21 +121,33 @@ fun LoginScreenUI(
                 OutlinedTextField(
                     value = state.password,
                     onValueChange = onPasswordChange,
-                    placeholder = {
+                    label = {
                         Text(
                             text = stringResource(id = R.string.password),
                             color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
                     },
+                    singleLine = true,
                     enabled = !state.isLoading,
-                    shape = MaterialTheme.shapes.medium,
-                    visualTransformation = PasswordVisualTransformation(),
+                    visualTransformation = if (state.isPasswordVisible) VisualTransformation.None else PasswordVisualTransformation(),
                     modifier = Modifier.fillMaxWidth(),
+                    shape = MaterialTheme.shapes.medium,
                     colors = OutlinedTextFieldDefaults.colors(
                         focusedBorderColor = MaterialTheme.colorScheme.primary,
                         unfocusedBorderColor = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.4f),
                         cursorColor = MaterialTheme.colorScheme.primary
-                    )
+                    ),
+                    trailingIcon = {
+                        IconButton(
+                            onClick = onTogglePasswordVisibility
+                        ) {
+                            Icon(
+                                imageVector = if (state.isPasswordVisible) Icons.Rounded.VisibilityOff else Icons.Rounded.Visibility,
+                                contentDescription = stringResource(R.string.toggle_password_visibility),
+                                tint = MaterialTheme.colorScheme.onSurfaceVariant
+                            )
+                        }
+                    }
                 )
 
                 Spacer(modifier = Modifier.height(20.dp))

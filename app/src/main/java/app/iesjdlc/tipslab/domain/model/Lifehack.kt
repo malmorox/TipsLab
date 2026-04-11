@@ -6,15 +6,16 @@ data class Lifehack(
     val description: String,
     val category: Category,
     val author: User,
-    val mediaType: MediaType?,
-    val mediaUrl: String?,
-    val savedCount: Int,
+    val media: Media?,
+    val likedCount: Int,
+)
+
+data class Media(
+    val type: MediaType,
+    val url: String,
 )
 
 enum class MediaType {
     IMAGE,
-    VIDEO,
-    YOUTUBE,
-    TIKTOK,
-    INSTAGRAM
+    VIDEO
 }

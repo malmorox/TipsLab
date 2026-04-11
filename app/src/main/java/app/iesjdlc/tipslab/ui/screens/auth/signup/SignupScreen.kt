@@ -54,7 +54,7 @@ fun SignupScreen(
 }
 
 @Composable
-fun SignUpScreenUI(
+private fun SignUpScreenUI(
     state: SignupUiState,
     onEmailChange: (String) -> Unit,
     onUsernameChange: (String) -> Unit,

@@ -94,9 +94,6 @@ dependencies {
     // Media3 / ExoPlayer
     implementation(libs.bundles.media3)
 
-    // Youtube Player
-    implementation(libs.youtube.player)
-
     // +Iconos de material
     implementation(libs.material.icons.extended)
 

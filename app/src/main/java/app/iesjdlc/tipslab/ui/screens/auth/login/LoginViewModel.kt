@@ -28,6 +28,10 @@ class LoginViewModel @Inject constructor(
         _uiState.update { it.copy(password = newValue, errorMessage = null) }
     }
 
+    fun onTogglePasswordVisibility() {
+        _uiState.update { it.copy(isPasswordVisible = !it.isPasswordVisible) }
+    }
+
     fun onLoginClick(
         onSuccess: () -> Unit
     ) {
