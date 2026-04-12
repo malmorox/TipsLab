@@ -1,8 +1,10 @@
 package app.iesjdlc.tipslab.ui.screens.lifehack
 
+import android.net.Uri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import app.iesjdlc.tipslab.domain.model.Category
+import app.iesjdlc.tipslab.domain.model.MediaType
 import app.iesjdlc.tipslab.domain.repository.CategoryRepository
 import app.iesjdlc.tipslab.domain.usecase.CreateLifehackUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -47,6 +49,14 @@ class CreateLifehackViewModel @Inject constructor(
 
     fun onCategoryDropdownToggle() {
         _uiState.update { it.copy(isCategoryDropdownExpanded = !it.isCategoryDropdownExpanded) }
+    }
+
+    fun onMediaPicked(uri: Uri, type: MediaType) {
+        _uiState.update { it.copy(mediaLocalUri = uri, mediaType = type) }
+    }
+
+    fun onMediaRemoved() {
+        _uiState.update { it.copy(mediaLocalUri = null, mediaType = null) }
     }
 
     fun onSubmit(
