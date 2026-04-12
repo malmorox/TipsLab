@@ -40,19 +40,22 @@ class LoginViewModel @Inject constructor(
         viewModelScope.launch {
             _uiState.update { it.copy(isLoading = true) }
 
-            loginUseCase(
-                emailOrUsername = currentState.emailOrUsername,
-                password = currentState.password
-            )
-                .onSuccess {
-                    _uiState.update { it.copy(isLoading = false) }
-                    onSuccess()
-                }
-                .onFailure {
-                    _uiState.update {
-                        it.copy(isLoading = false, errorMessage = it.errorMessage)
+            try {
+                loginUseCase(
+                    emailOrUsername = currentState.emailOrUsername,
+                    password = currentState.password
+                )
+                    .onSuccess {
+                        onSuccess()
                     }
-                }
+                    .onFailure { error ->
+                        _uiState.update {
+                            it.copy(errorMessage = error.message)
+                        }
+                    }
+            } finally {
+                _uiState.update { it.copy(isLoading = false) }
+            }
         }
     }
 }
