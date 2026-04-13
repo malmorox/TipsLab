@@ -12,7 +12,7 @@ class CategoryRepositoryImpl @Inject constructor(
     private val db: FirebaseFirestore,
     private val mapper: CategoryMapper
 ) : CategoryRepository {
-    suspend fun getAllCategories(): Result<List<Category>> {
+    override suspend fun getAllCategories(): Result<List<Category>> {
         return try {
             val snapshot = db.collection("categories").get().await()
 
@@ -27,7 +27,7 @@ class CategoryRepositoryImpl @Inject constructor(
         }
     }
 
-    suspend fun getCategoryById(id: String): Result<Category> {
+    override suspend fun getCategoryById(id: String): Result<Category> {
         return try {
             val doc = db.collection("categories").document(id).get().await()
             doc.toObject(CategoryDto::class.java)

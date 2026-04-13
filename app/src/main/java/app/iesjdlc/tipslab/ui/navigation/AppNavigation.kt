@@ -21,7 +21,7 @@ fun AppNavigation() {
 
     NavHost(
         navController = rootNavController,
-        startDestination = Route.AuthGraph
+        startDestination = Route.Splash
     ) {
         // Pantalla de Splash
         composable<Route.Splash> {

@@ -3,14 +3,14 @@ package app.iesjdlc.tipslab.domain.usecase
 import app.iesjdlc.tipslab.domain.model.ProviderType
 import app.iesjdlc.tipslab.domain.model.User
 import app.iesjdlc.tipslab.data.repository.GoogleAuthResult
-import app.iesjdlc.tipslab.data.repository.UserRepositoryImpl
 import app.iesjdlc.tipslab.core.utils.StringUtils
-import app.iesjdlc.tipslab.data.repository.AuthRepositoryImpl
+import app.iesjdlc.tipslab.domain.repository.AuthRepository
+import app.iesjdlc.tipslab.domain.repository.UserRepository
 import javax.inject.Inject
 
 class SignInWithGoogleUseCase @Inject constructor(
-    private val authRepository: AuthRepositoryImpl,
-    private val userRepository: UserRepositoryImpl
+    private val authRepository: AuthRepository,
+    private val userRepository: UserRepository
 ) {
     suspend operator fun invoke(idToken: String): Result<Unit> {
         return try {
