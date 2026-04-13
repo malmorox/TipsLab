@@ -12,3 +12,8 @@ fun EditLifehackScreen(
 ) {
 
 }
+
+@Composable
+private fun EditLifehackScreenUI() {
+
+}

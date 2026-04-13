@@ -14,3 +14,8 @@ fun LifehackDetailScreen(
 ) {
 
 }
+
+@Composable
+private fun LifehackDetailScreenUI() {
+
+}

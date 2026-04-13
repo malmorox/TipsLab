@@ -102,7 +102,8 @@ private fun LoginScreenUI(
                     label = {
                         Text(
                             text = stringResource(R.string.email_or_username),
-                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.4f)
                         )
                     },
                     singleLine = true,
@@ -111,7 +112,7 @@ private fun LoginScreenUI(
                     shape = MaterialTheme.shapes.medium,
                     colors = OutlinedTextFieldDefaults.colors(
                         focusedBorderColor = MaterialTheme.colorScheme.primary,
-                        unfocusedBorderColor = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.4f),
+                        unfocusedBorderColor = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f),
                         cursorColor = MaterialTheme.colorScheme.primary
                     )
                 )
@@ -124,7 +125,8 @@ private fun LoginScreenUI(
                     label = {
                         Text(
                             text = stringResource(id = R.string.password),
-                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.4f)
                         )
                     },
                     singleLine = true,
@@ -134,7 +136,7 @@ private fun LoginScreenUI(
                     shape = MaterialTheme.shapes.medium,
                     colors = OutlinedTextFieldDefaults.colors(
                         focusedBorderColor = MaterialTheme.colorScheme.primary,
-                        unfocusedBorderColor = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.4f),
+                        unfocusedBorderColor = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f),
                         cursorColor = MaterialTheme.colorScheme.primary
                     ),
                     trailingIcon = {

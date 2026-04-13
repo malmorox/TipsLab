@@ -10,3 +10,8 @@ fun EditProfileScreen(
 ) {
 
 }
+
+@Composable
+private fun EditProfileScreenUI() {
+
+}

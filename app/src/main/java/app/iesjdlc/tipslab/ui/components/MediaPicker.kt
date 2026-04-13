@@ -1,6 +1,7 @@
 package app.iesjdlc.tipslab.ui.components
 
 import android.net.Uri
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -23,7 +24,11 @@ fun MediaPicker(
         modifier = modifier
             .fillMaxWidth()
             .height(180.dp)
-            .clip(MaterialTheme.shapes.medium)
+            .border(
+                1.dp,
+                MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f),
+                MaterialTheme.shapes.medium
+            )
     ) {
 
     }

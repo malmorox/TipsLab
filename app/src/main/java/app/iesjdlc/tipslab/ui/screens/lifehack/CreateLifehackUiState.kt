@@ -7,12 +7,14 @@ import app.iesjdlc.tipslab.domain.model.MediaType
 data class CreateLifehackUiState(
     val title: String = "",
     val description: String = "",
+    val steps: List<String> = emptyList(),
     val category: Category? = null,
     val availableCategories: List<Category> = emptyList(),
 
     val mediaLocalUri: Uri? = null,
     val mediaType: MediaType? = null,
 
+    val isStepsDialogOpen: Boolean = false,
     val isCategoryDropdownExpanded: Boolean = false,
     val isLoading: Boolean = false,
 

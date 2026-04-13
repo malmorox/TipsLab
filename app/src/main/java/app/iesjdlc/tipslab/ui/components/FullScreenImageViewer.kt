@@ -52,7 +52,7 @@ fun FullScreenImageViewer(
             ) {
                 Icon(
                     imageVector = Icons.Default.Close,
-                    contentDescription = stringResource(R.string.or), //TODO CAMBIAR POR UN CLOSE
+                    contentDescription = stringResource(R.string.close),
                     tint = Color.White
                 )
             }

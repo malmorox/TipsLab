@@ -12,3 +12,8 @@ fun LifehacksByCategoryScreen(
 ) {
 
 }
+
+@Composable
+private fun LifehacksByCategoryScreenUI() {
+
+}

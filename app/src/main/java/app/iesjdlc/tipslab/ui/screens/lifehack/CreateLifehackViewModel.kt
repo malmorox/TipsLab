@@ -43,6 +43,18 @@ class CreateLifehackViewModel @Inject constructor(
         _uiState.update { it.copy(description = newValue, descriptionErrorMessage = null) }
     }
 
+    fun onStepsChanged(steps: List<String>) {
+        _uiState.update { it.copy(steps = steps) }
+    }
+
+    fun onStepsDialogOpen() {
+        _uiState.update { it.copy(isStepsDialogOpen = true) }
+    }
+
+    fun onStepsDialogDismiss() {
+        _uiState.update { it.copy(isStepsDialogOpen = false) }
+    }
+
     fun onCategoryChanged(newValue: Category) {
         _uiState.update { it.copy(category = newValue, categoryErrorMessage = null, isCategoryDropdownExpanded = false) }
     }

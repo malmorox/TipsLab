@@ -11,6 +11,8 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
@@ -30,6 +32,7 @@ import app.iesjdlc.tipslab.R
 import app.iesjdlc.tipslab.domain.model.Category
 import app.iesjdlc.tipslab.domain.model.MediaType
 import app.iesjdlc.tipslab.ui.components.CategorySelector
+import app.iesjdlc.tipslab.ui.components.LifehackStepsDialog
 import app.iesjdlc.tipslab.ui.components.MediaPicker
 
 @Composable
@@ -43,6 +46,9 @@ fun CreateLifehackTab(
         state = uiState,
         onTitleChanged = { viewModel.onTitleChanged(it) },
         onDescriptionChanged = { viewModel.onDescriptionChanged(it) },
+        onStepsChanged = { viewModel.onStepsChanged(it) },
+        onStepsDialogOpen = { viewModel.onStepsDialogOpen() },
+        onStepsDialogDismiss = { viewModel.onStepsDialogDismiss() },
         onCategorySelected = { viewModel.onCategoryChanged(it) },
         onCategoryDropdownToggle = { viewModel.onCategoryDropdownToggle() },
         onMediaPicked = { uri, type -> viewModel.onMediaPicked(uri, type) },
@@ -56,6 +62,9 @@ private fun CreateLifehackTabUI(
     state: CreateLifehackUiState,
     onTitleChanged: (String) -> Unit,
     onDescriptionChanged: (String) -> Unit,
+    onStepsChanged: (List<String>) -> Unit,
+    onStepsDialogOpen: () -> Unit,
+    onStepsDialogDismiss: () -> Unit,
     onCategorySelected: (Category) -> Unit,
     onCategoryDropdownToggle: () -> Unit,
     onMediaPicked: (Uri, MediaType) -> Unit,
@@ -70,11 +79,13 @@ private fun CreateLifehackTabUI(
         contentAlignment = Alignment.Center
     ) {
         Column(
-            modifier = Modifier.fillMaxSize(),
+            modifier = Modifier
+                .fillMaxSize()
+                .verticalScroll(rememberScrollState()),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             Text(
-                text = "Crear Lifehack",
+                text = stringResource(R.string.create_lifehack),
                 style = MaterialTheme.typography.headlineLarge,
                 color = MaterialTheme.colorScheme.primary,
                 modifier = Modifier.fillMaxWidth(),
@@ -83,7 +94,7 @@ private fun CreateLifehackTabUI(
 
             Spacer(modifier = Modifier.height(24.dp))
 
-            FieldSection(label = "Media") {
+            FieldSection(label = stringResource(R.string.media)) {
                 MediaPicker(
                     mediaUri = state.mediaLocalUri,
                     mediaType = state.mediaType,
@@ -94,13 +105,15 @@ private fun CreateLifehackTabUI(
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            FieldSection(label = "Título") {
+            FieldSection(label = stringResource(R.string.title)) {
                 OutlinedTextField(
                     value = state.title,
                     onValueChange = onTitleChanged,
                     placeholder = {
                         Text(
-                            text = "Un título claro y directo"
+                            text = stringResource(R.string.title_placeholder),
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.4f)
                         )
                     },
                     singleLine = true,
@@ -109,7 +122,7 @@ private fun CreateLifehackTabUI(
                     shape = MaterialTheme.shapes.medium,
                     colors = OutlinedTextFieldDefaults.colors(
                         focusedBorderColor = MaterialTheme.colorScheme.primary,
-                        unfocusedBorderColor = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.4f),
+                        unfocusedBorderColor = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f),
                         cursorColor = MaterialTheme.colorScheme.primary
                     )
                 )
@@ -117,13 +130,15 @@ private fun CreateLifehackTabUI(
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            FieldSection(label = "Descripción") {
+            FieldSection(label = stringResource(R.string.description)) {
                 OutlinedTextField(
                     value = state.description,
                     onValueChange = onDescriptionChanged,
                     placeholder = {
-                        Text(text =
-                            "Describe tu lifehack con detalle"
+                        Text(
+                            text = stringResource(R.string.description_placeholder),
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.4f)
                         )
                     },
                     enabled = !state.isLoading,
@@ -131,7 +146,7 @@ private fun CreateLifehackTabUI(
                     shape = MaterialTheme.shapes.medium,
                     colors = OutlinedTextFieldDefaults.colors(
                         focusedBorderColor = MaterialTheme.colorScheme.primary,
-                        unfocusedBorderColor = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.4f),
+                        unfocusedBorderColor = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f),
                         cursorColor = MaterialTheme.colorScheme.primary
                     )
                 )
@@ -139,7 +154,24 @@ private fun CreateLifehackTabUI(
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            FieldSection(label = "Categoría") {
+            FieldSection(label = stringResource(R.string.steps)) {
+
+                if (state.isStepsDialogOpen) {
+                    LifehackStepsDialog(
+                        steps = state.steps,
+                        onDismiss = onStepsDialogDismiss,
+                        onConfirm = { steps ->
+                            onStepsChanged(steps)
+                            onStepsDialogDismiss()
+
+                        }
+                    )
+                }
+            }
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            FieldSection(label = stringResource(R.string.category)) {
                 CategorySelector(
                     categories = state.availableCategories,
                     selectedCategory = state.category,
@@ -170,7 +202,10 @@ private fun CreateLifehackTabUI(
 }
 
 @Composable
-private fun FieldSection(label: String, content: @Composable () -> Unit) {
+private fun FieldSection(
+    label: String,
+    content: @Composable () -> Unit
+) {
     Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
         Text(
             text = label,
