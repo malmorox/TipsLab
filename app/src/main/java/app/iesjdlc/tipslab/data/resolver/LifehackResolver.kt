@@ -23,8 +23,8 @@ class LifehackResolver @Inject constructor(
     suspend fun resolve(dtos: List<LifehackDto>): List<Lifehack> {
         if (dtos.isEmpty()) return emptyList()
 
-        val categoryIds = dtos.map { it.category_id }.distinct()
-        val authorIds = dtos.map { it.author_id }.distinct()
+        val categoryIds = dtos.map { it.categoryId }.distinct()
+        val authorIds = dtos.map { it.authorId }.distinct()
 
         val categoriesById = db.collection("categories")
             .whereIn(FieldPath.documentId(), categoryIds)
@@ -45,8 +45,8 @@ class LifehackResolver @Inject constructor(
             }.toMap()
 
         return dtos.mapNotNull { dto ->
-            val category = categoriesById[dto.category_id] ?: return@mapNotNull null
-            val author = usersById[dto.author_id] ?: return@mapNotNull null
+            val category = categoriesById[dto.categoryId] ?: return@mapNotNull null
+            val author = usersById[dto.authorId] ?: return@mapNotNull null
             lifehackMapper.toDomain(dto, category, author)
         }
     }

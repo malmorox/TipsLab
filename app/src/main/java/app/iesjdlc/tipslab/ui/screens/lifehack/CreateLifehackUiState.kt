@@ -14,8 +14,8 @@ data class CreateLifehackUiState(
     val mediaLocalUri: Uri? = null,
     val mediaType: MediaType? = null,
 
-    val isStepsDialogOpen: Boolean = false,
-    val isCategoryDropdownExpanded: Boolean = false,
+    val isStepsSheetOpen: Boolean = false,
+    val isCategorySheetOpen: Boolean = false,
     val isLoading: Boolean = false,
 
     // Errores

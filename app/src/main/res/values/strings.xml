@@ -27,12 +27,20 @@
     <string name="create_lifehack">Crear Lifehack</string>
     <string name="media">Multimedia</string>
     <string name="title">Título</string>
-    <string name="title_placeholder">Un título claro y directo</string>
+    <string name="title_placeholder">Indica claramente qué quieres compartir</string>
     <string name="description">Descripción</string>
-    <string name="description_placeholder">Describe tu lifehack con detalle</string>
+    <string name="description_placeholder">Añade información detallada</string>
     <string name="steps">Pasos</string>
+    <string name="step">Paso</string>
+    <string name="steps_placeholder">Describe los pasos a seguir</string>
     <string name="category">Categoría</string>
+    <string name="category_placeholder">Selecciona una categoría</string>
     <string name="publish">Publicar</string>
+    <string name="add_steps_to_lifehack">Añade pasos</string>
+    <string name="add_step">Añadir paso</string>
+    <string name="step_placeholder">Describe este paso…</string>
+    <string name="step_min_chars">Mínimo %1$d caracteres</string>
+    <string name="steps_validation_error">Rellena los pasos correctamente antes de guardar</string>
 
     <!-- Generic -->
     <string name="close">Cerrar</string>

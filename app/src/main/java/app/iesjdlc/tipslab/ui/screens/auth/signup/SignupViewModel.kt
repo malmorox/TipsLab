@@ -34,6 +34,10 @@ class SignupViewModel @Inject constructor(
 		_uiState.update { it.copy(confirmPassword = newValue, errorMessage = null) }
 	}
 
+	fun onTogglePasswordVisibility() {
+		_uiState.update { it.copy(isPasswordVisible = !it.isPasswordVisible) }
+	}
+
 	fun onSignupClick(
 		onSuccess: () -> Unit
 	) {

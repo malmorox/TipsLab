@@ -47,20 +47,24 @@ class CreateLifehackViewModel @Inject constructor(
         _uiState.update { it.copy(steps = steps) }
     }
 
-    fun onStepsDialogOpen() {
-        _uiState.update { it.copy(isStepsDialogOpen = true) }
+    fun onStepsSheetOpen() {
+        _uiState.update { it.copy(isStepsSheetOpen = true) }
     }
 
-    fun onStepsDialogDismiss() {
-        _uiState.update { it.copy(isStepsDialogOpen = false) }
+    fun onStepsSheetDismiss() {
+        _uiState.update { it.copy(isStepsSheetOpen = false) }
     }
 
     fun onCategoryChanged(newValue: Category) {
-        _uiState.update { it.copy(category = newValue, categoryErrorMessage = null, isCategoryDropdownExpanded = false) }
+        _uiState.update { it.copy(category = newValue, categoryErrorMessage = null, isCategorySheetOpen = false) }
     }
 
-    fun onCategoryDropdownToggle() {
-        _uiState.update { it.copy(isCategoryDropdownExpanded = !it.isCategoryDropdownExpanded) }
+    fun onCategorySheetOpen() {
+        _uiState.update { it.copy(isCategorySheetOpen = true) }
+    }
+
+    fun onCategorySheetDismiss() {
+        _uiState.update { it.copy(isCategorySheetOpen = false) }
     }
 
     fun onMediaPicked(uri: Uri, type: MediaType) {

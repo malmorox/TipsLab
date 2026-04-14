@@ -9,7 +9,6 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import app.iesjdlc.tipslab.ui.components.BottomNavBar
-import app.iesjdlc.tipslab.ui.screens.lifehack.CreateLifehackTab
 import app.iesjdlc.tipslab.ui.screens.explore.ExploreTab
 import app.iesjdlc.tipslab.ui.screens.home.HomeTab
 import app.iesjdlc.tipslab.ui.screens.profile.ProfileTab
@@ -23,7 +22,14 @@ fun MainScaffold(
 	val innerNavController = rememberNavController()
 
 	Scaffold(
-		bottomBar = { BottomNavBar(navController = innerNavController) }
+		bottomBar = {
+			BottomNavBar(
+				navController = innerNavController,
+				onCreateClick = {
+					rootNavController.navigate(Route.CreateLifehack)
+				}
+			)
+		}
 	) { innerPadding ->
 		NavHost(
 			navController = innerNavController,
@@ -37,6 +43,7 @@ fun MainScaffold(
 					}
 				)
 			}
+
 			composable<Route.ExploreTab> {
 				ExploreTab(
 					onLifehackClick = { id ->
@@ -47,15 +54,7 @@ fun MainScaffold(
 					}
 				)
 			}
-			composable<Route.CreateTab> {
-				CreateLifehackTab(
-					onLifehackCreated = { id ->
-						rootNavController.navigate(Route.LifehackDetail(id)) {
-							popUpTo(Route.MainGraph) { inclusive = false }
-						}
-					}
-				)
-			}
+
 			composable<Route.SavedTab> {
 				SavedTab(
 					onLifehackClick = { id ->
@@ -63,6 +62,7 @@ fun MainScaffold(
 					}
 				)
 			}
+
 			composable<Route.ProfileTab> {
 				ProfileTab(
 					onEditProfile = {
