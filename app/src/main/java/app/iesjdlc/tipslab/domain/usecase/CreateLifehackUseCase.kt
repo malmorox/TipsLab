@@ -42,6 +42,7 @@ class CreateLifehackUseCase @Inject constructor(
             .fold(
                 onSuccess = { lifehackId ->
                     if (mediaUri != null) {
+
                         Result.success(lifehackId) // TODO
                     } else {
                         Result.success(lifehackId)

@@ -1,6 +1,11 @@
 package app.iesjdlc.tipslab.ui.screens.lifehack
 
 import android.net.Uri
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.expandVertically
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
@@ -42,6 +47,7 @@ import app.iesjdlc.tipslab.core.constants.AppConstants.MAX_DESCRIPTION_LENGTH
 import app.iesjdlc.tipslab.domain.model.Category
 import app.iesjdlc.tipslab.domain.model.MediaType
 import app.iesjdlc.tipslab.ui.components.CategorySelectorSheet
+import app.iesjdlc.tipslab.ui.components.FormFieldSection
 import app.iesjdlc.tipslab.ui.components.LifehackStepsSheet
 import app.iesjdlc.tipslab.ui.components.MediaPicker
 
@@ -132,7 +138,7 @@ private fun CreateLifehackScreenUI(
 
                 Spacer(modifier = Modifier.height(24.dp))
 
-                FieldSection(label = stringResource(R.string.media)) {
+                FormFieldSection(label = stringResource(R.string.media)) {
                     MediaPicker(
                         mediaUri = state.mediaLocalUri,
                         mediaType = state.mediaType,
@@ -143,7 +149,10 @@ private fun CreateLifehackScreenUI(
 
                 Spacer(modifier = Modifier.height(16.dp))
 
-                FieldSection(label = stringResource(R.string.title)) {
+                FormFieldSection(
+                    label = stringResource(R.string.title),
+                    errorMessage = state.titleErrorMessage
+                ) {
                     OutlinedTextField(
                         value = state.title,
                         onValueChange = onTitleChanged,
@@ -168,40 +177,50 @@ private fun CreateLifehackScreenUI(
 
                 Spacer(modifier = Modifier.height(16.dp))
 
-                FieldSection(label = stringResource(R.string.description)) {
-                    OutlinedTextField(
-                        value = state.description,
-                        onValueChange = onDescriptionChanged,
-                        placeholder = {
-                            Text(
-                                text = stringResource(R.string.description_placeholder),
-                                style = MaterialTheme.typography.bodyMedium,
-                                color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.4f)
+                FormFieldSection(
+                    label = stringResource(R.string.description),
+                    errorMessage = state.descriptionErrorMessage
+                ) {
+                    Box {
+                        OutlinedTextField(
+                            value = state.description,
+                            onValueChange = onDescriptionChanged,
+                            placeholder = {
+                                Text(
+                                    text = stringResource(R.string.description_placeholder),
+                                    style = MaterialTheme.typography.bodyMedium,
+                                    color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.4f)
+                                )
+                            },
+                            enabled = !state.isLoading,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(140.dp),
+                            shape = MaterialTheme.shapes.medium,
+                            colors = OutlinedTextFieldDefaults.colors(
+                                focusedBorderColor = MaterialTheme.colorScheme.primary,
+                                unfocusedBorderColor = MaterialTheme.colorScheme.onSurfaceVariant.copy(
+                                    alpha = 0.7f
+                                ),
+                                cursorColor = MaterialTheme.colorScheme.primary
                             )
-                        },
-                        enabled = !state.isLoading,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(140.dp),
-                        shape = MaterialTheme.shapes.medium,
-                        colors = OutlinedTextFieldDefaults.colors(
-                            focusedBorderColor = MaterialTheme.colorScheme.primary,
-                            unfocusedBorderColor = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f),
-                            cursorColor = MaterialTheme.colorScheme.primary
-                        ),
-                        supportingText = {
-                            Text(
-                                text = "${state.description.length}/$MAX_DESCRIPTION_LENGTH",
-                                textAlign = TextAlign.End,
-                                modifier = Modifier.fillMaxWidth(),
-                                style = MaterialTheme.typography.labelSmall,
-                                color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.5f)
-                            )
-                        }
-                    )
+                        )
+
+                        Text(
+                            text = "${state.description.length}/$MAX_DESCRIPTION_LENGTH",
+                            textAlign = TextAlign.End,
+                            modifier = Modifier
+                                .align(Alignment.BottomEnd)
+                                .padding(end = 12.dp, bottom = 8.dp),
+                            style = MaterialTheme.typography.labelSmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.5f)
+                        )
+                    }
                 }
 
-                FieldSection(label = stringResource(R.string.steps)) {
+                Spacer(modifier = Modifier.height(16.dp))
+
+                FormFieldSection(label = stringResource(R.string.steps)) {
                     Surface(
                         onClick = onStepsSheetOpen,
                         enabled = !state.isLoading,
@@ -247,7 +266,10 @@ private fun CreateLifehackScreenUI(
 
                 Spacer(modifier = Modifier.height(16.dp))
 
-                FieldSection(label = stringResource(R.string.category)) {
+                FormFieldSection(
+                    label = stringResource(R.string.category),
+                    errorMessage = state.categoryErrorMessage
+                ) {
                     Surface(
                         onClick = onCategorySheetOpen,
                         enabled = !state.isLoading,
@@ -330,20 +352,5 @@ private fun CreateLifehackScreenUI(
             },
             onDismiss = onCategorySheetDismiss
         )
-    }
-}
-
-@Composable
-private fun FieldSection(
-    label: String,
-    content: @Composable () -> Unit
-) {
-    Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
-        Text(
-            text = label,
-            style = MaterialTheme.typography.labelMedium,
-            color = MaterialTheme.colorScheme.onSurfaceVariant
-        )
-        content()
     }
 }

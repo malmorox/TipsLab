@@ -3,6 +3,7 @@ package app.iesjdlc.tipslab.ui.screens.lifehack
 import android.net.Uri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import app.iesjdlc.tipslab.core.constants.AppConstants.MIN_DESCRIPTION_LENGTH
 import app.iesjdlc.tipslab.domain.model.Category
 import app.iesjdlc.tipslab.domain.model.MediaType
 import app.iesjdlc.tipslab.domain.repository.CategoryRepository
@@ -146,6 +147,9 @@ class CreateLifehackViewModel @Inject constructor(
 
         if (state.description.isBlank()) {
             _uiState.update { it.copy(descriptionErrorMessage = "La descripción es obligatoria") }
+            isValid = false
+        } else if (state.description.length < MIN_DESCRIPTION_LENGTH) {
+            _uiState.update { it.copy(descriptionErrorMessage = "La descripción debe tener al menos $MIN_DESCRIPTION_LENGTH caracteres") }
             isValid = false
         }
 
