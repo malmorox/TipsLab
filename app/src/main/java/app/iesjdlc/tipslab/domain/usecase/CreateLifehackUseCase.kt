@@ -7,6 +7,7 @@ import app.iesjdlc.tipslab.domain.model.MediaType
 import app.iesjdlc.tipslab.domain.repository.AuthRepository
 import app.iesjdlc.tipslab.domain.repository.LifehackRepository
 import app.iesjdlc.tipslab.domain.repository.MediaRepository
+import kotlinx.datetime.Clock
 import javax.inject.Inject
 
 class CreateLifehackUseCase @Inject constructor(
@@ -17,24 +18,39 @@ class CreateLifehackUseCase @Inject constructor(
     suspend operator fun invoke(
         title: String,
         description: String,
+        steps: List<String>,
         category: Category,
         mediaUri: Uri?,
         mediaType: MediaType?,
     ): Result<String> {
-        /*val currentUser =
-
+        val currentUser = authRepository.getCurrentUser()
 
         val lifehack = Lifehack(
             id = "",
             title = title,
             description = description,
+            steps = steps,
             category = category,
             author = currentUser,
-            media = media,
-            likedCount = 0,
+            media = null,
+            createdAt = Clock.System.now(),
+            updatedAt = Clock.System.now(),
+            likesCount = 0,
         )
 
-        return lifehackRepository.createLifehack(lifehack)*/
-        return Result.failure(NotImplementedError("CreateLifehackUseCase is not implemented yet"))
+        return lifehackRepository.createLifehack(lifehack)
+            .fold(
+                onSuccess = { lifehackId ->
+                    if (mediaUri != null) {
+                        Result.success(lifehackId) // TODO
+                    } else {
+                        Result.success(lifehackId)
+                    }
+                },
+                onFailure = { error ->
+                    Result.failure(error)
+                }
+            )
+
     }
 }

@@ -41,6 +41,9 @@
     <string name="step_placeholder">Describe este paso…</string>
     <string name="step_min_chars">Mínimo %1$d caracteres</string>
     <string name="steps_validation_error">Rellena los pasos correctamente antes de guardar</string>
+    <string name="select_category">Selecciona una categoría</string>
+    <string name="search_category">Buscar categoría</string>
+    <string name="no_results">No se encontraron resultados</string>
 
     <!-- Generic -->
     <string name="close">Cerrar</string>

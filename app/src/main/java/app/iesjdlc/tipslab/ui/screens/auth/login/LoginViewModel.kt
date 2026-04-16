@@ -21,11 +21,21 @@ class LoginViewModel @Inject constructor(
     val uiState: StateFlow<LoginUiState> = _uiState.asStateFlow()
 
     fun onEmailOrUsernameChanged(newValue: String) {
-        _uiState.update { it.copy(emailOrUsername = newValue, errorMessage = null) }
+        _uiState.update {
+            it.copy(
+                emailOrUsername = newValue,
+                errorMessage = null
+            )
+        }
     }
 
     fun onPasswordChanged(newValue: String) {
-        _uiState.update { it.copy(password = newValue, errorMessage = null) }
+        _uiState.update {
+            it.copy(
+                password = newValue,
+                errorMessage = null
+            )
+        }
     }
 
     fun onTogglePasswordVisibility() {
@@ -49,9 +59,7 @@ class LoginViewModel @Inject constructor(
                         onSuccess()
                     }
                     .onFailure { error ->
-                        _uiState.update {
-                            it.copy(errorMessage = error.message)
-                        }
+                        _uiState.update { it.copy(errorMessage = error.message) }
                     }
             } finally {
                 _uiState.update { it.copy(isLoading = false) }

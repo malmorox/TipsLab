@@ -8,6 +8,7 @@ data class CreateLifehackUiState(
     val title: String = "",
     val description: String = "",
     val steps: List<String> = emptyList(),
+    val stepsCount: Int = 0,
     val category: Category? = null,
     val availableCategories: List<Category> = emptyList(),
 

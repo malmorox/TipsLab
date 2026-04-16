@@ -50,6 +50,11 @@ class AuthRepositoryImpl @Inject constructor(
         fetchUserData(uid)
     }
 
+    override fun getCurrentUser(): User {
+        if (userProfile == null) throw Exception("No hay usuario cargado")
+        return userProfile!!
+    }
+
     override suspend fun login(
         email: String,
         password: String

@@ -68,7 +68,7 @@ fun LifehackStepsSheet(
 
     fun hasValidSteps(): Boolean {
         val filled = currentSteps.filter { it.isNotBlank() }
-        return filled.isNotEmpty() && filled.all { it.length >= MIN_STEP_LENGTH }
+        return filled.isNotEmpty() && filled.all { isStepValid(it) }
     }
 
     ModalBottomSheet(
@@ -157,7 +157,11 @@ fun LifehackStepsSheet(
                 modifier = Modifier.fillMaxWidth()
             ) {
                 Button(
-                    onClick = { onConfirm(steps) },
+                    onClick = {
+                        attemptedConfirm = true
+                        if (hasValidSteps()) onConfirm(currentSteps)
+                    },
+                    enabled = !attemptedConfirm || hasValidSteps(),
                     shape = MaterialTheme.shapes.medium,
                     modifier = Modifier.fillMaxWidth()
                 ) {

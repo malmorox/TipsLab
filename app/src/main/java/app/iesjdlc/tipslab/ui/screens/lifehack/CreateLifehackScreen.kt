@@ -41,6 +41,7 @@ import app.iesjdlc.tipslab.R
 import app.iesjdlc.tipslab.core.constants.AppConstants.MAX_DESCRIPTION_LENGTH
 import app.iesjdlc.tipslab.domain.model.Category
 import app.iesjdlc.tipslab.domain.model.MediaType
+import app.iesjdlc.tipslab.ui.components.CategorySelectorSheet
 import app.iesjdlc.tipslab.ui.components.LifehackStepsSheet
 import app.iesjdlc.tipslab.ui.components.MediaPicker
 
@@ -221,12 +222,11 @@ private fun CreateLifehackScreenUI(
                             horizontalArrangement = Arrangement.SpaceBetween,
                             verticalAlignment = Alignment.CenterVertically
                         ) {
-                            val stepsCount = state.steps.count { it.isNotBlank() }
-                            if (stepsCount > 0) {
+                            if (state.stepsCount > 0) {
                                 Text(
-                                    text = "$stepsCount ${if (stepsCount == 1) stringResource(R.string.step) else stringResource(R.string.steps)}",
+                                    text = "${state.stepsCount} ${if (state.stepsCount == 1) stringResource(R.string.step) else stringResource(R.string.steps)}",
                                     style = MaterialTheme.typography.bodyMedium,
-                                    color = MaterialTheme.colorScheme.onSurface
+                                    color = MaterialTheme.colorScheme.onSurfaceVariant
                                 )
                             } else {
                                 Text(
@@ -235,6 +235,7 @@ private fun CreateLifehackScreenUI(
                                     color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.4f)
                                 )
                             }
+
                             Icon(
                                 imageVector = Icons.Rounded.ChevronRight,
                                 contentDescription = null,
@@ -267,6 +268,19 @@ private fun CreateLifehackScreenUI(
                             horizontalArrangement = Arrangement.SpaceBetween,
                             verticalAlignment = Alignment.CenterVertically
                         ) {
+                            if (state.category != null) {
+                                Text(
+                                    text = state.category.name,
+                                    style = MaterialTheme.typography.bodyMedium,
+                                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                                )
+                            } else {
+                                Text(
+                                    text = stringResource(R.string.category_placeholder),
+                                    style = MaterialTheme.typography.bodyMedium,
+                                    color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.4f)
+                                )
+                            }
 
                             Icon(
                                 imageVector = Icons.Rounded.ChevronRight,
@@ -306,7 +320,7 @@ private fun CreateLifehackScreenUI(
         )
     }
 
-    /*if (state.isCategorySheetOpen) {
+    if (state.isCategorySheetOpen) {
         CategorySelectorSheet(
             categories = state.availableCategories,
             selectedCategory = state.category,
@@ -314,9 +328,9 @@ private fun CreateLifehackScreenUI(
                 onCategorySelected(it)
                 onCategorySheetDismiss()
             },
-            onDismiss = onCategorySheetDismiss()
+            onDismiss = onCategorySheetDismiss
         )
-    }*/
+    }
 }
 
 @Composable

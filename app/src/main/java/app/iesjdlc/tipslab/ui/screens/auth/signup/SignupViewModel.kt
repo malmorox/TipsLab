@@ -19,19 +19,39 @@ class SignupViewModel @Inject constructor(
 	val uiState: StateFlow<SignupUiState> = _uiState.asStateFlow()
 
 	fun onEmailChanged(newValue: String) {
-		_uiState.update { it.copy(email = newValue, errorMessage = null) }
+		_uiState.update {
+			it.copy(
+				email = newValue,
+				errorMessage = null
+			)
+		}
 	}
 
 	fun onUsernameChanged(newValue: String) {
-		_uiState.update { it.copy(username = newValue, errorMessage = null) }
+		_uiState.update {
+			it.copy(
+				username = newValue,
+				errorMessage = null
+			)
+		}
 	}
 
 	fun onPasswordChanged(newValue: String) {
-		_uiState.update { it.copy(password = newValue, errorMessage = null) }
+		_uiState.update {
+			it.copy(
+				password = newValue,
+				errorMessage = null
+			)
+		}
 	}
 
 	fun onConfirmPasswordChanged(newValue: String) {
-		_uiState.update { it.copy(confirmPassword = newValue, errorMessage = null) }
+		_uiState.update {
+			it.copy(
+				confirmPassword = newValue,
+				errorMessage = null
+			)
+		}
 	}
 
 	fun onTogglePasswordVisibility() {
@@ -61,9 +81,7 @@ class SignupViewModel @Inject constructor(
 						onSuccess()
 					}
 					.onFailure { error ->
-						_uiState.update {
-							it.copy(errorMessage = error.message)
-						}
+						_uiState.update { it.copy(errorMessage = error.message)	}
 					}
 			} finally {
 				_uiState.update { it.copy(isLoading = false) }
