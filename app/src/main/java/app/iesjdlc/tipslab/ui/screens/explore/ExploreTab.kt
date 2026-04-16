@@ -25,3 +25,8 @@ fun ExploreTab(
         Text("Pestaña de explorar")
     }
 }
+
+@Composable
+private fun ExploreTabUI() {
+
+}

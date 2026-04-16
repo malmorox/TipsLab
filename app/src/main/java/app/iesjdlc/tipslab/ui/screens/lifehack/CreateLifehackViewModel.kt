@@ -36,27 +36,74 @@ class CreateLifehackViewModel @Inject constructor(
     }
 
     fun onTitleChanged(newValue: String) {
-        _uiState.update { it.copy(title = newValue, titleErrorMessage = null) }
+        _uiState.update {
+            it.copy(
+                title = newValue,
+                titleErrorMessage = null
+            )
+        }
     }
 
     fun onDescriptionChanged(newValue: String) {
-        _uiState.update { it.copy(description = newValue, descriptionErrorMessage = null) }
+        _uiState.update {
+            it.copy(
+                description = newValue,
+                descriptionErrorMessage = null
+            )
+        }
+    }
+
+    fun onStepsChanged(steps: List<String>) {
+        _uiState.update {
+            it.copy(
+                steps = steps,
+                stepsCount = steps.count { step -> step.isNotBlank() }
+            )
+        }
+    }
+
+    fun onStepsSheetOpen() {
+        _uiState.update { it.copy(isStepsSheetOpen = true) }
+    }
+
+    fun onStepsSheetDismiss() {
+        _uiState.update { it.copy(isStepsSheetOpen = false) }
     }
 
     fun onCategoryChanged(newValue: Category) {
-        _uiState.update { it.copy(category = newValue, categoryErrorMessage = null, isCategoryDropdownExpanded = false) }
+        _uiState.update {
+            it.copy(
+                category = newValue,
+                categoryErrorMessage = null,
+                isCategorySheetOpen = false
+            )
+        }
     }
 
-    fun onCategoryDropdownToggle() {
-        _uiState.update { it.copy(isCategoryDropdownExpanded = !it.isCategoryDropdownExpanded) }
+    fun onCategorySheetOpen() {
+        _uiState.update { it.copy(isCategorySheetOpen = true) }
+    }
+
+    fun onCategorySheetDismiss() {
+        _uiState.update { it.copy(isCategorySheetOpen = false) }
     }
 
     fun onMediaPicked(uri: Uri, type: MediaType) {
-        _uiState.update { it.copy(mediaLocalUri = uri, mediaType = type) }
+        _uiState.update {
+            it.copy(
+                mediaLocalUri = uri,
+                mediaType = type
+            )
+        }
     }
 
     fun onMediaRemoved() {
-        _uiState.update { it.copy(mediaLocalUri = null, mediaType = null) }
+        _uiState.update {
+            it.copy(
+                mediaLocalUri = null,
+                mediaType = null
+            )
+        }
     }
 
     fun onSubmit(
@@ -73,6 +120,7 @@ class CreateLifehackViewModel @Inject constructor(
                     title = currentState.title,
                     description = currentState.description,
                     category = currentState.category!!,
+                    steps = currentState.steps,
                     mediaUri = currentState.mediaLocalUri,
                     mediaType = currentState.mediaType
                 )
@@ -80,9 +128,7 @@ class CreateLifehackViewModel @Inject constructor(
                         onSuccess(lifehackId)
                     }
                     .onFailure { error ->
-                        _uiState.update {
-                            it.copy(globalErrorMessage = error.message)
-                        }
+                        _uiState.update { it.copy(globalErrorMessage = error.message) }
                     }
             } finally {
                 _uiState.update { it.copy(isLoading = false) }

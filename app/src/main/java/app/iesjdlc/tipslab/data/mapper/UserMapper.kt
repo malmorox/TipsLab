@@ -12,7 +12,7 @@ class UserMapper @Inject constructor() {
         id = dto.id,
         email = dto.email,
         username = dto.username,
-        photoUrl = dto.photo_url,
+        photoUrl = dto.photoUrl,
         provider = ProviderType.valueOf(dto.provider)
     )
 
@@ -20,7 +20,7 @@ class UserMapper @Inject constructor() {
         id = domain.id,
         email = domain.email,
         username = domain.username,
-        photo_url = "roto", //TODO cambiar
+        photoUrl = domain.photoUrl ?: "",
         provider = domain.provider.name
     )
 }

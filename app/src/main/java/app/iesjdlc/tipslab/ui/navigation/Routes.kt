@@ -15,7 +15,7 @@ sealed interface Route {
     // Grafo principal (pestañas y pantallas una vez autenticado)
     @Serializable data object HomeTab : Route
     @Serializable data object ExploreTab : Route
-    @Serializable data object CreateTab : Route
+    @Serializable data object CreateLifehack : Route
     @Serializable data object SavedTab : Route
     @Serializable data object ProfileTab : Route
 

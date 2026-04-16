@@ -14,6 +14,7 @@ import app.iesjdlc.tipslab.ui.screens.explore.LifehacksByCategoryScreen
 import app.iesjdlc.tipslab.ui.screens.splash.SplashScreen
 import app.iesjdlc.tipslab.ui.screens.auth.login.LoginScreen
 import app.iesjdlc.tipslab.ui.screens.auth.signup.SignupScreen
+import app.iesjdlc.tipslab.ui.screens.lifehack.CreateLifehackScreen
 
 @Composable
 fun AppNavigation() {
@@ -35,7 +36,11 @@ fun AppNavigation() {
         navigation<Route.AuthGraph>(startDestination = Route.Login) {
 
             // Pantalla de Login
-            composable<Route.Login> {
+            composable<Route.Login>(
+                enterTransition = { NavAnimations.slideInFromLeft() },
+                exitTransition = { NavAnimations.slideOutToLeft() },
+                popEnterTransition = { NavAnimations.slideInFromLeft() }
+            ) {
                 LoginScreen(
                     onLoginSuccess = {
                         rootNavController.navigate(Route.MainGraph) {
@@ -52,7 +57,10 @@ fun AppNavigation() {
             }
 
             // Pantalla de SignUp
-            composable<Route.Signup> {
+            composable<Route.Signup>(
+                enterTransition = { NavAnimations.slideInFromRight() },
+                popEnterTransition = { NavAnimations.slideInFromRight() }
+            ) {
                 SignupScreen(
                     onSignUpSuccess = {
                         rootNavController.navigate(Route.MainGraph) {
@@ -74,6 +82,22 @@ fun AppNavigation() {
                 onLogout = {
                     rootNavController.navigate(Route.AuthGraph) {
                         popUpTo<Route.MainGraph> { inclusive = true }
+                        launchSingleTop = true
+                    }
+                }
+            )
+        }
+
+        // Pantalla de creación de Lifehack separada por ser un flujo largo
+        composable<Route.CreateLifehack>(
+            enterTransition = { NavAnimations.slideInVertical() },
+            popExitTransition = { NavAnimations.slideOutVertical() }
+        ) {
+            CreateLifehackScreen(
+                onNavigateBack = { rootNavController.popBackStack() },
+                onLifehackCreated = { lifehackId ->
+                    rootNavController.navigate(Route.LifehackDetail(lifehackId)) {
+                        popUpTo<Route.CreateLifehack> { inclusive = true }
                         launchSingleTop = true
                     }
                 }

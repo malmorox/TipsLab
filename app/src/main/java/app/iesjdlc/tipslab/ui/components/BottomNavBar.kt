@@ -20,43 +20,41 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import app.iesjdlc.tipslab.ui.navigation.Route
 
-private data class BottomNavItem(
-    val route: Route,
+private sealed class BottomNavItem(
     val label: String,
     val icon: ImageVector
-)
+) {
+    // Items normales que navegan por el innerNavController
+    data object Home : BottomNavItem("Home", Icons.Sharp.Home)
+    data object Explore : BottomNavItem("Explore", Icons.Sharp.Search)
+    data object Create : BottomNavItem("Create", Icons.Sharp.Add)
+    data object Saved : BottomNavItem("Saved", Icons.Sharp.Home)
+    data object Profile : BottomNavItem("Profile", Icons.Sharp.Home)
+
+    // La ruta asociada a cada item, menos el de crear
+    val route: Route? get() = when (this) {
+        Home -> Route.HomeTab
+        Explore -> Route.ExploreTab
+        Create -> null
+        Saved -> Route.SavedTab
+        Profile -> Route.ProfileTab
+    }
+}
 
 @Composable
-fun BottomNavBar(navController: NavController) {
+fun BottomNavBar(
+    navController: NavController,
+    onCreateClick: () -> Unit
+) {
     val backStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = backStackEntry?.destination?.route
 
-    val bottomNavItems = listOf(
-        BottomNavItem(
-            route = Route.HomeTab,
-            label = "Home",
-            icon = Icons.Sharp.Home
-        ),
-        BottomNavItem(
-            route = Route.ExploreTab,
-            label = "Explore",
-            icon = Icons.Sharp.Search
-        ),
-        BottomNavItem(
-            route = Route.CreateTab,
-            label = "Create",
-            icon = Icons.Sharp.Add
-        ),
-        BottomNavItem(
-            route = Route.SavedTab,
-            label = "Saved",
-            icon = Icons.Sharp.Home
-        ),
-        BottomNavItem(
-            route = Route.ProfileTab,
-            label = "Profile",
-            icon = Icons.Sharp.Home
-        )
+    val items = listOf(
+        BottomNavItem.Home,
+        BottomNavItem.Explore,
+        BottomNavItem.Create,
+        BottomNavItem.Saved,
+        BottomNavItem.Profile
     )
 
     Box(
@@ -65,20 +63,24 @@ fun BottomNavBar(navController: NavController) {
             .background(MaterialTheme.colorScheme.background)
     ) {
         NavigationBar {
-            bottomNavItems.forEach { item ->
+            items.forEach { item ->
                 NavigationBarItem(
-                    icon = {
-                        Icon(
-                            imageVector = item.icon,
-                            contentDescription = item.label
-                        )
-                    },
+                    icon = { Icon(imageVector = item.icon, contentDescription = item.label) },
                     label = { Text(item.label) },
-                    selected = currentRoute == item.route::class.qualifiedName,
+                    selected = currentRoute == item.route?.let { it::class.qualifiedName },
                     onClick = {
-                        navController.navigate(item.route) {
-                            popUpTo(navController.graph.startDestinationId)
-                            launchSingleTop = true
+                        if (item is BottomNavItem.Create) {
+                            onCreateClick()
+                        } else {
+                            item.route?.let { route ->
+                                navController.navigate(route) {
+                                    popUpTo(navController.graph.startDestinationId) {
+                                        saveState = true
+                                    }
+                                    launchSingleTop = true
+                                    restoreState = true
+                                }
+                            }
                         }
                     }
                 )
