@@ -1,9 +1,12 @@
 package app.iesjdlc.tipslab.ui.screens.lifehack
 
+import app.iesjdlc.tipslab.domain.model.Lifehack
+
 data class LifehackDetailUiState(
-    val emailOrUsername: String = "",
-    val password: String = "",
-    val isPasswordVisible: Boolean = false,
-    val isLoading: Boolean = false,
-    val errorMessage: String? = null
+    val lifehack: Lifehack? = null,
+    val isLoading: Boolean = true,
+    val isOwner: Boolean = false,
+    val isSaved: Boolean = false,
+    val isLiked: Boolean = false,
+    val error: String? = null
 )

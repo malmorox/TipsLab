@@ -108,7 +108,6 @@ fun AppNavigation() {
         composable<Route.LifehackDetail> { backStackEntry ->
             val lifehackId = backStackEntry.toRoute<Route.LifehackDetail>().lifehackId
             LifehackDetailScreen(
-                lifehackId = lifehackId,
                 onNavigateBack = { rootNavController.popBackStack() },
                 onEditLifehack = { rootNavController.navigate(Route.EditLifehack(lifehackId)) },
                 onDeleteLifehack = { /* TODO implementar lógica de borrado */ },

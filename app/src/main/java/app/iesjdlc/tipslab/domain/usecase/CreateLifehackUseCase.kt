@@ -21,7 +21,6 @@ class CreateLifehackUseCase @Inject constructor(
         steps: List<String>,
         category: Category,
         mediaUri: Uri?,
-        mediaType: MediaType?,
     ): Result<String> {
         val currentUser = authRepository.getCurrentUser()
 

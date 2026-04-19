@@ -11,12 +11,11 @@ data class CreateLifehackUiState(
     val stepsCount: Int = 0,
     val category: Category? = null,
     val availableCategories: List<Category> = emptyList(),
-
     val mediaLocalUri: Uri? = null,
-    val mediaType: MediaType? = null,
 
-    val isStepsSheetOpen: Boolean = false,
-    val isCategorySheetOpen: Boolean = false,
+    val showStepsSheet: Boolean = false,
+    val showCategorySheet: Boolean = false,
+    val showDiscardChangesDialog: Boolean = false,
     val isLoading: Boolean = false,
 
     // Errores

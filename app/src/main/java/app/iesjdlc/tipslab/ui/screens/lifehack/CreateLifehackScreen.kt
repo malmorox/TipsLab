@@ -47,6 +47,7 @@ import app.iesjdlc.tipslab.core.constants.AppConstants.MAX_DESCRIPTION_LENGTH
 import app.iesjdlc.tipslab.domain.model.Category
 import app.iesjdlc.tipslab.domain.model.MediaType
 import app.iesjdlc.tipslab.ui.components.CategorySelectorSheet
+import app.iesjdlc.tipslab.ui.components.DiscardChangesDialog
 import app.iesjdlc.tipslab.ui.components.FormFieldSection
 import app.iesjdlc.tipslab.ui.components.LifehackStepsSheet
 import app.iesjdlc.tipslab.ui.components.MediaPicker
@@ -69,10 +70,12 @@ fun CreateLifehackScreen(
         onCategorySelected = { viewModel.onCategoryChanged(it) },
         onCategorySheetOpen = { viewModel.onCategorySheetOpen() },
         onCategorySheetDismiss = { viewModel.onCategorySheetDismiss() },
-        onMediaPicked = { uri, type -> viewModel.onMediaPicked(uri, type) },
+        onMediaPicked = { uri -> viewModel.onMediaPicked(uri) },
         onMediaRemoved = { viewModel.onMediaRemoved() },
         onSubmited = { viewModel.onSubmit(onLifehackCreated) },
-        onClose = onNavigateBack,
+        onClose = { viewModel.onCloseClick(onNavigateBack) },
+        onDiscardChangesConfirmed = { viewModel.onDiscardChangesConfirmed(onNavigateBack) },
+        onDiscardChangesDismissed = { viewModel.onDiscardChangesDismissed() }
     )
 }
 
@@ -88,10 +91,12 @@ private fun CreateLifehackScreenUI(
     onCategorySelected: (Category) -> Unit,
     onCategorySheetOpen: () -> Unit,
     onCategorySheetDismiss: () -> Unit,
-    onMediaPicked: (Uri, MediaType) -> Unit,
+    onMediaPicked: (Uri) -> Unit,
     onMediaRemoved: () -> Unit,
     onSubmited: () -> Unit,
-    onClose: () -> Unit
+    onClose: () -> Unit,
+    onDiscardChangesConfirmed: () -> Unit,
+    onDiscardChangesDismissed: () -> Unit,
 ) {
     Column(
         modifier = Modifier
@@ -125,7 +130,7 @@ private fun CreateLifehackScreenUI(
                     )
 
                     IconButton(
-                        onClick = { onClose() }
+                        onClick = onClose
                     ) {
                         Icon(
                             modifier = Modifier.size(24.dp),
@@ -141,7 +146,6 @@ private fun CreateLifehackScreenUI(
                 FormFieldSection(label = stringResource(R.string.media)) {
                     MediaPicker(
                         mediaUri = state.mediaLocalUri,
-                        mediaType = state.mediaType,
                         onMediaPicked = onMediaPicked,
                         onMediaRemoved = onMediaRemoved
                     )
@@ -331,7 +335,7 @@ private fun CreateLifehackScreenUI(
         }
     }
 
-    if (state.isStepsSheetOpen) {
+    if (state.showStepsSheet) {
         LifehackStepsSheet(
             steps = state.steps,
             onConfirm = { steps ->
@@ -342,7 +346,7 @@ private fun CreateLifehackScreenUI(
         )
     }
 
-    if (state.isCategorySheetOpen) {
+    if (state.showCategorySheet) {
         CategorySelectorSheet(
             categories = state.availableCategories,
             selectedCategory = state.category,
@@ -351,6 +355,13 @@ private fun CreateLifehackScreenUI(
                 onCategorySheetDismiss()
             },
             onDismiss = onCategorySheetDismiss
+        )
+    }
+
+    if (state.showDiscardChangesDialog) {
+        DiscardChangesDialog(
+            onConfirm = onDiscardChangesConfirmed,
+            onDismiss = onDiscardChangesDismissed
         )
     }
 }
