@@ -55,15 +55,29 @@ class LifehackDetailViewModel @Inject constructor(
         onNavigate()
     }
 
-    fun onDelete(
+    fun onDeleteClick() {
+        _uiState.update { it.copy(showConfirmDeleteDialog = true) }
+    }
+
+    fun onConfirmDelete(
         onSuccess: () -> Unit
     ) {
+        //TODO llamar al repositorio
+        viewModelScope.launch {
+            _uiState.update { it.copy(isLoading = true) }
 
+        }
+    }
+
+    fun onDismissDelete() {
+        _uiState.update { it.copy(showConfirmDeleteDialog = false) }
     }
 
     fun onCategoryClick(
         onNavigate: (String) -> Unit
     ) {
-
+        uiState.value.lifehack?.category?.let { category ->
+            onNavigate(category.id)
+        }
     }
 }

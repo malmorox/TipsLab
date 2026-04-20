@@ -1,11 +1,6 @@
 package app.iesjdlc.tipslab.ui.screens.lifehack
 
 import android.net.Uri
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.expandVertically
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
-import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
@@ -45,9 +40,8 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import app.iesjdlc.tipslab.R
 import app.iesjdlc.tipslab.core.constants.AppConstants.MAX_DESCRIPTION_LENGTH
 import app.iesjdlc.tipslab.domain.model.Category
-import app.iesjdlc.tipslab.domain.model.MediaType
 import app.iesjdlc.tipslab.ui.components.CategorySelectorSheet
-import app.iesjdlc.tipslab.ui.components.DiscardChangesDialog
+import app.iesjdlc.tipslab.ui.components.ConfirmOrDismissDialog
 import app.iesjdlc.tipslab.ui.components.FormFieldSection
 import app.iesjdlc.tipslab.ui.components.LifehackStepsSheet
 import app.iesjdlc.tipslab.ui.components.MediaPicker
@@ -359,9 +353,13 @@ private fun CreateLifehackScreenUI(
     }
 
     if (state.showDiscardChangesDialog) {
-        DiscardChangesDialog(
+        ConfirmOrDismissDialog(
             onConfirm = onDiscardChangesConfirmed,
-            onDismiss = onDiscardChangesDismissed
+            onDismiss = onDiscardChangesDismissed,
+            title = stringResource(R.string.discard_changes),
+            message = stringResource(R.string.discard_changes_message),
+            confirmText = stringResource(R.string.discard),
+            dismissText = stringResource(R.string.cancel)
         )
     }
 }

@@ -8,5 +8,6 @@ data class LifehackDetailUiState(
     val isOwner: Boolean = false,
     val isSaved: Boolean = false,
     val isLiked: Boolean = false,
+    val showConfirmDeleteDialog: Boolean = false,
     val error: String? = null
 )
