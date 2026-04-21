@@ -61,6 +61,7 @@
     <string name="cancel">Cancelar</string>
     <string name="edit">Editar</string>
     <string name="delete">Eliminar</string>
+    <string name="options">Opciones</string>
     <string name="discard_changes">Descartar cambios</string>
     <string name="discard_changes_message">Perderás todo el contenido introducido.</string>
     <string name="delete_lifehack">Eliminar Lifehack</string>

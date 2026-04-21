@@ -1,4 +1,4 @@
-package app.iesjdlc.tipslab.ui.screens.lifehack
+package app.iesjdlc.tipslab.ui.screens.lifehack.edit
 
 import android.net.Uri
 import androidx.lifecycle.SavedStateHandle

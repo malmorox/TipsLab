@@ -6,15 +6,14 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
 import androidx.navigation.compose.rememberNavController
-import androidx.navigation.toRoute
-import app.iesjdlc.tipslab.ui.screens.lifehack.EditLifehackScreen
-import app.iesjdlc.tipslab.ui.screens.profile.EditProfileScreen
-import app.iesjdlc.tipslab.ui.screens.lifehack.LifehackDetailScreen
+import app.iesjdlc.tipslab.ui.screens.lifehack.edit.EditLifehackScreen
+import app.iesjdlc.tipslab.ui.screens.profile.edit.EditProfileScreen
+import app.iesjdlc.tipslab.ui.screens.lifehack.detail.LifehackDetailScreen
 import app.iesjdlc.tipslab.ui.screens.explore.LifehacksByCategoryScreen
 import app.iesjdlc.tipslab.ui.screens.splash.SplashScreen
 import app.iesjdlc.tipslab.ui.screens.auth.login.LoginScreen
 import app.iesjdlc.tipslab.ui.screens.auth.signup.SignupScreen
-import app.iesjdlc.tipslab.ui.screens.lifehack.CreateLifehackScreen
+import app.iesjdlc.tipslab.ui.screens.lifehack.create.CreateLifehackScreen
 
 @Composable
 fun AppNavigation() {

@@ -1,4 +1,4 @@
-package app.iesjdlc.tipslab.ui.screens.profile
+package app.iesjdlc.tipslab.ui.screens.profile.edit
 
 data class EditProfileUiState(
     val emailOrUsername: String = "",

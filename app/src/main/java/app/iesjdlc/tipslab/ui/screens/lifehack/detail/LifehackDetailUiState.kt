@@ -1,4 +1,4 @@
-package app.iesjdlc.tipslab.ui.screens.lifehack
+package app.iesjdlc.tipslab.ui.screens.lifehack.detail
 
 import app.iesjdlc.tipslab.domain.model.Lifehack
 

@@ -15,7 +15,7 @@ class CategoryRepositoryImpl @Inject constructor(
             dataSource.getCategories().map { mapper.toDomain(it) }
         }
 
-    override fun getCategoryById(id: String): Result<Category> =
+    override fun getCategoryById(id: Int): Result<Category> =
         runCatching {
             dataSource.getById(id)
                 ?.let { mapper.toDomain(it) }

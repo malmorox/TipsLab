@@ -1,4 +1,4 @@
-package app.iesjdlc.tipslab.ui.screens.lifehack
+package app.iesjdlc.tipslab.ui.screens.lifehack.create
 
 import android.net.Uri
 import androidx.compose.foundation.background

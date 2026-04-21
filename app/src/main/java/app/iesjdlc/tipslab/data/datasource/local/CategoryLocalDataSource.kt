@@ -22,5 +22,5 @@ class CategoryLocalDataSource @Inject constructor(
 
     override fun getCategories(): List<CategoryDto> = _categories
 
-    override fun getById(id: String): CategoryDto? = _categories.find { it.id == id }
+    override fun getById(id: Int): CategoryDto? = _categories.find { it.id == id }
 }

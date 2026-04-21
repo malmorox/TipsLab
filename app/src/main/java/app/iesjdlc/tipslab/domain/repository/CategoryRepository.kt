@@ -4,5 +4,5 @@ import app.iesjdlc.tipslab.domain.model.Category
 
 interface CategoryRepository {
     fun getAllCategories(): Result<List<Category>>
-    fun getCategoryById(id: String): Result<Category>
+    fun getCategoryById(id: Int): Result<Category>
 }

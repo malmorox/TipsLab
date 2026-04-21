@@ -1,17 +1,19 @@
-package app.iesjdlc.tipslab.ui.screens.lifehack
+package app.iesjdlc.tipslab.ui.screens.lifehack.edit
 
 import android.net.Uri
 import app.iesjdlc.tipslab.core.utils.UiText
 import app.iesjdlc.tipslab.domain.model.Category
 
-data class CreateLifehackUiState(
+data class EditLifehackUiState(
     val title: String = "",
     val description: String = "",
     val steps: List<String> = emptyList(),
     val stepsCount: Int = 0,
     val category: Category? = null,
     val availableCategories: List<Category> = emptyList(),
+    val mediaUrl: String? = null,
     val mediaLocalUri: Uri? = null,
+    val mediaRemoved: Boolean = false,
 
     val showStepsSheet: Boolean = false,
     val showCategorySheet: Boolean = false,

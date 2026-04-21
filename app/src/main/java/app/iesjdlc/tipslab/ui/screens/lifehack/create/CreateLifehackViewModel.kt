@@ -1,4 +1,4 @@
-package app.iesjdlc.tipslab.ui.screens.lifehack
+package app.iesjdlc.tipslab.ui.screens.lifehack.create
 
 import android.net.Uri
 import androidx.lifecycle.ViewModel
@@ -7,7 +7,6 @@ import app.iesjdlc.tipslab.R
 import app.iesjdlc.tipslab.core.constants.AppConstants.MIN_DESCRIPTION_LENGTH
 import app.iesjdlc.tipslab.core.utils.UiText
 import app.iesjdlc.tipslab.domain.model.Category
-import app.iesjdlc.tipslab.domain.model.MediaType
 import app.iesjdlc.tipslab.domain.repository.CategoryRepository
 import app.iesjdlc.tipslab.domain.usecase.CreateLifehackUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
