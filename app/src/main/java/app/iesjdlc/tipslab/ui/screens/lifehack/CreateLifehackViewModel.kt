@@ -3,7 +3,9 @@ package app.iesjdlc.tipslab.ui.screens.lifehack
 import android.net.Uri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import app.iesjdlc.tipslab.R
 import app.iesjdlc.tipslab.core.constants.AppConstants.MIN_DESCRIPTION_LENGTH
+import app.iesjdlc.tipslab.core.utils.UiText
 import app.iesjdlc.tipslab.domain.model.Category
 import app.iesjdlc.tipslab.domain.model.MediaType
 import app.iesjdlc.tipslab.domain.repository.CategoryRepository
@@ -130,20 +132,20 @@ class CreateLifehackViewModel @Inject constructor(
         var isValid = true
 
         if (state.title.isBlank()) {
-            _uiState.update { it.copy(titleErrorMessage = "El título es obligatorio") }
+            _uiState.update { it.copy(titleErrorMessage = UiText.StringRes(R.string.title_required)) }
             isValid = false
         }
 
         if (state.description.isBlank()) {
-            _uiState.update { it.copy(descriptionErrorMessage = "La descripción es obligatoria") }
+            _uiState.update { it.copy(descriptionErrorMessage = UiText.StringRes(R.string.description_required)) }
             isValid = false
         } else if (state.description.length < MIN_DESCRIPTION_LENGTH) {
-            _uiState.update { it.copy(descriptionErrorMessage = "La descripción debe tener al menos $MIN_DESCRIPTION_LENGTH caracteres") }
+            _uiState.update { it.copy(descriptionErrorMessage = UiText.StringResWithArgs(R.string.description_min_length_required, MIN_DESCRIPTION_LENGTH)) }
             isValid = false
         }
 
         if (state.category == null) {
-            _uiState.update { it.copy(categoryErrorMessage = "Selecciona una categoría") }
+            _uiState.update { it.copy(categoryErrorMessage = UiText.StringRes(R.string.category_required)) }
             isValid = false
         }
 

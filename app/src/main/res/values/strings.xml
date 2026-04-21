@@ -44,13 +44,22 @@
     <string name="select_category">Selecciona una categoría</string>
     <string name="search_category">Buscar categoría</string>
     <string name="no_results">No se encontraron resultados</string>
+    <string name="title_required">El título es obligatorio</string>
+    <string name="description_required">La descripción es obligatoria</string>
+    <string name="category_required">La categoría es obligatoria</string>
+    <string name="description_min_length_required">La descripción debe tener al menos %1$d caracteres</string>
+
+    <!-- Profile -->
+    <string name="edit_profile">Editar perfil</string>
 
     <!-- Generic -->
     <string name="close">Cerrar</string>
+    <string name="go_back">Volver</string>
     <string name="or">o</string>
     <string name="save">Guardar</string>
     <string name="discard">Descartar</string>
     <string name="cancel">Cancelar</string>
+    <string name="edit">Editar</string>
     <string name="delete">Eliminar</string>
     <string name="discard_changes">Descartar cambios</string>
     <string name="discard_changes_message">Perderás todo el contenido introducido.</string>

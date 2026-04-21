@@ -3,7 +3,6 @@ package app.iesjdlc.tipslab.domain.usecase
 import android.net.Uri
 import app.iesjdlc.tipslab.domain.model.Category
 import app.iesjdlc.tipslab.domain.model.Lifehack
-import app.iesjdlc.tipslab.domain.model.MediaType
 import app.iesjdlc.tipslab.domain.repository.AuthRepository
 import app.iesjdlc.tipslab.domain.repository.LifehackRepository
 import app.iesjdlc.tipslab.domain.repository.MediaRepository

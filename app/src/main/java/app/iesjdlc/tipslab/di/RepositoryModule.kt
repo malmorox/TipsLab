@@ -1,10 +1,12 @@
 package app.iesjdlc.tipslab.di
 
+import app.iesjdlc.tipslab.data.datasource.local.CategoryLocalDataSource
 import app.iesjdlc.tipslab.data.repository.AuthRepositoryImpl
 import app.iesjdlc.tipslab.data.repository.CategoryRepositoryImpl
 import app.iesjdlc.tipslab.data.repository.LifehackRepositoryImpl
 import app.iesjdlc.tipslab.data.repository.MediaRepositoryImpl
 import app.iesjdlc.tipslab.data.repository.UserRepositoryImpl
+import app.iesjdlc.tipslab.data.repository.boundary.CategoryDataSource
 import app.iesjdlc.tipslab.domain.repository.AuthRepository
 import app.iesjdlc.tipslab.domain.repository.CategoryRepository
 import app.iesjdlc.tipslab.domain.repository.LifehackRepository
@@ -26,6 +28,10 @@ abstract class RepositoryModule {
     @Binds
     @Singleton
     abstract fun bindCategoryRepository(impl: CategoryRepositoryImpl): CategoryRepository
+
+    @Binds
+    @Singleton
+    abstract fun bindCategoryDataSource(impl: CategoryLocalDataSource): CategoryDataSource
 
     @Binds
     @Singleton

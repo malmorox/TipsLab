@@ -7,9 +7,8 @@ import androidx.hilt.navigation.compose.hiltViewModel
 @Composable
 fun EditLifehackScreen(
     viewModel: EditLifehackViewModel = hiltViewModel(),
-    lifehackId: String,
     onNavigateBack: () -> Unit,
-    onLifehackEdited: () -> Unit
+    onLifehackEdited: (String) -> Unit
 ) {
     val uiState = viewModel.uiState.collectAsState()
 
