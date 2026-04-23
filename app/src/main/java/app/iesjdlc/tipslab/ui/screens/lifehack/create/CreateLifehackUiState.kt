@@ -10,7 +10,7 @@ data class CreateLifehackUiState(
     val steps: List<String> = emptyList(),
     val stepsCount: Int = 0,
     val category: Category? = null,
-    val availableCategories: List<Category> = emptyList(),
+    val allCategories: List<Category> = emptyList(),
     val mediaLocalUri: Uri? = null,
 
     val showStepsSheet: Boolean = false,

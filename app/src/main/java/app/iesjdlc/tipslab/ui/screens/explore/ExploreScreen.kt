@@ -11,7 +11,7 @@ import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
 
 @Composable
-fun ExploreTab(
+fun ExploreScreen(
     viewModel: ExploreViewModel = hiltViewModel(),
     onLifehackClick: (String) -> Unit,
     onCategoryClick: (Int) -> Unit

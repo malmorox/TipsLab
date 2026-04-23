@@ -7,8 +7,9 @@ data class UserDto(
     val email: String = "",
     val username: String = "",
 
-    @PropertyName("photo_url")
-    val photoUrl: String = "",
+    @get:PropertyName("photo_url")
+    @set:PropertyName("photo_url")
+    var photoUrl: String? = null,
 
     val provider: String = "BASIC",
 )

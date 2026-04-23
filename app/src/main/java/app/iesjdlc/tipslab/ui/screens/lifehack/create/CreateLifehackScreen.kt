@@ -356,7 +356,7 @@ private fun CreateLifehackScreenUI(
 
     if (state.showCategorySheet) {
         CategorySelectorSheet(
-            categories = state.availableCategories,
+            categories = state.allCategories,
             selectedCategory = state.category,
             onCategorySelected = {
                 onCategorySelected(it)
