@@ -14,7 +14,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 fun ExploreTab(
     viewModel: ExploreViewModel = hiltViewModel(),
     onLifehackClick: (String) -> Unit,
-    onCategoryClick: (String) -> Unit
+    onCategoryClick: (Int) -> Unit
 ) {
     Box(
         modifier = Modifier

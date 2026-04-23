@@ -10,5 +10,5 @@ interface UserRepository {
     suspend fun getUserById(id: String): Result<User>
     suspend fun createUser(user: User): Result<Unit>
     suspend fun createGoogleUser(user: User): Result<Unit>
-    suspend fun updateUserProfile(user: User): Result<Unit>
+    suspend fun updateUser(user: User): Result<Unit>
 }

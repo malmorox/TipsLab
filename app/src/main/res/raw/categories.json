@@ -1,87 +1,87 @@
 [
     {
         "id": 1,
-        "title": "Hogar",
+        "name": "Hogar",
         "description": "Limpieza, organización, reparaciones rápidas, decoración y ahorro de espacio"
     },
     {
         "id": 2,
-        "title": "Cocina",
+        "name": "Cocina",
         "description": "Preparación de alimentos, conservación, cocina rápida y trucos con utensilios"
     },
     {
         "id": 3,
-        "title": "Finanzas personales",
+        "name": "Finanzas personales",
         "description": "Ahorro diario, compras inteligentes, gestión de gastos y ofertas"
     },
     {
         "id": 4,
-        "title": "Productividad",
+        "name": "Productividad",
         "description": "Gestión del tiempo, estudio, trabajo, automatización y organización personal"
     },
     {
         "id": 5,
-        "title": "Tecnología",
+        "name": "Tecnología",
         "description": "Apps útiles, atajos de móvil, trucos de ordenador y seguridad digital"
     },
     {
         "id": 6,
-        "title": "Viajes",
+        "name": "Viajes",
         "description": "Equipaje, aeropuertos, alojamiento, planificación y trucos para ahorrar"
     },
     {
         "id": 7,
-        "title": "Salud y bienestar",
+        "name": "Salud y bienestar",
         "description": "Hábitos saludables, ejercicio rápido, dormir mejor, estrés y postura"
     },
     {
         "id": 8,
-        "title": "Ropa y cuidado personal",
+        "name": "Ropa y cuidado personal",
         "description": "Limpieza de ropa, quitar manchas, organización de armario y belleza"
     },
     {
         "id": 9,
-        "title": "Transporte",
+        "name": "Transporte",
         "description": "Coche, bicicleta, transporte público y mantenimiento básico"
     },
     {
         "id": 10,
-        "title": "DIY y manualidades",
+        "name": "DIY y manualidades",
         "description": "Reciclaje, reutilización, soluciones creativas y hacks con objetos cotidianos"
     },
     {
         "id": 11,
-        "title": "Mascotas",
+        "name": "Mascotas",
         "description": "Cuidado, alimentación, entrenamiento y limpieza"
     },
     {
         "id": 12,
-        "title": "Familia y niños",
+        "name": "Familia y niños",
         "description": "Crianza, juegos, educación y organización familiar"
     },
     {
         "id": 13,
-        "title": "Psicología y vida diaria",
+        "name": "Psicología y vida diaria",
         "description": "Toma de decisiones, relaciones, motivación y trucos mentales"
     },
     {
         "id": 14,
-        "title": "Escuela y universidad",
+        "name": "Escuela y universidad",
         "description": "Estudio eficiente, memorización, exámenes y organización"
     },
     {
         "id": 15,
-        "title": "Trabajo y profesional",
+        "name": "Trabajo y profesional",
         "description": "Entrevistas, oficina, comunicación y networking"
     },
     {
         "id": 16,
-        "title": "Sostenibilidad",
+        "name": "Sostenibilidad",
         "description": "Reducir residuos, ahorro energético, reutilización y vida eco"
     },
     {
         "id": 17,
-        "title": "Comida rápida y supervivencia",
+        "name": "Comida rápida y supervivencia",
         "description": "Hacks rápidos, soluciones en apuros y trucos de emergencia"
     }
 ]

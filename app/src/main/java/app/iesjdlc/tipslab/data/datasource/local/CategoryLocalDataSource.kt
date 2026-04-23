@@ -3,7 +3,6 @@ package app.iesjdlc.tipslab.data.datasource.local
 import android.content.Context
 import app.iesjdlc.tipslab.R
 import app.iesjdlc.tipslab.data.model.CategoryDto
-import app.iesjdlc.tipslab.data.repository.boundary.CategoryDataSource
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.serialization.json.Json
 import javax.inject.Inject
@@ -23,4 +22,7 @@ class CategoryLocalDataSource @Inject constructor(
     override fun getCategories(): List<CategoryDto> = _categories
 
     override fun getById(id: Int): CategoryDto? = _categories.find { it.id == id }
+
+    override fun getCategoriesByIds(ids: List<Int>): Map<Int, CategoryDto> =
+        _categories.filter { it.id in ids }.associateBy { it.id }
 }

@@ -36,7 +36,7 @@ fun LifehackDetailScreen(
     onNavigateBack: () -> Unit,
     onEditLifehack: (String) -> Unit,
     onDeleteLifehack: () -> Unit,
-    onOpenCategory: (String) -> Unit
+    onOpenCategory: (Int) -> Unit
 ) {
     val uiState = viewModel.uiState.collectAsState()
 
@@ -59,7 +59,7 @@ private fun LifehackDetailScreenUI(
     onDelete: () -> Unit,
     onConfirmDelete: () -> Unit,
     onDismissDelete: () -> Unit,
-    onOpenCategory: (String) -> Unit,
+    onOpenCategory: (Int) -> Unit,
     onBack: () -> Unit,
 ) {
     Scaffold(

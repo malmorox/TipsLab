@@ -86,7 +86,7 @@ class LifehackDetailViewModel @Inject constructor(
     }
 
     fun onCategoryClick(
-        onNavigate: (String) -> Unit
+        onNavigate: (Int) -> Unit
     ) {
         uiState.value.lifehack?.category?.let { category ->
             onNavigate(category.id)
