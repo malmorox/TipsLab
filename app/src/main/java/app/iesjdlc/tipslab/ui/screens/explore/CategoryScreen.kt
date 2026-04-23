@@ -6,7 +6,6 @@ import androidx.hilt.navigation.compose.hiltViewModel
 @Composable
 fun LifehacksByCategoryScreen(
     viewModel: CategoryViewModel = hiltViewModel(),
-    categoryId: String,
     onNavigateBack: () -> Unit,
     onLifehackClick: (String) -> Unit
 ) {

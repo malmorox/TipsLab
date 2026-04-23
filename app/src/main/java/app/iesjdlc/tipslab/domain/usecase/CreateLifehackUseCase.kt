@@ -3,7 +3,6 @@ package app.iesjdlc.tipslab.domain.usecase
 import android.net.Uri
 import app.iesjdlc.tipslab.domain.model.Category
 import app.iesjdlc.tipslab.domain.model.Lifehack
-import app.iesjdlc.tipslab.domain.model.MediaType
 import app.iesjdlc.tipslab.domain.repository.AuthRepository
 import app.iesjdlc.tipslab.domain.repository.LifehackRepository
 import app.iesjdlc.tipslab.domain.repository.MediaRepository
@@ -21,7 +20,6 @@ class CreateLifehackUseCase @Inject constructor(
         steps: List<String>,
         category: Category,
         mediaUri: Uri?,
-        mediaType: MediaType?,
     ): Result<String> {
         val currentUser = authRepository.getCurrentUser()
 
@@ -42,7 +40,7 @@ class CreateLifehackUseCase @Inject constructor(
             .fold(
                 onSuccess = { lifehackId ->
                     if (mediaUri != null) {
-                        Result.success(lifehackId) // TODO
+                        Result.success(lifehackId) // TODO subir imagen y actualizar lifehack
                     } else {
                         Result.success(lifehackId)
                     }

@@ -1,6 +1,6 @@
-package app.iesjdlc.tipslab.ui.screens.lifehack
+package app.iesjdlc.tipslab.ui.screens.profile.edit
 
-data class EditLifehackUiState(
+data class EditProfileUiState(
     val emailOrUsername: String = "",
     val password: String = "",
     val isPasswordVisible: Boolean = false,

@@ -10,10 +10,6 @@ class CategoryMapper @Inject constructor() {
     fun toDomain(dto: CategoryDto) = Category(
         id = dto.id,
         name = dto.name,
-    )
-
-    fun toDto(domain: Category) = CategoryDto(
-        id = domain.id,
-        name = domain.name,
+        description = dto.description
     )
 }

@@ -38,27 +38,27 @@ fun MainScaffold(
 		) {
 			composable<Route.HomeTab> {
 				HomeTab(
-					onLifehackClick = { id ->
-						rootNavController.navigate(Route.LifehackDetail(id))
+					onLifehackClick = { lifehackId ->
+						rootNavController.navigate(Route.LifehackDetail(lifehackId))
 					}
 				)
 			}
 
 			composable<Route.ExploreTab> {
 				ExploreTab(
-					onLifehackClick = { id ->
-						rootNavController.navigate(Route.LifehackDetail(id))
+					onLifehackClick = { lifehackId ->
+						rootNavController.navigate(Route.LifehackDetail(lifehackId))
 					},
-					onCategoryClick = { id ->
-						rootNavController.navigate(Route.LifehacksByCategory(id))
+					onCategoryClick = { categoryId ->
+						rootNavController.navigate(Route.LifehacksByCategory(categoryId))
 					}
 				)
 			}
 
 			composable<Route.SavedTab> {
 				SavedTab(
-					onLifehackClick = { id ->
-						rootNavController.navigate(Route.LifehackDetail(id))
+					onLifehackClick = { lifehackId ->
+						rootNavController.navigate(Route.LifehackDetail(lifehackId))
 					}
 				)
 			}

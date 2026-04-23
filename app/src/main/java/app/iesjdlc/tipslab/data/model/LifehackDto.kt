@@ -9,7 +9,7 @@ data class LifehackDto(
     val steps: List<String> = emptyList(),
 
     @PropertyName("category_id")
-    val categoryId: String = "",
+    val categoryId: Int = 0,
 
     @PropertyName("author_id")
     val authorId: String = "",

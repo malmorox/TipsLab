@@ -1,10 +1,12 @@
-package app.iesjdlc.tipslab.ui.screens.lifehack
+package app.iesjdlc.tipslab.ui.screens.lifehack.create
 
 import android.net.Uri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import app.iesjdlc.tipslab.R
+import app.iesjdlc.tipslab.core.constants.AppConstants.MIN_DESCRIPTION_LENGTH
+import app.iesjdlc.tipslab.core.utils.UiText
 import app.iesjdlc.tipslab.domain.model.Category
-import app.iesjdlc.tipslab.domain.model.MediaType
 import app.iesjdlc.tipslab.domain.repository.CategoryRepository
 import app.iesjdlc.tipslab.domain.usecase.CreateLifehackUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -63,11 +65,11 @@ class CreateLifehackViewModel @Inject constructor(
     }
 
     fun onStepsSheetOpen() {
-        _uiState.update { it.copy(isStepsSheetOpen = true) }
+        _uiState.update { it.copy(showStepsSheet = true) }
     }
 
     fun onStepsSheetDismiss() {
-        _uiState.update { it.copy(isStepsSheetOpen = false) }
+        _uiState.update { it.copy(showStepsSheet = false) }
     }
 
     fun onCategoryChanged(newValue: Category) {
@@ -75,35 +77,25 @@ class CreateLifehackViewModel @Inject constructor(
             it.copy(
                 category = newValue,
                 categoryErrorMessage = null,
-                isCategorySheetOpen = false
+                showCategorySheet = false
             )
         }
     }
 
     fun onCategorySheetOpen() {
-        _uiState.update { it.copy(isCategorySheetOpen = true) }
+        _uiState.update { it.copy(showCategorySheet = true) }
     }
 
     fun onCategorySheetDismiss() {
-        _uiState.update { it.copy(isCategorySheetOpen = false) }
+        _uiState.update { it.copy(showCategorySheet = false) }
     }
 
-    fun onMediaPicked(uri: Uri, type: MediaType) {
-        _uiState.update {
-            it.copy(
-                mediaLocalUri = uri,
-                mediaType = type
-            )
-        }
+    fun onMediaPicked(uri: Uri) {
+        _uiState.update { it.copy(mediaLocalUri = uri) }
     }
 
     fun onMediaRemoved() {
-        _uiState.update {
-            it.copy(
-                mediaLocalUri = null,
-                mediaType = null
-            )
-        }
+        _uiState.update { it.copy(mediaLocalUri = null) }
     }
 
     fun onSubmit(
@@ -121,8 +113,7 @@ class CreateLifehackViewModel @Inject constructor(
                     description = currentState.description,
                     category = currentState.category!!,
                     steps = currentState.steps,
-                    mediaUri = currentState.mediaLocalUri,
-                    mediaType = currentState.mediaType
+                    mediaUri = currentState.mediaLocalUri
                 )
                     .onSuccess { lifehackId ->
                         onSuccess(lifehackId)
@@ -140,20 +131,53 @@ class CreateLifehackViewModel @Inject constructor(
         var isValid = true
 
         if (state.title.isBlank()) {
-            _uiState.update { it.copy(titleErrorMessage = "El título es obligatorio") }
+            _uiState.update { it.copy(titleErrorMessage = UiText.StringRes(R.string.title_required)) }
             isValid = false
         }
 
         if (state.description.isBlank()) {
-            _uiState.update { it.copy(descriptionErrorMessage = "La descripción es obligatoria") }
+            _uiState.update { it.copy(descriptionErrorMessage = UiText.StringRes(R.string.description_required)) }
+            isValid = false
+        } else if (state.description.length < MIN_DESCRIPTION_LENGTH) {
+            _uiState.update { it.copy(descriptionErrorMessage = UiText.StringResWithArgs(R.string.description_min_length_required, MIN_DESCRIPTION_LENGTH)) }
             isValid = false
         }
 
         if (state.category == null) {
-            _uiState.update { it.copy(categoryErrorMessage = "Selecciona una categoría") }
+            _uiState.update { it.copy(categoryErrorMessage = UiText.StringRes(R.string.category_required)) }
             isValid = false
         }
 
         return isValid
+    }
+
+    fun onCloseClick(
+        onNavigateBack: () -> Unit
+    ) {
+        val currentState = _uiState.value
+        if (hasContent(currentState)) {
+            _uiState.update { it.copy(showDiscardChangesDialog = true) }
+        } else {
+            onNavigateBack()
+        }
+    }
+
+    fun onDiscardChangesConfirmed(
+        onNavigateBack: () -> Unit
+    ) {
+        _uiState.update { it.copy(showDiscardChangesDialog = false) }
+        onNavigateBack()
+    }
+
+    fun onDiscardChangesDismissed() {
+        _uiState.update { it.copy(showDiscardChangesDialog = false) }
+    }
+
+    private fun hasContent(state: CreateLifehackUiState): Boolean {
+        return state.title.isNotBlank() ||
+                state.description.isNotBlank() ||
+                state.category != null ||
+                state.steps.isNotEmpty() ||
+                state.mediaLocalUri != null
     }
 }

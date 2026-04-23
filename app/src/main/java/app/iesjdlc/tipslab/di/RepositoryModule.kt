@@ -1,5 +1,6 @@
 package app.iesjdlc.tipslab.di
 
+import app.iesjdlc.tipslab.data.datasource.local.CategoryLocalDataSource
 import app.iesjdlc.tipslab.data.repository.AuthRepositoryImpl
 import app.iesjdlc.tipslab.data.repository.CategoryRepositoryImpl
 import app.iesjdlc.tipslab.data.repository.LifehackRepositoryImpl

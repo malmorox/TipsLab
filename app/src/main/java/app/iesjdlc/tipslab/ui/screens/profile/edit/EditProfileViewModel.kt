@@ -1,4 +1,4 @@
-package app.iesjdlc.tipslab.ui.screens.lifehack
+package app.iesjdlc.tipslab.ui.screens.profile.edit
 
 import androidx.lifecycle.ViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -8,9 +8,10 @@ import kotlinx.coroutines.flow.asStateFlow
 import javax.inject.Inject
 
 @HiltViewModel
-class EditLifehackViewModel @Inject constructor(
+class EditProfileViewModel @Inject constructor(
 
 ) : ViewModel() {
-    private val _uiState = MutableStateFlow(EditLifehackUiState())
-    val uiState: StateFlow<EditLifehackUiState> = _uiState.asStateFlow()
+    private val _uiState = MutableStateFlow(EditProfileUiState())
+    val uiState: StateFlow<EditProfileUiState> = _uiState.asStateFlow()
+
 }

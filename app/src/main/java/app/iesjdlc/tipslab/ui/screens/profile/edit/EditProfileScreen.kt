@@ -1,4 +1,4 @@
-package app.iesjdlc.tipslab.ui.screens.profile
+package app.iesjdlc.tipslab.ui.screens.profile.edit
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState

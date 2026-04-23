@@ -11,7 +11,7 @@ import java.io.File
 import javax.inject.Inject
 
 class MediaRepositoryImpl @Inject constructor(
-    @ApplicationContext private val context: Context,
+    @param:ApplicationContext private val context: Context,
     private val storage: Storage
 ) : MediaRepository {
     override suspend fun uploadProfilePhoto(uid: String, imageUri: Uri): Result<String> {

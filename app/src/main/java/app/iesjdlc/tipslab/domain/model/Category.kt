@@ -1,6 +1,7 @@
 package app.iesjdlc.tipslab.domain.model
 
 data class Category(
-    val id: String,
-    val name: String
+    val id: Int,
+    val name: String,
+    val description: String?
 )

@@ -15,8 +15,7 @@ import app.iesjdlc.tipslab.domain.model.MediaType
 @Composable
 fun MediaPicker(
     mediaUri: Uri?,
-    mediaType: MediaType?,
-    onMediaPicked: (Uri, MediaType) -> Unit,
+    onMediaPicked: (Uri) -> Unit,
     onMediaRemoved: () -> Unit,
     modifier: Modifier = Modifier
 ) {

@@ -6,15 +6,14 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
 import androidx.navigation.compose.rememberNavController
-import androidx.navigation.toRoute
-import app.iesjdlc.tipslab.ui.screens.lifehack.EditLifehackScreen
-import app.iesjdlc.tipslab.ui.screens.profile.EditProfileScreen
-import app.iesjdlc.tipslab.ui.screens.lifehack.LifehackDetailScreen
+import app.iesjdlc.tipslab.ui.screens.lifehack.edit.EditLifehackScreen
+import app.iesjdlc.tipslab.ui.screens.profile.edit.EditProfileScreen
+import app.iesjdlc.tipslab.ui.screens.lifehack.detail.LifehackDetailScreen
 import app.iesjdlc.tipslab.ui.screens.explore.LifehacksByCategoryScreen
 import app.iesjdlc.tipslab.ui.screens.splash.SplashScreen
 import app.iesjdlc.tipslab.ui.screens.auth.login.LoginScreen
 import app.iesjdlc.tipslab.ui.screens.auth.signup.SignupScreen
-import app.iesjdlc.tipslab.ui.screens.lifehack.CreateLifehackScreen
+import app.iesjdlc.tipslab.ui.screens.lifehack.create.CreateLifehackScreen
 
 @Composable
 fun AppNavigation() {
@@ -105,13 +104,13 @@ fun AppNavigation() {
         }
 
         // Pantallas de destino
-        composable<Route.LifehackDetail> { backStackEntry ->
-            val lifehackId = backStackEntry.toRoute<Route.LifehackDetail>().lifehackId
+        composable<Route.LifehackDetail> {
             LifehackDetailScreen(
-                lifehackId = lifehackId,
                 onNavigateBack = { rootNavController.popBackStack() },
-                onEditLifehack = { rootNavController.navigate(Route.EditLifehack(lifehackId)) },
-                onDeleteLifehack = { /* TODO implementar lógica de borrado */ },
+                onEditLifehack = { lifehackId ->
+                    rootNavController.navigate(Route.EditLifehack(lifehackId))
+                },
+                onDeleteLifehack = { rootNavController.popBackStack() },
                 onOpenCategory = { categoryId ->
                     rootNavController.navigate(Route.LifehacksByCategory(categoryId))
                 }
@@ -119,20 +118,18 @@ fun AppNavigation() {
         }
 
         composable<Route.LifehacksByCategory> {
-            val categoryId = it.toRoute<Route.LifehacksByCategory>().categoryId
             LifehacksByCategoryScreen(
-                categoryId = categoryId,
                 onNavigateBack = { rootNavController.popBackStack() },
-                onLifehackClick = { id -> rootNavController.navigate(Route.LifehackDetail(id)) }
+                onLifehackClick = { lifehackId ->
+                    rootNavController.navigate(Route.LifehackDetail(lifehackId))
+                }
             )
         }
 
         composable<Route.EditLifehack> {
-            val lifehackId = it.toRoute<Route.EditLifehack>().lifehackId
             EditLifehackScreen(
-                lifehackId = lifehackId,
                 onNavigateBack = { rootNavController.popBackStack() },
-                onLifehackEdited = {
+                onLifehackEdited = { lifehackId ->
                     rootNavController.navigate(Route.LifehackDetail(lifehackId)) {
                         popUpTo<Route.EditLifehack> { inclusive = true }
                         launchSingleTop = true
