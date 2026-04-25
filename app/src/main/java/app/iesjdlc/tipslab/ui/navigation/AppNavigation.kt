@@ -12,7 +12,7 @@ import app.iesjdlc.tipslab.ui.screens.lifehack.detail.LifehackDetailScreen
 import app.iesjdlc.tipslab.ui.screens.splash.SplashScreen
 import app.iesjdlc.tipslab.ui.screens.auth.login.LoginScreen
 import app.iesjdlc.tipslab.ui.screens.auth.signup.SignupScreen
-import app.iesjdlc.tipslab.ui.screens.explore.CategoryScreen
+import app.iesjdlc.tipslab.ui.screens.category.CategoryScreen
 import app.iesjdlc.tipslab.ui.screens.explore.SearchScreen
 import app.iesjdlc.tipslab.ui.screens.lifehack.create.CreateLifehackScreen
 
@@ -62,7 +62,7 @@ fun AppNavigation() {
                 popEnterTransition = { NavAnimations.slideInFromRight() }
             ) {
                 SignupScreen(
-                    onSignUpSuccess = {
+                    onSignupSuccess = {
                         rootNavController.navigate(Route.MainGraph) {
                             popUpTo<Route.AuthGraph> { inclusive = true }
                             launchSingleTop = true
@@ -127,7 +127,7 @@ fun AppNavigation() {
         composable<Route.LifehacksByCategory> {
             CategoryScreen(
                 onNavigateBack = { rootNavController.popBackStack() },
-                onLifehackClick = { lifehackId ->
+                onOpenLifehack = { lifehackId ->
                     rootNavController.navigate(Route.LifehackDetail(lifehackId))
                 }
             )

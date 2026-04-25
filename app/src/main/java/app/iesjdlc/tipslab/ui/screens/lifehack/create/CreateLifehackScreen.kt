@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -28,7 +27,6 @@ import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -37,6 +35,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import app.iesjdlc.tipslab.R
 import app.iesjdlc.tipslab.core.constants.AppConstants.MAX_DESCRIPTION_LENGTH
 import app.iesjdlc.tipslab.domain.model.Category
@@ -52,24 +51,24 @@ fun CreateLifehackScreen(
     onNavigateBack: () -> Unit,
     onLifehackCreated: (String) -> Unit
 ) {
-    val uiState by viewModel.uiState.collectAsState()
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
     CreateLifehackScreenUI(
         state = uiState,
-        onTitleChanged = { viewModel.onTitleChanged(it) },
-        onDescriptionChanged = { viewModel.onDescriptionChanged(it) },
-        onStepsChanged = { viewModel.onStepsChanged(it) },
+        onTitleChange = { viewModel.onTitleChange(it) },
+        onDescriptionChange = { viewModel.onDescriptionChange(it) },
+        onStepsChange = { viewModel.onStepsChange(it) },
         onStepsSheetOpen = { viewModel.onStepsSheetOpen() },
         onStepsSheetDismiss = { viewModel.onStepsSheetDismiss() },
-        onCategorySelected = { viewModel.onCategoryChanged(it) },
+        onCategoryChange = { viewModel.onCategoryChange(it) },
         onCategorySheetOpen = { viewModel.onCategorySheetOpen() },
         onCategorySheetDismiss = { viewModel.onCategorySheetDismiss() },
-        onMediaPicked = { uri -> viewModel.onMediaPicked(uri) },
-        onMediaRemoved = { viewModel.onMediaRemoved() },
-        onSubmited = { viewModel.onSubmit(onLifehackCreated) },
+        onMediaPick = { uri -> viewModel.onMediaPicked(uri) },
+        onMediaRemove = { viewModel.onMediaRemoved() },
+        onSubmit = { viewModel.onSubmit(onLifehackCreated) },
         onClose = { viewModel.onCloseClick(onNavigateBack) },
-        onDiscardChangesConfirmed = { viewModel.onDiscardChangesConfirmed(onNavigateBack) },
-        onDiscardChangesDismissed = { viewModel.onDiscardChangesDismissed() }
+        onDiscardChangesConfirm = { viewModel.onDiscardChangesConfirm(onNavigateBack) },
+        onDiscardChangesDismiss = { viewModel.onDiscardChangesDismiss() }
     )
 }
 
@@ -77,20 +76,20 @@ fun CreateLifehackScreen(
 @Composable
 private fun CreateLifehackScreenUI(
     state: CreateLifehackUiState,
-    onTitleChanged: (String) -> Unit,
-    onDescriptionChanged: (String) -> Unit,
-    onStepsChanged: (List<String>) -> Unit,
+    onTitleChange: (String) -> Unit,
+    onDescriptionChange: (String) -> Unit,
+    onStepsChange: (List<String>) -> Unit,
     onStepsSheetOpen: () -> Unit,
     onStepsSheetDismiss: () -> Unit,
-    onCategorySelected: (Category) -> Unit,
+    onCategoryChange: (Category) -> Unit,
     onCategorySheetOpen: () -> Unit,
     onCategorySheetDismiss: () -> Unit,
-    onMediaPicked: (Uri) -> Unit,
-    onMediaRemoved: () -> Unit,
-    onSubmited: () -> Unit,
+    onMediaPick: (Uri) -> Unit,
+    onMediaRemove: () -> Unit,
+    onSubmit: () -> Unit,
     onClose: () -> Unit,
-    onDiscardChangesConfirmed: () -> Unit,
-    onDiscardChangesDismissed: () -> Unit,
+    onDiscardChangesConfirm: () -> Unit,
+    onDiscardChangesDismiss: () -> Unit,
 ) {
     Box(
         modifier = Modifier
@@ -113,6 +112,7 @@ private fun CreateLifehackScreenUI(
                         .fillMaxSize()
                         .verticalScroll(rememberScrollState()),
                     horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.spacedBy(24.dp)
                 ) {
                     Row(
                         modifier = Modifier.fillMaxWidth(),
@@ -138,18 +138,17 @@ private fun CreateLifehackScreenUI(
                         }
                     }
 
-                    Spacer(modifier = Modifier.height(24.dp))
-
-                    Column {
+                    Column(
+                        modifier = Modifier.fillMaxWidth(),
+                        verticalArrangement = Arrangement.spacedBy(16.dp)
+                    ) {
                         FormFieldSection(label = stringResource(R.string.media)) {
                             MediaPicker(
                                 mediaUri = state.mediaLocalUri,
-                                onMediaPicked = onMediaPicked,
-                                onMediaRemoved = onMediaRemoved
+                                onMediaPicked = onMediaPick,
+                                onMediaRemoved = onMediaRemove
                             )
                         }
-
-                        Spacer(modifier = Modifier.height(16.dp))
 
                         FormFieldSection(
                             label = stringResource(R.string.title),
@@ -157,7 +156,7 @@ private fun CreateLifehackScreenUI(
                         ) {
                             OutlinedTextField(
                                 value = state.title,
-                                onValueChange = onTitleChanged,
+                                onValueChange = onTitleChange,
                                 placeholder = {
                                     Text(
                                         text = stringResource(R.string.title_placeholder),
@@ -179,8 +178,6 @@ private fun CreateLifehackScreenUI(
                             )
                         }
 
-                        Spacer(modifier = Modifier.height(16.dp))
-
                         FormFieldSection(
                             label = stringResource(R.string.description),
                             errorMessage = state.descriptionErrorMessage?.asString()
@@ -188,7 +185,7 @@ private fun CreateLifehackScreenUI(
                             Box {
                                 OutlinedTextField(
                                     value = state.description,
-                                    onValueChange = onDescriptionChanged,
+                                    onValueChange = onDescriptionChange,
                                     placeholder = {
                                         Text(
                                             text = stringResource(R.string.description_placeholder),
@@ -223,8 +220,6 @@ private fun CreateLifehackScreenUI(
                                 )
                             }
                         }
-
-                        Spacer(modifier = Modifier.height(16.dp))
 
                         FormFieldSection(label = stringResource(R.string.steps)) {
                             Surface(
@@ -275,8 +270,6 @@ private fun CreateLifehackScreenUI(
                                 }
                             }
                         }
-
-                        Spacer(modifier = Modifier.height(16.dp))
 
                         FormFieldSection(
                             label = stringResource(R.string.category),
@@ -331,7 +324,7 @@ private fun CreateLifehackScreenUI(
             }
 
             Button(
-                onClick = onSubmited,
+                onClick = onSubmit,
                 enabled = !state.isLoading,
                 shape = MaterialTheme.shapes.medium,
                 modifier = Modifier
@@ -351,7 +344,7 @@ private fun CreateLifehackScreenUI(
         LifehackStepsSheet(
             steps = state.steps,
             onConfirm = { steps ->
-                onStepsChanged(steps)
+                onStepsChange(steps)
                 onStepsSheetDismiss()
             },
             onDismiss = onStepsSheetDismiss
@@ -363,7 +356,7 @@ private fun CreateLifehackScreenUI(
             categories = state.allCategories,
             selectedCategory = state.category,
             onCategorySelected = {
-                onCategorySelected(it)
+                onCategoryChange(it)
                 onCategorySheetDismiss()
             },
             onDismiss = onCategorySheetDismiss
@@ -372,8 +365,8 @@ private fun CreateLifehackScreenUI(
 
     if (state.showDiscardChangesDialog) {
         ConfirmOrDismissDialog(
-            onConfirm = onDiscardChangesConfirmed,
-            onDismiss = onDiscardChangesDismissed,
+            onConfirm = onDiscardChangesConfirm,
+            onDismiss = onDiscardChangesDismiss,
             title = stringResource(R.string.discard_changes),
             message = stringResource(R.string.discard_changes_message),
             confirmText = stringResource(R.string.discard),

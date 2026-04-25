@@ -1,4 +1,4 @@
-package app.iesjdlc.tipslab.ui.screens.explore
+package app.iesjdlc.tipslab.ui.screens.category
 
 data class CategoryUiState(
     val emailOrUsername: String = "",

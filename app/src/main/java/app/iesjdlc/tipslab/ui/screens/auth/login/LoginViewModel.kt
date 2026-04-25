@@ -20,7 +20,7 @@ class LoginViewModel @Inject constructor(
     private val _uiState = MutableStateFlow(LoginUiState())
     val uiState: StateFlow<LoginUiState> = _uiState.asStateFlow()
 
-    fun onEmailOrUsernameChanged(newValue: String) {
+    fun onEmailOrUsernameChange(newValue: String) {
         _uiState.update {
             it.copy(
                 emailOrUsername = newValue,
@@ -29,7 +29,7 @@ class LoginViewModel @Inject constructor(
         }
     }
 
-    fun onPasswordChanged(newValue: String) {
+    fun onPasswordChange(newValue: String) {
         _uiState.update {
             it.copy(
                 password = newValue,

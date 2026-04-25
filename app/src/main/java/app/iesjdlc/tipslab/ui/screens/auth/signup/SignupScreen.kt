@@ -23,7 +23,6 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -37,24 +36,25 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import app.iesjdlc.tipslab.R
 
 @Composable
 fun SignupScreen(
     viewModel: SignupViewModel = hiltViewModel(),
-    onSignUpSuccess: () -> Unit,
+    onSignupSuccess: () -> Unit,
     onNavigateBack: () -> Unit
 ) {
-    val uiState by viewModel.uiState.collectAsState()
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
     SignUpScreenUI(
         state = uiState,
-        onEmailChange = { viewModel.onEmailChanged(it) },
-        onUsernameChange = { viewModel.onUsernameChanged(it) },
-        onPasswordChange = { viewModel.onPasswordChanged(it) },
-        onConfirmPasswordChange = { viewModel.onConfirmPasswordChanged(it) },
+        onEmailChange = { viewModel.onEmailChange(it) },
+        onUsernameChange = { viewModel.onUsernameChange(it) },
+        onPasswordChange = { viewModel.onPasswordChange(it) },
+        onConfirmPasswordChange = { viewModel.onConfirmPasswordChange(it) },
         onTogglePasswordVisibility = { viewModel.onTogglePasswordVisibility() },
-        onSignupClick = { viewModel.onSignupClick { onSignUpSuccess() } },
+        onSignup = { viewModel.onSignupClick(onSignupSuccess) },
         onBackToLogin = onNavigateBack
     )
 }
@@ -67,7 +67,7 @@ private fun SignUpScreenUI(
     onPasswordChange: (String) -> Unit,
     onConfirmPasswordChange: (String) -> Unit,
     onTogglePasswordVisibility: () -> Unit,
-    onSignupClick: () -> Unit,
+    onSignup: () -> Unit,
     onBackToLogin: () -> Unit
 ) {
     Box(
@@ -210,7 +210,7 @@ private fun SignUpScreenUI(
             Spacer(modifier = Modifier.height(20.dp))
 
             Button(
-                onClick = onSignupClick,
+                onClick = onSignup,
                 shape = MaterialTheme.shapes.medium,
                 modifier = Modifier
                     .fillMaxWidth()

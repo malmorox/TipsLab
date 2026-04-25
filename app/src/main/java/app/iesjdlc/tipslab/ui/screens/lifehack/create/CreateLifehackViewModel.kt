@@ -37,7 +37,7 @@ class CreateLifehackViewModel @Inject constructor(
         }
     }
 
-    fun onTitleChanged(newValue: String) {
+    fun onTitleChange(newValue: String) {
         _uiState.update {
             it.copy(
                 title = newValue,
@@ -46,7 +46,7 @@ class CreateLifehackViewModel @Inject constructor(
         }
     }
 
-    fun onDescriptionChanged(newValue: String) {
+    fun onDescriptionChange(newValue: String) {
         _uiState.update {
             it.copy(
                 description = newValue,
@@ -55,7 +55,7 @@ class CreateLifehackViewModel @Inject constructor(
         }
     }
 
-    fun onStepsChanged(steps: List<String>) {
+    fun onStepsChange(steps: List<String>) {
         _uiState.update {
             it.copy(
                 steps = steps,
@@ -72,7 +72,7 @@ class CreateLifehackViewModel @Inject constructor(
         _uiState.update { it.copy(showStepsSheet = false) }
     }
 
-    fun onCategoryChanged(newValue: Category) {
+    fun onCategoryChange(newValue: Category) {
         _uiState.update {
             it.copy(
                 category = newValue,
@@ -162,14 +162,14 @@ class CreateLifehackViewModel @Inject constructor(
         }
     }
 
-    fun onDiscardChangesConfirmed(
+    fun onDiscardChangesConfirm(
         onNavigateBack: () -> Unit
     ) {
         _uiState.update { it.copy(showDiscardChangesDialog = false) }
         onNavigateBack()
     }
 
-    fun onDiscardChangesDismissed() {
+    fun onDiscardChangesDismiss() {
         _uiState.update { it.copy(showDiscardChangesDialog = false) }
     }
 

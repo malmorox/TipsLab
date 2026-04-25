@@ -33,18 +33,18 @@ private sealed class BottomNavItem(
 
     // La ruta asociada a cada item, menos el de crear
     val route: Route? get() = when (this) {
-        Home -> Route.HomeTab
-        Explore -> Route.ExploreTab
+        Home -> Route.Home
+        Explore -> Route.Explore
         Create -> null
-        Saved -> Route.SavedTab
-        Profile -> Route.ProfileTab
+        Saved -> Route.Saved
+        Profile -> Route.Profile
     }
 }
 
 @Composable
 fun BottomNavBar(
     navController: NavController,
-    onCreateClick: () -> Unit
+    onCreate: () -> Unit
 ) {
     val backStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = backStackEntry?.destination?.route
@@ -70,7 +70,7 @@ fun BottomNavBar(
                     selected = currentRoute == item.route?.let { it::class.qualifiedName },
                     onClick = {
                         if (item is BottomNavItem.Create) {
-                            onCreateClick()
+                            onCreate()
                         } else {
                             item.route?.let { route ->
                                 navController.navigate(route) {

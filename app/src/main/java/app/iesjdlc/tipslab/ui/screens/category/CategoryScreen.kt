@@ -1,17 +1,17 @@
-package app.iesjdlc.tipslab.ui.screens.explore
+package app.iesjdlc.tipslab.ui.screens.category
 
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 
 @Composable
 fun CategoryScreen(
     viewModel: CategoryViewModel = hiltViewModel(),
     onNavigateBack: () -> Unit,
-    onLifehackClick: (String) -> Unit
+    onOpenLifehack: (String) -> Unit
 ) {
-    val uiState by viewModel.uiState.collectAsState()
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
     CategoryScreenUI(
         state = uiState,

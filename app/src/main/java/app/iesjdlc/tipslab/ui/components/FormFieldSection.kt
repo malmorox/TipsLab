@@ -24,7 +24,9 @@ fun FormFieldSection(
             style = MaterialTheme.typography.labelMedium,
             color = MaterialTheme.colorScheme.onSurfaceVariant
         )
+
         content()
+
         AnimatedVisibility(
             visible = errorMessage != null,
             enter = fadeIn() + expandVertically(),

@@ -25,7 +25,7 @@ fun MainScaffold(
 		bottomBar = {
 			BottomNavBar(
 				navController = innerNavController,
-				onCreateClick = {
+				onCreate = {
 					rootNavController.navigate(Route.CreateLifehack)
 				}
 			)
@@ -38,31 +38,32 @@ fun MainScaffold(
 		) {
 			composable<Route.Home> {
 				HomeTab(
-					onLifehackClick = { lifehackId ->
+					onOpenLifehack = { lifehackId ->
 						rootNavController.navigate(Route.LifehackDetail(lifehackId))
 					},
 					onOpenCategory = { categoryId ->
 						rootNavController.navigate(Route.LifehacksByCategory(categoryId))
 					},
-					onOpenSearch = {
-						rootNavController.navigate(Route.Explore)
+					onSearch = {
+						rootNavController.navigate(Route.Search)
 					}
 				)
 			}
 
 			composable<Route.Explore> {
 				ExploreTab(
-					onCategoryClick = { categoryId ->
+					onOpenCategory = { categoryId ->
 						rootNavController.navigate(Route.LifehacksByCategory(categoryId))
+					},
+					onSearch = {
+						rootNavController.navigate(Route.Search)
 					}
 				)
 			}
 
 			composable<Route.Saved> {
 				SavedTab(
-					onLifehackClick = { lifehackId ->
-						rootNavController.navigate(Route.LifehackDetail(lifehackId))
-					}
+
 				)
 			}
 

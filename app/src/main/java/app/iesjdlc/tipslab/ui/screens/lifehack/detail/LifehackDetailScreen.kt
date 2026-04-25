@@ -20,13 +20,14 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import app.iesjdlc.tipslab.R
+import app.iesjdlc.tipslab.domain.model.Category
 import app.iesjdlc.tipslab.ui.components.ConfirmOrDismissDialog
 import app.iesjdlc.tipslab.ui.components.LifehackStepsList
 
@@ -38,7 +39,7 @@ fun LifehackDetailScreen(
     onDeleteLifehack: () -> Unit,
     onOpenCategory: (Int) -> Unit
 ) {
-    val uiState = viewModel.uiState.collectAsState()
+    val uiState = viewModel.uiState.collectAsStateWithLifecycle()
 
     LifehackDetailScreenUI(
         state = uiState.value,
@@ -59,7 +60,7 @@ private fun LifehackDetailScreenUI(
     onDelete: () -> Unit,
     onConfirmDelete: () -> Unit,
     onDismissDelete: () -> Unit,
-    onOpenCategory: (Int) -> Unit,
+    onOpenCategory: (Category) -> Unit,
     onBack: () -> Unit,
 ) {
     Scaffold(

@@ -78,7 +78,7 @@ class EditLifehackViewModel @Inject constructor(
         }
     }
 
-    fun onTitleChanged(newValue: String) {
+    fun onTitleChange(newValue: String) {
         _uiState.update {
             it.copy(
                 title = newValue,
@@ -87,7 +87,7 @@ class EditLifehackViewModel @Inject constructor(
         }
     }
 
-    fun onDescriptionChanged(newValue: String) {
+    fun onDescriptionChange(newValue: String) {
         _uiState.update {
             it.copy(
                 description = newValue,
@@ -96,7 +96,7 @@ class EditLifehackViewModel @Inject constructor(
         }
     }
 
-    fun onStepsChanged(steps: List<String>) {
+    fun onStepsChange(steps: List<String>) {
         _uiState.update {
             it.copy(
                 steps = steps,
@@ -113,7 +113,7 @@ class EditLifehackViewModel @Inject constructor(
         _uiState.update { it.copy(showStepsSheet = false) }
     }
 
-    fun onCategoryChanged(newValue: Category) {
+    fun onCategoryChange(newValue: Category) {
         _uiState.update {
             it.copy(
                 category = newValue,
@@ -131,11 +131,11 @@ class EditLifehackViewModel @Inject constructor(
         _uiState.update { it.copy(showCategorySheet = false) }
     }
 
-    fun onMediaPicked(uri: Uri) {
+    fun onMediaPick(uri: Uri) {
         _uiState.update { it.copy(mediaLocalUri = uri) }
     }
 
-    fun onMediaRemoved() {
+    fun onMediaRemove() {
         _uiState.update {
             it.copy(
                 mediaLocalUri = null,
@@ -196,14 +196,14 @@ class EditLifehackViewModel @Inject constructor(
         }
     }
 
-    fun onDiscardChangesConfirmed(
+    fun onDiscardChangesConfirm(
         onNavigateBack: () -> Unit
     ) {
         _uiState.update { it.copy(showDiscardChangesDialog = false) }
         onNavigateBack()
     }
 
-    fun onDiscardChangesDismissed() {
+    fun onDiscardChangesDismiss() {
         _uiState.update { it.copy(showDiscardChangesDialog = false) }
     }
 

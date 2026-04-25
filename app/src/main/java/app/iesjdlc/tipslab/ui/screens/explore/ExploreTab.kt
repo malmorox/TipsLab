@@ -13,32 +13,36 @@ import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import app.iesjdlc.tipslab.domain.model.Category
 import app.iesjdlc.tipslab.ui.components.CategoryCard
+import app.iesjdlc.tipslab.ui.components.SearchBar
 
 @Composable
 fun ExploreTab(
     viewModel: ExploreViewModel = hiltViewModel(),
-    onCategoryClick: (Int) -> Unit
+    onOpenCategory: (Int) -> Unit,
+    onSearch: () -> Unit
 ) {
-    val uiState by viewModel.uiState.collectAsState()
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
     ExploreTabUI(
         state = uiState,
-        onCategoryClick = { category -> viewModel.onCategoryClick(category, onCategoryClick) }
+        onOpenCategory = { category -> viewModel.onCategoryClick(category, onOpenCategory) },
+        onSearch = onSearch
     )
 }
 
 @Composable
 private fun ExploreTabUI(
     state: ExploreUiState,
-    onCategoryClick: (Category) -> Unit
+    onOpenCategory: (Category) -> Unit,
+    onSearch: () -> Unit
 ) {
     Box(
         modifier = Modifier
@@ -46,29 +50,39 @@ private fun ExploreTabUI(
             .background(MaterialTheme.colorScheme.background)
             .padding(24.dp, 24.dp, 24.dp, 0.dp)
     ) {
-        if (state.isLoading) {
-            Box(
-                modifier = Modifier.fillMaxSize(),
-                contentAlignment = Alignment.Center
-            ) {
-                Text(
-                    text = "Cargando...",
-                    style = MaterialTheme.typography.headlineLarge,
-                    color = MaterialTheme.colorScheme.primary
-                )
-            }
-        } else {
-            LazyVerticalGrid(
-                columns = GridCells.Fixed(2),
-                modifier = Modifier.fillMaxSize(),
-                horizontalArrangement = Arrangement.spacedBy(12.dp),
-                verticalArrangement = Arrangement.spacedBy(12.dp)
-            ) {
-                items(state.allCategories) { category ->
-                    CategoryCard(
-                        category = category,
-                        onClick = { onCategoryClick(category) }
+        Column(
+            modifier = Modifier.fillMaxWidth(),
+            verticalArrangement = Arrangement.spacedBy(24.dp)
+        ) {
+            SearchBar(
+                readOnly = true,
+                onClick  = onSearch
+            )
+
+            if (state.isLoading) {
+                Box(
+                    modifier = Modifier.fillMaxSize(),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Text(
+                        text = "Cargando...",
+                        style = MaterialTheme.typography.headlineLarge,
+                        color = MaterialTheme.colorScheme.primary
                     )
+                }
+            } else {
+                LazyVerticalGrid(
+                    columns = GridCells.Fixed(2),
+                    modifier = Modifier.fillMaxSize(),
+                    horizontalArrangement = Arrangement.spacedBy(12.dp),
+                    verticalArrangement = Arrangement.spacedBy(12.dp)
+                ) {
+                    items(state.allCategories) { category ->
+                        CategoryCard(
+                            category = category,
+                            onClick = { onOpenCategory(category) }
+                        )
+                    }
                 }
             }
         }
