@@ -13,13 +13,14 @@ sealed interface Route {
     @Serializable data object Signup : Route
 
     // Grafo principal (pestañas y pantallas una vez autenticado)
-    @Serializable data object HomeTab : Route
-    @Serializable data object ExploreTab : Route
+    @Serializable data object Home : Route
+    @Serializable data object Explore : Route
     @Serializable data object CreateLifehack : Route
-    @Serializable data object SavedTab : Route
-    @Serializable data object ProfileTab : Route
+    @Serializable data object Saved : Route
+    @Serializable data object Profile : Route
 
     // Pantallas de destino
+    @Serializable data object Search : Route
     @Serializable data class LifehackDetail(val lifehackId: String) : Route
     @Serializable data class LifehacksByCategory(val categoryId: Int) : Route
     @Serializable data class EditLifehack(val lifehackId: String) : Route

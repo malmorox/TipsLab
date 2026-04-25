@@ -4,6 +4,11 @@ import app.iesjdlc.tipslab.domain.model.Category
 
 data class HomeUiState(
     val allCategories: List<Category> = emptyList(),
-    val isLoading: Boolean = false,
-    val error: String? = null
+
+    // Estados de carga
+    val isLoadingLifehacks: Boolean = false,
+    val isLoadingCategories: Boolean = false,
+
+    // Errores de carga
+
 )

@@ -25,7 +25,7 @@ class HomeViewModel @Inject constructor(
 
     private fun loadData() {
         viewModelScope.launch {
-            _uiState.value = _uiState.value.copy(isLoading = true)
+
 
             try {
                 val categoriesResult = categoryRepository.getAllCategories()
@@ -34,7 +34,7 @@ class HomeViewModel @Inject constructor(
                     _uiState.update { it.copy(allCategories = categories) }
                 }
             } finally {
-                _uiState.value = _uiState.value.copy(isLoading = false)
+
             }
         }
     }

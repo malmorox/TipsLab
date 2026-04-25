@@ -92,113 +92,82 @@ private fun CreateLifehackScreenUI(
     onDiscardChangesConfirmed: () -> Unit,
     onDiscardChangesDismissed: () -> Unit,
 ) {
-    Column(
+    Box(
         modifier = Modifier
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.background)
-            .padding(horizontal = 24.dp, vertical = 36.dp),
-    )   {
-        Box(
-            modifier = Modifier
-                .weight(1f)
-                .fillMaxWidth()
-                .padding(top = 12.dp, bottom = 24.dp),
-            contentAlignment = Alignment.Center
-        ) {
-            Column(
+            .padding(24.dp),
+    ) {
+        Column(
+            modifier = Modifier.fillMaxSize()
+        )   {
+            Box(
                 modifier = Modifier
-                    .fillMaxSize()
-                    .verticalScroll(rememberScrollState()),
-                horizontalAlignment = Alignment.CenterHorizontally,
+                    .weight(1f)
+                    .fillMaxWidth()
+                    .padding(top = 12.dp, bottom = 24.dp),
+                contentAlignment = Alignment.Center
             ) {
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically
+                Column(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .verticalScroll(rememberScrollState()),
+                    horizontalAlignment = Alignment.CenterHorizontally,
                 ) {
-                    Text(
-                        text = stringResource(R.string.create_lifehack),
-                        style = MaterialTheme.typography.headlineLarge,
-                        color = MaterialTheme.colorScheme.primary,
-                        textAlign = TextAlign.Start
-                    )
-
-                    IconButton(
-                        onClick = onClose
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
                     ) {
-                        Icon(
-                            modifier = Modifier.size(24.dp),
-                            imageVector = Icons.Rounded.Close,
-                            contentDescription = stringResource(R.string.close),
-                            tint = MaterialTheme.colorScheme.onSurfaceVariant
+                        Text(
+                            text = stringResource(R.string.create_lifehack),
+                            style = MaterialTheme.typography.headlineLarge,
+                            color = MaterialTheme.colorScheme.primary,
+                            textAlign = TextAlign.Start
                         )
-                    }
-                }
 
-                Spacer(modifier = Modifier.height(24.dp))
-
-                Column {
-                    FormFieldSection(label = stringResource(R.string.media)) {
-                        MediaPicker(
-                            mediaUri = state.mediaLocalUri,
-                            onMediaPicked = onMediaPicked,
-                            onMediaRemoved = onMediaRemoved
-                        )
-                    }
-
-                    Spacer(modifier = Modifier.height(16.dp))
-
-                    FormFieldSection(
-                        label = stringResource(R.string.title),
-                        errorMessage = state.titleErrorMessage?.asString()
-                    ) {
-                        OutlinedTextField(
-                            value = state.title,
-                            onValueChange = onTitleChanged,
-                            placeholder = {
-                                Text(
-                                    text = stringResource(R.string.title_placeholder),
-                                    style = MaterialTheme.typography.bodyMedium,
-                                    color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.4f)
-                                )
-                            },
-                            singleLine = true,
-                            enabled = !state.isLoading,
-                            modifier = Modifier.fillMaxWidth(),
-                            shape = MaterialTheme.shapes.medium,
-                            colors = OutlinedTextFieldDefaults.colors(
-                                focusedBorderColor = MaterialTheme.colorScheme.primary,
-                                unfocusedBorderColor = MaterialTheme.colorScheme.onSurfaceVariant.copy(
-                                    alpha = 0.7f
-                                ),
-                                cursorColor = MaterialTheme.colorScheme.primary
+                        IconButton(
+                            onClick = onClose
+                        ) {
+                            Icon(
+                                modifier = Modifier.size(24.dp),
+                                imageVector = Icons.Rounded.Close,
+                                contentDescription = stringResource(R.string.close),
+                                tint = MaterialTheme.colorScheme.onSurfaceVariant
                             )
-                        )
+                        }
                     }
 
-                    Spacer(modifier = Modifier.height(16.dp))
+                    Spacer(modifier = Modifier.height(24.dp))
 
-                    FormFieldSection(
-                        label = stringResource(R.string.description),
-                        errorMessage = state.descriptionErrorMessage?.asString()
-                    ) {
-                        Box {
+                    Column {
+                        FormFieldSection(label = stringResource(R.string.media)) {
+                            MediaPicker(
+                                mediaUri = state.mediaLocalUri,
+                                onMediaPicked = onMediaPicked,
+                                onMediaRemoved = onMediaRemoved
+                            )
+                        }
+
+                        Spacer(modifier = Modifier.height(16.dp))
+
+                        FormFieldSection(
+                            label = stringResource(R.string.title),
+                            errorMessage = state.titleErrorMessage?.asString()
+                        ) {
                             OutlinedTextField(
-                                value = state.description,
-                                onValueChange = onDescriptionChanged,
+                                value = state.title,
+                                onValueChange = onTitleChanged,
                                 placeholder = {
                                     Text(
-                                        text = stringResource(R.string.description_placeholder),
+                                        text = stringResource(R.string.title_placeholder),
                                         style = MaterialTheme.typography.bodyMedium,
-                                        color = MaterialTheme.colorScheme.onSurfaceVariant.copy(
-                                            alpha = 0.4f
-                                        )
+                                        color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.4f)
                                     )
                                 },
+                                singleLine = true,
                                 enabled = !state.isLoading,
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .height(140.dp),
+                                modifier = Modifier.fillMaxWidth(),
                                 shape = MaterialTheme.shapes.medium,
                                 colors = OutlinedTextFieldDefaults.colors(
                                     focusedBorderColor = MaterialTheme.colorScheme.primary,
@@ -208,138 +177,173 @@ private fun CreateLifehackScreenUI(
                                     cursorColor = MaterialTheme.colorScheme.primary
                                 )
                             )
-
-                            Text(
-                                text = "${state.description.length}/$MAX_DESCRIPTION_LENGTH",
-                                textAlign = TextAlign.End,
-                                modifier = Modifier
-                                    .align(Alignment.BottomEnd)
-                                    .padding(end = 12.dp, bottom = 8.dp),
-                                style = MaterialTheme.typography.labelSmall,
-                                color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.5f)
-                            )
                         }
-                    }
 
-                    Spacer(modifier = Modifier.height(16.dp))
+                        Spacer(modifier = Modifier.height(16.dp))
 
-                    FormFieldSection(label = stringResource(R.string.steps)) {
-                        Surface(
-                            onClick = onStepsSheetOpen,
-                            enabled = !state.isLoading,
-                            shape = MaterialTheme.shapes.medium,
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .border(
-                                    width = 1.dp,
-                                    color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f),
-                                    shape = MaterialTheme.shapes.medium
-                                ),
-                            color = Color.Transparent
+                        FormFieldSection(
+                            label = stringResource(R.string.description),
+                            errorMessage = state.descriptionErrorMessage?.asString()
                         ) {
-                            Row(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .padding(horizontal = 16.dp, vertical = 16.dp),
-                                horizontalArrangement = Arrangement.SpaceBetween,
-                                verticalAlignment = Alignment.CenterVertically
-                            ) {
-                                if (state.stepsCount > 0) {
-                                    Text(
-                                        text = "${state.stepsCount} ${
-                                            if (state.stepsCount == 1) stringResource(
-                                                R.string.step
-                                            ) else stringResource(R.string.steps)
-                                        }",
-                                        style = MaterialTheme.typography.bodyMedium,
-                                        color = MaterialTheme.colorScheme.onSurfaceVariant
-                                    )
-                                } else {
-                                    Text(
-                                        text = stringResource(R.string.steps_placeholder),
-                                        style = MaterialTheme.typography.bodyMedium,
-                                        color = MaterialTheme.colorScheme.onSurfaceVariant.copy(
-                                            alpha = 0.4f
+                            Box {
+                                OutlinedTextField(
+                                    value = state.description,
+                                    onValueChange = onDescriptionChanged,
+                                    placeholder = {
+                                        Text(
+                                            text = stringResource(R.string.description_placeholder),
+                                            style = MaterialTheme.typography.bodyMedium,
+                                            color = MaterialTheme.colorScheme.onSurfaceVariant.copy(
+                                                alpha = 0.4f
+                                            )
                                         )
+                                    },
+                                    enabled = !state.isLoading,
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .height(140.dp),
+                                    shape = MaterialTheme.shapes.medium,
+                                    colors = OutlinedTextFieldDefaults.colors(
+                                        focusedBorderColor = MaterialTheme.colorScheme.primary,
+                                        unfocusedBorderColor = MaterialTheme.colorScheme.onSurfaceVariant.copy(
+                                            alpha = 0.7f
+                                        ),
+                                        cursorColor = MaterialTheme.colorScheme.primary
                                     )
-                                }
+                                )
 
-                                Icon(
-                                    imageVector = Icons.Rounded.ChevronRight,
-                                    contentDescription = null,
-                                    tint = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f)
+                                Text(
+                                    text = "${state.description.length}/$MAX_DESCRIPTION_LENGTH",
+                                    textAlign = TextAlign.End,
+                                    modifier = Modifier
+                                        .align(Alignment.BottomEnd)
+                                        .padding(end = 12.dp, bottom = 8.dp),
+                                    style = MaterialTheme.typography.labelSmall,
+                                    color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.5f)
                                 )
                             }
                         }
-                    }
 
-                    Spacer(modifier = Modifier.height(16.dp))
+                        Spacer(modifier = Modifier.height(16.dp))
 
-                    FormFieldSection(
-                        label = stringResource(R.string.category),
-                        errorMessage = state.categoryErrorMessage?.asString()
-                    ) {
-                        Surface(
-                            onClick = onCategorySheetOpen,
-                            enabled = !state.isLoading,
-                            shape = MaterialTheme.shapes.medium,
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .border(
-                                    width = 1.dp,
-                                    color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f),
-                                    shape = MaterialTheme.shapes.medium
-                                ),
-                            color = Color.Transparent
-                        ) {
-                            Row(
+                        FormFieldSection(label = stringResource(R.string.steps)) {
+                            Surface(
+                                onClick = onStepsSheetOpen,
+                                enabled = !state.isLoading,
+                                shape = MaterialTheme.shapes.medium,
                                 modifier = Modifier
                                     .fillMaxWidth()
-                                    .padding(horizontal = 16.dp, vertical = 16.dp),
-                                horizontalArrangement = Arrangement.SpaceBetween,
-                                verticalAlignment = Alignment.CenterVertically
+                                    .border(
+                                        width = 1.dp,
+                                        color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f),
+                                        shape = MaterialTheme.shapes.medium
+                                    ),
+                                color = Color.Transparent
                             ) {
-                                if (state.category != null) {
-                                    Text(
-                                        text = state.category.name,
-                                        style = MaterialTheme.typography.bodyMedium,
-                                        color = MaterialTheme.colorScheme.onSurfaceVariant
-                                    )
-                                } else {
-                                    Text(
-                                        text = stringResource(R.string.category_placeholder),
-                                        style = MaterialTheme.typography.bodyMedium,
-                                        color = MaterialTheme.colorScheme.onSurfaceVariant.copy(
-                                            alpha = 0.4f
+                                Row(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(horizontal = 16.dp, vertical = 16.dp),
+                                    horizontalArrangement = Arrangement.SpaceBetween,
+                                    verticalAlignment = Alignment.CenterVertically
+                                ) {
+                                    if (state.stepsCount > 0) {
+                                        Text(
+                                            text = "${state.stepsCount} ${
+                                                if (state.stepsCount == 1) stringResource(
+                                                    R.string.step
+                                                ) else stringResource(R.string.steps)
+                                            }",
+                                            style = MaterialTheme.typography.bodyMedium,
+                                            color = MaterialTheme.colorScheme.onSurfaceVariant
                                         )
+                                    } else {
+                                        Text(
+                                            text = stringResource(R.string.steps_placeholder),
+                                            style = MaterialTheme.typography.bodyMedium,
+                                            color = MaterialTheme.colorScheme.onSurfaceVariant.copy(
+                                                alpha = 0.4f
+                                            )
+                                        )
+                                    }
+
+                                    Icon(
+                                        imageVector = Icons.Rounded.ChevronRight,
+                                        contentDescription = null,
+                                        tint = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f)
                                     )
                                 }
+                            }
+                        }
 
-                                Icon(
-                                    imageVector = Icons.Rounded.ChevronRight,
-                                    contentDescription = null,
-                                    tint = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f)
-                                )
+                        Spacer(modifier = Modifier.height(16.dp))
+
+                        FormFieldSection(
+                            label = stringResource(R.string.category),
+                            errorMessage = state.categoryErrorMessage?.asString()
+                        ) {
+                            Surface(
+                                onClick = onCategorySheetOpen,
+                                enabled = !state.isLoading,
+                                shape = MaterialTheme.shapes.medium,
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .border(
+                                        width = 1.dp,
+                                        color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f),
+                                        shape = MaterialTheme.shapes.medium
+                                    ),
+                                color = Color.Transparent
+                            ) {
+                                Row(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(horizontal = 16.dp, vertical = 16.dp),
+                                    horizontalArrangement = Arrangement.SpaceBetween,
+                                    verticalAlignment = Alignment.CenterVertically
+                                ) {
+                                    if (state.category != null) {
+                                        Text(
+                                            text = state.category.name,
+                                            style = MaterialTheme.typography.bodyMedium,
+                                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                                        )
+                                    } else {
+                                        Text(
+                                            text = stringResource(R.string.category_placeholder),
+                                            style = MaterialTheme.typography.bodyMedium,
+                                            color = MaterialTheme.colorScheme.onSurfaceVariant.copy(
+                                                alpha = 0.4f
+                                            )
+                                        )
+                                    }
+
+                                    Icon(
+                                        imageVector = Icons.Rounded.ChevronRight,
+                                        contentDescription = null,
+                                        tint = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f)
+                                    )
+                                }
                             }
                         }
                     }
                 }
             }
-        }
 
-        Button(
-            onClick = onSubmited,
-            enabled = !state.isLoading,
-            shape = MaterialTheme.shapes.medium,
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(52.dp)
-        ) {
-            Text(
-                text = stringResource(R.string.publish).uppercase(),
-                style = MaterialTheme.typography.bodyLarge,
-                color = Color.White,
-            )
+            Button(
+                onClick = onSubmited,
+                enabled = !state.isLoading,
+                shape = MaterialTheme.shapes.medium,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(52.dp)
+            ) {
+                Text(
+                    text = stringResource(R.string.publish).uppercase(),
+                    style = MaterialTheme.typography.bodyLarge,
+                    color = Color.White,
+                )
+            }
         }
     }
 

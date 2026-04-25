@@ -6,23 +6,20 @@ import androidx.compose.runtime.getValue
 import androidx.hilt.navigation.compose.hiltViewModel
 
 @Composable
-fun CategoryScreen(
-    viewModel: CategoryViewModel = hiltViewModel(),
-    onNavigateBack: () -> Unit,
-    onLifehackClick: (String) -> Unit
+fun SearchScreen(
+    viewModel: SearchViewModel = hiltViewModel(),
+    onNavigateBack: () -> Unit
 ) {
     val uiState by viewModel.uiState.collectAsState()
 
-    CategoryScreenUI(
-        state = uiState,
-        onBack = onNavigateBack,
+    SearchScreenUI(
+        state = uiState
     )
 }
 
 @Composable
-private fun CategoryScreenUI(
-    state: CategoryUiState,
-    onBack: () -> Unit
+private fun SearchScreenUI(
+    state: SearchUiState
 ) {
 
 }

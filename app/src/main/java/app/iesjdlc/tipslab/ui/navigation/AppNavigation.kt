@@ -9,10 +9,11 @@ import androidx.navigation.compose.rememberNavController
 import app.iesjdlc.tipslab.ui.screens.lifehack.edit.EditLifehackScreen
 import app.iesjdlc.tipslab.ui.screens.profile.edit.EditProfileScreen
 import app.iesjdlc.tipslab.ui.screens.lifehack.detail.LifehackDetailScreen
-import app.iesjdlc.tipslab.ui.screens.explore.LifehacksByCategoryScreen
 import app.iesjdlc.tipslab.ui.screens.splash.SplashScreen
 import app.iesjdlc.tipslab.ui.screens.auth.login.LoginScreen
 import app.iesjdlc.tipslab.ui.screens.auth.signup.SignupScreen
+import app.iesjdlc.tipslab.ui.screens.explore.CategoryScreen
+import app.iesjdlc.tipslab.ui.screens.explore.SearchScreen
 import app.iesjdlc.tipslab.ui.screens.lifehack.create.CreateLifehackScreen
 
 @Composable
@@ -104,6 +105,12 @@ fun AppNavigation() {
         }
 
         // Pantallas de destino
+        composable<Route.Search> {
+            SearchScreen(
+                onNavigateBack = { rootNavController.popBackStack() }
+            )
+        }
+
         composable<Route.LifehackDetail> {
             LifehackDetailScreen(
                 onNavigateBack = { rootNavController.popBackStack() },
@@ -118,7 +125,7 @@ fun AppNavigation() {
         }
 
         composable<Route.LifehacksByCategory> {
-            LifehacksByCategoryScreen(
+            CategoryScreen(
                 onNavigateBack = { rootNavController.popBackStack() },
                 onLifehackClick = { lifehackId ->
                     rootNavController.navigate(Route.LifehackDetail(lifehackId))

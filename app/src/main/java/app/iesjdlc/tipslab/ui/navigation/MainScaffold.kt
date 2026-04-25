@@ -33,29 +33,32 @@ fun MainScaffold(
 	) { innerPadding ->
 		NavHost(
 			navController = innerNavController,
-			startDestination = Route.HomeTab,
+			startDestination = Route.Home,
 			modifier = Modifier.padding(innerPadding)
 		) {
-			composable<Route.HomeTab> {
+			composable<Route.Home> {
 				HomeTab(
 					onLifehackClick = { lifehackId ->
 						rootNavController.navigate(Route.LifehackDetail(lifehackId))
+					},
+					onOpenCategory = { categoryId ->
+						rootNavController.navigate(Route.LifehacksByCategory(categoryId))
+					},
+					onOpenSearch = {
+						rootNavController.navigate(Route.Explore)
 					}
 				)
 			}
 
-			composable<Route.ExploreTab> {
+			composable<Route.Explore> {
 				ExploreTab(
-					onLifehackClick = { lifehackId ->
-						rootNavController.navigate(Route.LifehackDetail(lifehackId))
-					},
 					onCategoryClick = { categoryId ->
 						rootNavController.navigate(Route.LifehacksByCategory(categoryId))
 					}
 				)
 			}
 
-			composable<Route.SavedTab> {
+			composable<Route.Saved> {
 				SavedTab(
 					onLifehackClick = { lifehackId ->
 						rootNavController.navigate(Route.LifehackDetail(lifehackId))
@@ -63,7 +66,7 @@ fun MainScaffold(
 				)
 			}
 
-			composable<Route.ProfileTab> {
+			composable<Route.Profile> {
 				ProfileTab(
 					onEditProfile = {
 						rootNavController.navigate(Route.EditProfile)
