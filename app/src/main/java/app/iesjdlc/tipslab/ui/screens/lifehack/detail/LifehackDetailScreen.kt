@@ -30,6 +30,7 @@ import app.iesjdlc.tipslab.R
 import app.iesjdlc.tipslab.domain.model.Category
 import app.iesjdlc.tipslab.ui.components.ConfirmOrDismissDialog
 import app.iesjdlc.tipslab.ui.components.LifehackStepsList
+import app.iesjdlc.tipslab.ui.components.OptionsContextMenu
 
 @Composable
 fun LifehackDetailScreen(
@@ -43,6 +44,8 @@ fun LifehackDetailScreen(
 
     LifehackDetailScreenUI(
         state = uiState.value,
+        onOptions = { viewModel.onOptionsClick() },
+        onDismissOptions = { viewModel.onDismissOptionsMenu() },
         onEdit = { viewModel.onEditClick(onEditLifehack) },
         onDelete = { viewModel.onDeleteClick() },
         onConfirmDelete = { viewModel.onConfirmDelete(onDeleteLifehack) },
@@ -56,6 +59,8 @@ fun LifehackDetailScreen(
 @Composable
 private fun LifehackDetailScreenUI(
     state: LifehackDetailUiState,
+    onOptions: () -> Unit,
+    onDismissOptions: () -> Unit,
     onEdit: () -> Unit,
     onDelete: () -> Unit,
     onConfirmDelete: () -> Unit,
@@ -82,9 +87,9 @@ private fun LifehackDetailScreenUI(
                     }
                 },
                 actions = {
-                    if (state.isOwner) {
+                    if (state.isAuthor) {
                         IconButton(
-                            onClick = { /* TODO abrir menú */ }
+                            onClick = onOptions
                         ) {
                             Icon(
                                 modifier = Modifier.size(24.dp),
@@ -145,6 +150,14 @@ private fun LifehackDetailScreenUI(
                 }
             }
         }
+    }
+
+    if (state.showOptionsContextMenu) {
+        OptionsContextMenu(
+            onDismiss = onDismissOptions,
+            onEdit = onEdit,
+            onDelete = onDelete
+        )
     }
 
     if (state.showConfirmDeleteDialog) {

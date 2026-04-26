@@ -4,7 +4,9 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
+import app.iesjdlc.tipslab.domain.repository.AuthRepository
 import app.iesjdlc.tipslab.domain.repository.LifehackRepository
+import app.iesjdlc.tipslab.domain.repository.SavedRepository
 import app.iesjdlc.tipslab.ui.navigation.Route
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -17,7 +19,9 @@ import javax.inject.Inject
 @HiltViewModel
 class LifehackDetailViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
-    private val lifehackRepository: LifehackRepository
+    private val lifehackRepository: LifehackRepository,
+    private val savedRepository: SavedRepository,
+    private val authRepository: AuthRepository
 ) : ViewModel() {
     private val lifehackId = savedStateHandle.toRoute<Route.LifehackDetail>().lifehackId
 
@@ -33,11 +37,28 @@ class LifehackDetailViewModel @Inject constructor(
             _uiState.update { it.copy(isLoading = true) }
 
             try {
+                val currentUser = authRepository.getCurrentUser()
+
                 lifehackRepository.getLifehackById(lifehackId)
                     .onSuccess { lifehack ->
+                        val isAuthor = lifehack.author.id == currentUser.id
+
+                        var isLiked = false
+                        var isSaved = false
+
+                        if (!isAuthor) {
+                            isLiked = lifehackRepository.isLifehackLiked(currentUser.id, lifehackId)
+                                .getOrDefault(false)
+                            isSaved = savedRepository.isLifehackSaved(currentUser.id, lifehackId)
+                                .getOrDefault(false)
+                        }
+
                         _uiState.update {
                             it.copy(
                                 lifehack = lifehack,
+                                isAuthor = isAuthor,
+                                isLiked = isLiked,
+                                isSaved = isSaved,
                                 isLoading = false
                             )
                         }
@@ -49,6 +70,14 @@ class LifehackDetailViewModel @Inject constructor(
                 _uiState.update { it.copy(isLoading = false) }
             }
         }
+    }
+
+    fun onOptionsClick() {
+        _uiState.update { it.copy(showOptionsContextMenu = true) }
+    }
+
+    fun onDismissOptionsMenu() {
+        _uiState.update { it.copy(showOptionsContextMenu = false) }
     }
 
     fun onEditClick(
