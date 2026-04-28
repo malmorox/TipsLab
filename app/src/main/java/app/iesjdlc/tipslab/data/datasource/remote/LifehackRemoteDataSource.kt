@@ -21,6 +21,13 @@ class LifehackRemoteDataSource @Inject constructor(
             .get().await()
             .toObject(LifehackDto::class.java)
 
+    override suspend fun getByIds(ids: List<String>): List<LifehackDto> =
+        db.collection("lifehacks")
+            .whereIn("id", ids)
+            .get().await()
+            .documents
+            .mapNotNull { it.toObject(LifehackDto::class.java) }
+
     override suspend fun getByCategory(categoryId: Int): List<LifehackDto> =
         db.collection("lifehacks")
             .whereEqualTo("category_id", categoryId)

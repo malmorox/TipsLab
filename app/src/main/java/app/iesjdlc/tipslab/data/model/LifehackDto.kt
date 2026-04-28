@@ -8,24 +8,31 @@ data class LifehackDto(
     val description: String = "",
     val steps: List<String> = emptyList(),
 
-    @PropertyName("category_id")
-    val categoryId: Int = 0,
+    @get:PropertyName("category_id")
+    @set:PropertyName("category_id")
+    var categoryId: Int = 0,
 
-    @PropertyName("author_id")
-    val authorId: String = "",
+    @get:PropertyName("author_id")
+    @set:PropertyName("author_id")
+    var authorId: String = "",
 
-    @PropertyName("media_type")
-    val mediaType: String? = null,
+    @get:PropertyName("media_type")
+    @set:PropertyName("media_type")
+    var mediaType: String? = null,
 
-    @PropertyName("media_url")
-    val mediaUrl: String? = null,
+    @get:PropertyName("media_url")
+    @set:PropertyName("media_url")
+    var mediaUrl: String? = null,
 
-    @PropertyName("created_at")
-    val createdAt: Long = System.currentTimeMillis(),
+    @get:PropertyName("created_at")
+    @set:PropertyName("created_at")
+    var createdAt: Long = System.currentTimeMillis(),
 
-    @PropertyName("updated_at")
-    val updatedAt: Long = System.currentTimeMillis(),
+    @get:PropertyName("updated_at")
+    @set:PropertyName("updated_at")
+    var updatedAt: Long = System.currentTimeMillis(),
 
-    @PropertyName("likes_count")
-    val likesCount: Int = 0
+    @get:PropertyName("likes_count")
+    @set:PropertyName("likes_count")
+    var likesCount: Int = 0
 )

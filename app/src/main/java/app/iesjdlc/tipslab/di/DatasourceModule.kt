@@ -4,6 +4,8 @@ import app.iesjdlc.tipslab.data.datasource.local.CategoryDataSource
 import app.iesjdlc.tipslab.data.datasource.local.CategoryLocalDataSource
 import app.iesjdlc.tipslab.data.datasource.remote.LifehackDataSource
 import app.iesjdlc.tipslab.data.datasource.remote.LifehackRemoteDataSource
+import app.iesjdlc.tipslab.data.datasource.remote.SavedLikedDataSource
+import app.iesjdlc.tipslab.data.datasource.remote.SavedLikedRemoteDataSource
 import app.iesjdlc.tipslab.data.datasource.remote.UserDataSource
 import app.iesjdlc.tipslab.data.datasource.remote.UserRemoteDataSource
 import dagger.Binds
@@ -26,4 +28,8 @@ abstract class DatasourceModule {
     @Binds
     @Singleton
     abstract fun bindUserDataSource(impl: UserRemoteDataSource): UserDataSource
+
+    @Binds
+    @Singleton
+    abstract fun bindSavedLikedDataSource(impl: SavedLikedRemoteDataSource): SavedLikedDataSource
 }

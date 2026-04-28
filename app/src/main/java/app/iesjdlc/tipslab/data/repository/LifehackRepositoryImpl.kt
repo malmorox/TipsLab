@@ -9,19 +9,17 @@ import com.google.firebase.auth.FirebaseAuth
 import javax.inject.Inject
 
 class LifehackRepositoryImpl @Inject constructor(
-    private val auth: FirebaseAuth,
     private val dataSource: LifehackDataSource,
     private val mapper: LifehackMapper,
     private val resolver: LifehackResolver
 ) : LifehackRepository {
-    override suspend fun getMyLifehacks(): Result<List<Lifehack>> = runCatching {
-        val uid = auth.currentUser?.uid ?: error("No autenticado")
+    override suspend fun getUserLifehacks(uid: String): Result<List<Lifehack>> = runCatching {
         resolver.resolve(dataSource.getByAuthor(uid))
     }
 
     override suspend fun getLifehackById(id: String): Result<Lifehack> = runCatching {
         val dto = dataSource.getById(id) ?: error("Lifehack no encontrado")
-        resolver.resolveOne(dto) ?: error("No se pudo resolver el lifehack")
+        resolver.resolveOne(dto) ?: error("Lifehack no encontrado")
     }
 
     override suspend fun getLifehacksByCategory(categoryId: Int): Result<List<Lifehack>> = runCatching {

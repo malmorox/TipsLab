@@ -3,7 +3,7 @@ package app.iesjdlc.tipslab.domain.repository
 import app.iesjdlc.tipslab.domain.model.Lifehack
 
 interface LifehackRepository {
-    suspend fun getMyLifehacks(): Result<List<Lifehack>>
+    suspend fun getUserLifehacks(uid: String): Result<List<Lifehack>>
     suspend fun getLifehackById(id: String): Result<Lifehack>
     suspend fun getLifehacksByCategory(categoryId: Int): Result<List<Lifehack>>
     suspend fun getRandomLifehacks(limit: Int = 10): Result<List<Lifehack>>

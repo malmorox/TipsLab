@@ -1,0 +1,23 @@
+package app.iesjdlc.tipslab.presentation.screens.category
+
+import app.iesjdlc.tipslab.domain.model.Category
+import app.iesjdlc.tipslab.domain.model.Lifehack
+import app.iesjdlc.tipslab.presentation.common.SectionState
+
+data class CategoryUiState(
+    val category: Category? = null,
+    val isLoading: Boolean = true,
+    val errorMessage: String? = null,
+    val sections: ContentSections = ContentSections()
+) {
+    val globalContentError: Boolean
+        get() = sections.recent.error != null && sections.popular.error != null
+
+    val globalContentNoData: Boolean
+        get() = sections.recent.data.isNullOrEmpty() && sections.popular.data.isNullOrEmpty()
+}
+
+data class ContentSections(
+    val recent: SectionState<List<Lifehack>> = SectionState(),
+    val popular: SectionState<List<Lifehack>> = SectionState(),
+)

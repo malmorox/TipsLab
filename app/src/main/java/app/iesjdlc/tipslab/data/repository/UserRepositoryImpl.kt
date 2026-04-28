@@ -3,9 +3,7 @@ package app.iesjdlc.tipslab.data.repository
 import app.iesjdlc.tipslab.data.datasource.remote.UserDataSource
 import app.iesjdlc.tipslab.data.mapper.UserMapper
 import app.iesjdlc.tipslab.domain.model.User
-import app.iesjdlc.tipslab.data.model.UserDto
 import app.iesjdlc.tipslab.domain.repository.UserRepository
-import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 
 class UserRepositoryImpl @Inject constructor(

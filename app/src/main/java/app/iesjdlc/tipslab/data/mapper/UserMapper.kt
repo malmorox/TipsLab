@@ -20,7 +20,7 @@ class UserMapper @Inject constructor() {
         id = domain.id,
         email = domain.email,
         username = domain.username,
-        photoUrl = domain.photoUrl ?: "",
+        photoUrl = domain.photoUrl,
         provider = domain.provider.name
     )
 }

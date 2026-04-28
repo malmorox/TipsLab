@@ -6,8 +6,8 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.annotation.RequiresApi
-import app.iesjdlc.tipslab.ui.navigation.AppNavigation
-import app.iesjdlc.tipslab.ui.theme.TipsLabTheme
+import app.iesjdlc.tipslab.presentation.navigation.AppNavigation
+import app.iesjdlc.tipslab.presentation.theme.TipsLabTheme
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
