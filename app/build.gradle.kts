@@ -78,6 +78,10 @@ dependencies {
     implementation(libs.supabase.storage)
     implementation(libs.ktor.client.android)
 
+    // Room
+    implementation(libs.androidx.room.runtime)
+    ksp(libs.androidx.room.compiler)
+
     // CameraX
     implementation(libs.bundles.camerax)
 
@@ -87,9 +91,6 @@ dependencies {
 
     // Compressor (imágenes)
     implementation(libs.compressor)
-
-    // Compressor (videos)
-
 
     // Media3 / ExoPlayer
     implementation(libs.bundles.media3)

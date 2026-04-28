@@ -25,16 +25,6 @@ class HomeViewModel @Inject constructor(
     private fun loadData() {
         viewModelScope.launch {
 
-
-            try {
-                val categoriesResult = categoryRepository.getAllCategories()
-
-                categoriesResult.onSuccess { categories ->
-                    _uiState.update { it.copy(allCategories = categories) }
-                }
-            } finally {
-
-            }
         }
     }
 }

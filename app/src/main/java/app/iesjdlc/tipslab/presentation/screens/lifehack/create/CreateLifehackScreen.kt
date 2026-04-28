@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -95,78 +96,109 @@ private fun CreateLifehackScreenUI(
         modifier = Modifier
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.background)
-            .padding(24.dp),
+            .padding(horizontal = 24.dp),
     ) {
         Column(
-            modifier = Modifier.fillMaxSize()
-        )   {
-            Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(bottom = 24.dp),
+            verticalArrangement = Arrangement.spacedBy(16.dp)
+        ) {
+            Column(
                 modifier = Modifier
                     .weight(1f)
                     .fillMaxWidth()
-                    .padding(top = 12.dp, bottom = 24.dp),
-                contentAlignment = Alignment.Center
+                    .verticalScroll(rememberScrollState()),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.spacedBy(16.dp)
             ) {
-                Column(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .verticalScroll(rememberScrollState()),
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.spacedBy(24.dp)
-                ) {
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.SpaceBetween,
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Text(
-                            text = stringResource(R.string.create_lifehack),
-                            style = MaterialTheme.typography.headlineLarge,
-                            color = MaterialTheme.colorScheme.primary,
-                            textAlign = TextAlign.Start
-                        )
+                Spacer(modifier = Modifier.height(16.dp))
 
-                        IconButton(
-                            onClick = onClose
-                        ) {
-                            Icon(
-                                modifier = Modifier.size(24.dp),
-                                imageVector = Icons.Rounded.Close,
-                                contentDescription = stringResource(R.string.close),
-                                tint = MaterialTheme.colorScheme.onSurfaceVariant
-                            )
-                        }
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(
+                        text = stringResource(R.string.create_lifehack),
+                        style = MaterialTheme.typography.headlineLarge,
+                        color = MaterialTheme.colorScheme.primary,
+                        textAlign = TextAlign.Start
+                    )
+
+                    IconButton(
+                        onClick = onClose
+                    ) {
+                        Icon(
+                            modifier = Modifier.size(24.dp),
+                            imageVector = Icons.Rounded.Close,
+                            contentDescription = stringResource(R.string.close),
+                            tint = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                    }
+                }
+
+                Column(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalArrangement = Arrangement.spacedBy(16.dp)
+                ) {
+                    FormFieldSection(label = stringResource(R.string.media)) {
+                        MediaPicker(
+                            mediaUri = state.mediaLocalUri,
+                            onMediaPicked = onMediaPick,
+                            onMediaRemoved = onMediaRemove
+                        )
                     }
 
-                    Column(
-                        modifier = Modifier.fillMaxWidth(),
-                        verticalArrangement = Arrangement.spacedBy(16.dp)
+                    FormFieldSection(
+                        label = stringResource(R.string.title),
+                        errorMessage = state.titleErrorMessage?.asString()
                     ) {
-                        FormFieldSection(label = stringResource(R.string.media)) {
-                            MediaPicker(
-                                mediaUri = state.mediaLocalUri,
-                                onMediaPicked = onMediaPick,
-                                onMediaRemoved = onMediaRemove
+                        OutlinedTextField(
+                            value = state.title,
+                            onValueChange = onTitleChange,
+                            placeholder = {
+                                Text(
+                                    text = stringResource(R.string.title_placeholder),
+                                    style = MaterialTheme.typography.bodyMedium,
+                                    color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.4f)
+                                )
+                            },
+                            singleLine = true,
+                            enabled = !state.isLoading,
+                            modifier = Modifier.fillMaxWidth(),
+                            shape = MaterialTheme.shapes.medium,
+                            colors = OutlinedTextFieldDefaults.colors(
+                                focusedBorderColor = MaterialTheme.colorScheme.primary,
+                                unfocusedBorderColor = MaterialTheme.colorScheme.onSurfaceVariant.copy(
+                                    alpha = 0.7f
+                                ),
+                                cursorColor = MaterialTheme.colorScheme.primary
                             )
-                        }
+                        )
+                    }
 
-                        FormFieldSection(
-                            label = stringResource(R.string.title),
-                            errorMessage = state.titleErrorMessage?.asString()
-                        ) {
+                    FormFieldSection(
+                        label = stringResource(R.string.description),
+                        errorMessage = state.descriptionErrorMessage?.asString()
+                    ) {
+                        Box {
                             OutlinedTextField(
-                                value = state.title,
-                                onValueChange = onTitleChange,
+                                value = state.description,
+                                onValueChange = onDescriptionChange,
                                 placeholder = {
                                     Text(
-                                        text = stringResource(R.string.title_placeholder),
+                                        text = stringResource(R.string.description_placeholder),
                                         style = MaterialTheme.typography.bodyMedium,
-                                        color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.4f)
+                                        color = MaterialTheme.colorScheme.onSurfaceVariant.copy(
+                                            alpha = 0.4f
+                                        )
                                     )
                                 },
-                                singleLine = true,
                                 enabled = !state.isLoading,
-                                modifier = Modifier.fillMaxWidth(),
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .height(140.dp),
                                 shape = MaterialTheme.shapes.medium,
                                 colors = OutlinedTextFieldDefaults.colors(
                                     focusedBorderColor = MaterialTheme.colorScheme.primary,
@@ -176,147 +208,114 @@ private fun CreateLifehackScreenUI(
                                     cursorColor = MaterialTheme.colorScheme.primary
                                 )
                             )
+
+                            Text(
+                                text = "${state.description.length}/$MAX_DESCRIPTION_LENGTH",
+                                textAlign = TextAlign.End,
+                                modifier = Modifier
+                                    .align(Alignment.BottomEnd)
+                                    .padding(end = 12.dp, bottom = 8.dp),
+                                style = MaterialTheme.typography.labelSmall,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.5f)
+                            )
                         }
+                    }
 
-                        FormFieldSection(
-                            label = stringResource(R.string.description),
-                            errorMessage = state.descriptionErrorMessage?.asString()
+                    FormFieldSection(label = stringResource(R.string.steps)) {
+                        Surface(
+                            onClick = onStepsSheetOpen,
+                            enabled = !state.isLoading,
+                            shape = MaterialTheme.shapes.medium,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .border(
+                                    width = 1.dp,
+                                    color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f),
+                                    shape = MaterialTheme.shapes.medium
+                                ),
+                            color = Color.Transparent
                         ) {
-                            Box {
-                                OutlinedTextField(
-                                    value = state.description,
-                                    onValueChange = onDescriptionChange,
-                                    placeholder = {
-                                        Text(
-                                            text = stringResource(R.string.description_placeholder),
-                                            style = MaterialTheme.typography.bodyMedium,
-                                            color = MaterialTheme.colorScheme.onSurfaceVariant.copy(
-                                                alpha = 0.4f
-                                            )
-                                        )
-                                    },
-                                    enabled = !state.isLoading,
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                        .height(140.dp),
-                                    shape = MaterialTheme.shapes.medium,
-                                    colors = OutlinedTextFieldDefaults.colors(
-                                        focusedBorderColor = MaterialTheme.colorScheme.primary,
-                                        unfocusedBorderColor = MaterialTheme.colorScheme.onSurfaceVariant.copy(
-                                            alpha = 0.7f
-                                        ),
-                                        cursorColor = MaterialTheme.colorScheme.primary
+                            Row(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(horizontal = 16.dp, vertical = 16.dp),
+                                horizontalArrangement = Arrangement.SpaceBetween,
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                if (state.stepsCount > 0) {
+                                    Text(
+                                        text = "${state.stepsCount} ${
+                                            if (state.stepsCount == 1) stringResource(
+                                                R.string.step
+                                            ) else stringResource(R.string.steps)
+                                        }",
+                                        style = MaterialTheme.typography.bodyMedium,
+                                        color = MaterialTheme.colorScheme.onSurfaceVariant
                                     )
-                                )
+                                } else {
+                                    Text(
+                                        text = stringResource(R.string.steps_placeholder),
+                                        style = MaterialTheme.typography.bodyMedium,
+                                        color = MaterialTheme.colorScheme.onSurfaceVariant.copy(
+                                            alpha = 0.4f
+                                        )
+                                    )
+                                }
 
-                                Text(
-                                    text = "${state.description.length}/$MAX_DESCRIPTION_LENGTH",
-                                    textAlign = TextAlign.End,
-                                    modifier = Modifier
-                                        .align(Alignment.BottomEnd)
-                                        .padding(end = 12.dp, bottom = 8.dp),
-                                    style = MaterialTheme.typography.labelSmall,
-                                    color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.5f)
+                                Icon(
+                                    imageVector = Icons.Rounded.ChevronRight,
+                                    contentDescription = null,
+                                    tint = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f)
                                 )
                             }
                         }
+                    }
 
-                        FormFieldSection(label = stringResource(R.string.steps)) {
-                            Surface(
-                                onClick = onStepsSheetOpen,
-                                enabled = !state.isLoading,
-                                shape = MaterialTheme.shapes.medium,
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .border(
-                                        width = 1.dp,
-                                        color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f),
-                                        shape = MaterialTheme.shapes.medium
-                                    ),
-                                color = Color.Transparent
-                            ) {
-                                Row(
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                        .padding(horizontal = 16.dp, vertical = 16.dp),
-                                    horizontalArrangement = Arrangement.SpaceBetween,
-                                    verticalAlignment = Alignment.CenterVertically
-                                ) {
-                                    if (state.stepsCount > 0) {
-                                        Text(
-                                            text = "${state.stepsCount} ${
-                                                if (state.stepsCount == 1) stringResource(
-                                                    R.string.step
-                                                ) else stringResource(R.string.steps)
-                                            }",
-                                            style = MaterialTheme.typography.bodyMedium,
-                                            color = MaterialTheme.colorScheme.onSurfaceVariant
-                                        )
-                                    } else {
-                                        Text(
-                                            text = stringResource(R.string.steps_placeholder),
-                                            style = MaterialTheme.typography.bodyMedium,
-                                            color = MaterialTheme.colorScheme.onSurfaceVariant.copy(
-                                                alpha = 0.4f
-                                            )
-                                        )
-                                    }
-
-                                    Icon(
-                                        imageVector = Icons.Rounded.ChevronRight,
-                                        contentDescription = null,
-                                        tint = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f)
-                                    )
-                                }
-                            }
-                        }
-
-                        FormFieldSection(
-                            label = stringResource(R.string.category),
-                            errorMessage = state.categoryErrorMessage?.asString()
+                    FormFieldSection(
+                        label = stringResource(R.string.category),
+                        errorMessage = state.categoryErrorMessage?.asString()
+                    ) {
+                        Surface(
+                            onClick = onCategorySheetOpen,
+                            enabled = !state.isLoading,
+                            shape = MaterialTheme.shapes.medium,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .border(
+                                    width = 1.dp,
+                                    color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f),
+                                    shape = MaterialTheme.shapes.medium
+                                ),
+                            color = Color.Transparent
                         ) {
-                            Surface(
-                                onClick = onCategorySheetOpen,
-                                enabled = !state.isLoading,
-                                shape = MaterialTheme.shapes.medium,
+                            Row(
                                 modifier = Modifier
                                     .fillMaxWidth()
-                                    .border(
-                                        width = 1.dp,
-                                        color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f),
-                                        shape = MaterialTheme.shapes.medium
-                                    ),
-                                color = Color.Transparent
+                                    .padding(horizontal = 16.dp, vertical = 16.dp),
+                                horizontalArrangement = Arrangement.SpaceBetween,
+                                verticalAlignment = Alignment.CenterVertically
                             ) {
-                                Row(
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                        .padding(horizontal = 16.dp, vertical = 16.dp),
-                                    horizontalArrangement = Arrangement.SpaceBetween,
-                                    verticalAlignment = Alignment.CenterVertically
-                                ) {
-                                    if (state.category != null) {
-                                        Text(
-                                            text = state.category.name,
-                                            style = MaterialTheme.typography.bodyMedium,
-                                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                                if (state.category != null) {
+                                    Text(
+                                        text = state.category.name,
+                                        style = MaterialTheme.typography.bodyMedium,
+                                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                                    )
+                                } else {
+                                    Text(
+                                        text = stringResource(R.string.category_placeholder),
+                                        style = MaterialTheme.typography.bodyMedium,
+                                        color = MaterialTheme.colorScheme.onSurfaceVariant.copy(
+                                            alpha = 0.4f
                                         )
-                                    } else {
-                                        Text(
-                                            text = stringResource(R.string.category_placeholder),
-                                            style = MaterialTheme.typography.bodyMedium,
-                                            color = MaterialTheme.colorScheme.onSurfaceVariant.copy(
-                                                alpha = 0.4f
-                                            )
-                                        )
-                                    }
-
-                                    Icon(
-                                        imageVector = Icons.Rounded.ChevronRight,
-                                        contentDescription = null,
-                                        tint = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f)
                                     )
                                 }
+
+                                Icon(
+                                    imageVector = Icons.Rounded.ChevronRight,
+                                    contentDescription = null,
+                                    tint = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f)
+                                )
                             }
                         }
                     }

@@ -72,7 +72,11 @@ private fun LifehackDetailScreenUI(
         topBar = {
             TopAppBar(
                 title = {
-                    Text(text = if (state.isLoading) "" else state.lifehack?.title ?: "")
+                    if (state.lifehack != null) {
+                        Text(
+                            text = state.lifehack.title
+                        )
+                    }
                 },
                 navigationIcon = {
                     IconButton(
