@@ -1,15 +1,16 @@
 package app.iesjdlc.tipslab.di
 
-import app.iesjdlc.tipslab.data.datasource.local.CategoryLocalDataSource
 import app.iesjdlc.tipslab.data.repository.AuthRepositoryImpl
 import app.iesjdlc.tipslab.data.repository.CategoryRepositoryImpl
 import app.iesjdlc.tipslab.data.repository.LifehackRepositoryImpl
 import app.iesjdlc.tipslab.data.repository.MediaRepositoryImpl
+import app.iesjdlc.tipslab.data.repository.SavedLikedRepositoryImpl
 import app.iesjdlc.tipslab.data.repository.UserRepositoryImpl
 import app.iesjdlc.tipslab.domain.repository.AuthRepository
 import app.iesjdlc.tipslab.domain.repository.CategoryRepository
 import app.iesjdlc.tipslab.domain.repository.LifehackRepository
 import app.iesjdlc.tipslab.domain.repository.MediaRepository
+import app.iesjdlc.tipslab.domain.repository.SavedLikedRepository
 import app.iesjdlc.tipslab.domain.repository.UserRepository
 import dagger.Binds
 import dagger.Module
@@ -31,6 +32,10 @@ abstract class RepositoryModule {
     @Binds
     @Singleton
     abstract fun bindLifehackRepository(impl: LifehackRepositoryImpl): LifehackRepository
+
+    @Binds
+    @Singleton
+    abstract fun bindSavedLikedRepository(impl: SavedLikedRepositoryImpl): SavedLikedRepository
 
     @Binds
     @Singleton
