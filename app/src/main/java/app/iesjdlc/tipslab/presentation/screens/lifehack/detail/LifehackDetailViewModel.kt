@@ -48,7 +48,7 @@ class LifehackDetailViewModel @Inject constructor(
                 .onFailure { error ->
                     _uiState.update {
                         it.copy(
-                            error = error.message,
+                            errorMessage = error.message,
                             isLoading = false
                         )
                     }
@@ -86,7 +86,7 @@ class LifehackDetailViewModel @Inject constructor(
                         onSuccess()
                     }
                     .onFailure { error ->
-                        _uiState.update { it.copy(error = error.message) }
+                        _uiState.update { it.copy(errorMessage = error.message) }
                     }
             } finally {
                 _uiState.update { it.copy(isLoading = false) }

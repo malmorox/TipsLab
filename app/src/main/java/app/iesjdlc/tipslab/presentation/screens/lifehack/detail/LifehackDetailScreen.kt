@@ -120,9 +120,9 @@ private fun LifehackDetailScreenUI(
                 ) {
                     CircularProgressIndicator()
                 }
-            } else if (state.error != null) {
+            } else if (state.errorMessage != null) {
                 Text(
-                    text = state.error,
+                    text = state.errorMessage,
                     color = MaterialTheme.colorScheme.error,
                     modifier = Modifier.align(Alignment.Center)
                 )

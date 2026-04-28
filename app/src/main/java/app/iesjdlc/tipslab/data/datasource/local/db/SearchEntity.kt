@@ -7,6 +7,7 @@ import androidx.room.PrimaryKey
 data class SearchEntity(
     @PrimaryKey(autoGenerate = true)
     var id: Int,
+    var userId: String,
     var query: String,
     var timestamp: Long = System.currentTimeMillis()
 )

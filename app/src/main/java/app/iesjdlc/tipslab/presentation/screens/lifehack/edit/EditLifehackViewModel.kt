@@ -39,39 +39,48 @@ class EditLifehackViewModel @Inject constructor(
     private var originalCategory: Category? = null
 
     init {
-        loadDada()
+        loadLifehack()
+        loadCategories()
     }
 
-    private fun loadDada() {
+    private fun loadLifehack() {
         viewModelScope.launch {
             _uiState.update { it.copy(isLoading = true) }
 
             try {
-                val lifehackResult = lifehackRepository.getLifehackById(lifehackId)
-                val categoriesResult = categoryRepository.getAllCategories()
+                lifehackRepository.getLifehackById(lifehackId)
+                    .onSuccess { lifehack ->
+                        originalTitle = lifehack.title
+                        originalDescription = lifehack.description
+                        originalSteps = lifehack.steps
+                        originalCategory = lifehack.category
 
-                lifehackResult.onSuccess { lifehack ->
-                    originalTitle = lifehack.title
-                    originalDescription = lifehack.description
-                    originalSteps = lifehack.steps
-                    originalCategory = lifehack.category
-
-                    _uiState.update {
-                        it.copy(
-                            title = lifehack.title,
-                            description = lifehack.description,
-                            steps = lifehack.steps,
-                            category = lifehack.category,
-                            mediaUrl = lifehack.media?.url,
-                        )
+                        _uiState.update {
+                            it.copy(
+                                title = lifehack.title,
+                                description = lifehack.description,
+                                steps = lifehack.steps,
+                                category = lifehack.category,
+                                mediaUrl = lifehack.media?.url,
+                            )
+                        }
+                    }.onFailure { error ->
+                        // TODO mostrar error
                     }
-                }.onFailure { error ->
-                    // TODO mostrar error
-                }
+            } finally {
+                _uiState.update { it.copy(isLoading = false) }
+            }
+        }
+    }
 
-                categoriesResult.onSuccess { categories ->
-                    _uiState.update { it.copy(availableCategories = categories) }
-                }
+    private fun loadCategories() {
+        viewModelScope.launch {
+            _uiState.update { it.copy(isLoading = true) }
+
+            try {
+                val categories = categoryRepository.getAllCategories()
+                    .getOrElse { emptyList() }
+                _uiState.update { it.copy(availableCategories = categories) }
             } finally {
                 _uiState.update { it.copy(isLoading = false) }
             }

@@ -10,5 +10,5 @@ data class LifehackDetailUiState(
     val isLiked: Boolean = false,
     val showOptionsContextMenu: Boolean = false,
     val showConfirmDeleteDialog: Boolean = false,
-    val error: String? = null
+    val errorMessage: String? = null
 )
