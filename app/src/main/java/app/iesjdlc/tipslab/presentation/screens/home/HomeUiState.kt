@@ -8,13 +8,13 @@ data class HomeUiState(
     val isLoading: Boolean = true,
     val sections: ContentSections = ContentSections()
 ) {
-    val globalError: Boolean
+    val globalContentError: Boolean
         get() = sections.forYou.error != null
                 && sections.trending.error != null
                 && sections.categories.error != null
                 && sections.recent.error != null
 
-    val globalNoData: Boolean
+    val globalContentNoData: Boolean
         get() = sections.forYou.data.isNullOrEmpty()
                 && sections.trending.data.isNullOrEmpty()
                 && sections.categories.data.isNullOrEmpty()

@@ -62,10 +62,14 @@
     <string name="cancel">Cancelar</string>
     <string name="edit">Editar</string>
     <string name="delete">Eliminar</string>
+    <string name="confirm">Confirmar</string>
     <string name="options">Opciones</string>
     <string name="discard_changes">Descartar cambios</string>
     <string name="discard_changes_message">Perderás todo el contenido introducido.</string>
     <string name="delete_lifehack">Eliminar Lifehack</string>
     <string name="delete_lifehack_message">¿Estás seguro de que quieres eliminar este lifehack?</string>
+    <string name="recent">Recientes</string>
+    <string name="popular">Populares</string>
+    <string name="published_by">Publicado por</string>
 
 </resources>

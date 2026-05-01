@@ -1,6 +1,7 @@
 package app.iesjdlc.tipslab.data.datasource.remote
 
 import app.iesjdlc.tipslab.data.model.LifehackDto
+import app.iesjdlc.tipslab.domain.repository.OrderBy
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
@@ -28,9 +29,27 @@ class LifehackRemoteDataSource @Inject constructor(
             .documents
             .mapNotNull { it.toObject(LifehackDto::class.java) }
 
-    override suspend fun getByCategory(categoryId: Int): List<LifehackDto> =
+    override suspend fun getByCategory(
+        categoryId: Int,
+        orderBy: OrderBy,
+        limit: Int,
+        offset: Int
+    ): List<LifehackDto> =
         db.collection("lifehacks")
             .whereEqualTo("category_id", categoryId)
+            .get().await()
+            .documents
+            .mapNotNull { it.toObject(LifehackDto::class.java) }
+
+    override suspend fun searchByCategory(
+        categoryId: Int,
+        query: String,
+        limit: Int,
+        offset: Int
+    ): List<LifehackDto> =
+        db.collection("lifehacks")
+            .whereEqualTo("category_id", categoryId)
+            .whereArrayContains("tags", query)
             .get().await()
             .documents
             .mapNotNull { it.toObject(LifehackDto::class.java) }
@@ -41,7 +60,10 @@ class LifehackRemoteDataSource @Inject constructor(
         return docRef.id
     }
 
-    override suspend fun update(id: String, dto: LifehackDto) {
+    override suspend fun update(
+        id: String,
+        dto: LifehackDto
+    ) {
         db.collection("lifehacks").document(id).set(dto).await()
     }
 

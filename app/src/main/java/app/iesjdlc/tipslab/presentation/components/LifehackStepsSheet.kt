@@ -73,9 +73,9 @@ fun LifehackStepsSheet(
 
     ModalBottomSheet(
         onDismissRequest = onDismiss,
-        containerColor = Color.White,
         sheetState = sheetState,
-        dragHandle = null
+        dragHandle = null,
+        containerColor = Color.White,
     ) {
         Column(
             modifier = Modifier

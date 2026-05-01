@@ -16,7 +16,7 @@ import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
-abstract class DatasourceModule {
+abstract class DatasourceBinder {
     @Binds
     @Singleton
     abstract fun bindLifehackDataSource(impl: LifehackRemoteDataSource): LifehackDataSource

@@ -1,6 +1,7 @@
 package app.iesjdlc.tipslab.presentation.screens.category
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -30,6 +31,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import app.iesjdlc.tipslab.R
 import app.iesjdlc.tipslab.domain.model.Lifehack
 import app.iesjdlc.tipslab.presentation.components.ConfirmOrDismissDialog
+import app.iesjdlc.tipslab.presentation.components.ContentListSection
 import app.iesjdlc.tipslab.presentation.components.LifehackStepsList
 import app.iesjdlc.tipslab.presentation.components.OptionsContextMenu
 
@@ -87,7 +89,25 @@ private fun CategoryScreenUI(
                 .background(MaterialTheme.colorScheme.background)
         ) {
             state.category?.let { category ->
+                Column(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .verticalScroll(rememberScrollState())
+                        .padding(24.dp),
+                    verticalArrangement = Arrangement.spacedBy(16.dp)
+                ) {
+                    ContentListSection(
+                        title = stringResource(R.string.recent),
+                        //sectionState = state.sections.popular,
+                        onLifehackClick = onOpenLifehack
+                    )
 
+                    ContentListSection(
+                        title = stringResource(R.string.popular),
+                        //sectionState = state.sections.popular,
+                        onLifehackClick = onOpenLifehack
+                    )
+                }
             }
         }
     }

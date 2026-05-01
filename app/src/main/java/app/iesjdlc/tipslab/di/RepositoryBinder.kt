@@ -5,12 +5,14 @@ import app.iesjdlc.tipslab.data.repository.CategoryRepositoryImpl
 import app.iesjdlc.tipslab.data.repository.LifehackRepositoryImpl
 import app.iesjdlc.tipslab.data.repository.MediaRepositoryImpl
 import app.iesjdlc.tipslab.data.repository.SavedLikedRepositoryImpl
+import app.iesjdlc.tipslab.data.repository.SearchRepositoryImpl
 import app.iesjdlc.tipslab.data.repository.UserRepositoryImpl
 import app.iesjdlc.tipslab.domain.repository.AuthRepository
 import app.iesjdlc.tipslab.domain.repository.CategoryRepository
 import app.iesjdlc.tipslab.domain.repository.LifehackRepository
 import app.iesjdlc.tipslab.domain.repository.MediaRepository
 import app.iesjdlc.tipslab.domain.repository.SavedLikedRepository
+import app.iesjdlc.tipslab.domain.repository.SearchRepository
 import app.iesjdlc.tipslab.domain.repository.UserRepository
 import dagger.Binds
 import dagger.Module
@@ -20,7 +22,7 @@ import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
-abstract class RepositoryModule {
+abstract class RepositoryBinder {
     @Binds
     @Singleton
     abstract fun bindAuthRepository(impl: AuthRepositoryImpl): AuthRepository
@@ -36,6 +38,10 @@ abstract class RepositoryModule {
     @Binds
     @Singleton
     abstract fun bindSavedLikedRepository(impl: SavedLikedRepositoryImpl): SavedLikedRepository
+
+    @Binds
+    @Singleton
+    abstract fun bindSearchRepository(impl: SearchRepositoryImpl): SearchRepository
 
     @Binds
     @Singleton

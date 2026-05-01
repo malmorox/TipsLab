@@ -8,7 +8,8 @@ data class CategoryUiState(
     val category: Category? = null,
     val isLoading: Boolean = true,
     val errorMessage: String? = null,
-    val sections: ContentSections = ContentSections()
+    val sections: ContentSections = ContentSections(),
+    val search: SearchState = SearchState()
 ) {
     val globalContentError: Boolean
         get() = sections.recent.error != null && sections.popular.error != null
@@ -20,4 +21,11 @@ data class CategoryUiState(
 data class ContentSections(
     val recent: SectionState<List<Lifehack>> = SectionState(),
     val popular: SectionState<List<Lifehack>> = SectionState(),
+)
+
+data class SearchState(
+    val query: String = "",
+    val isActive: Boolean = false,
+    val isLoading: Boolean = false,
+    val results: List<Lifehack> = emptyList()
 )

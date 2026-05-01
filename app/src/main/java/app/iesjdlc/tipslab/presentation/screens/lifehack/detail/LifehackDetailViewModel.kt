@@ -34,25 +34,29 @@ class LifehackDetailViewModel @Inject constructor(
         viewModelScope.launch {
             _uiState.update { it.copy(isLoading = true) }
 
-            getLifehackDetailUseCase(lifehackId)
-                .onSuccess { lifehackDetail ->
-                    _uiState.update {
-                        it.copy(
-                            lifehack = lifehackDetail.lifehack,
-                            isAuthor = lifehackDetail.isAuthor,
-                            isLiked = lifehackDetail.isLiked,
-                            isSaved = lifehackDetail.isSaved
-                        )
+            try {
+                getLifehackDetailUseCase(lifehackId)
+                    .onSuccess { lifehackDetail ->
+                        _uiState.update {
+                            it.copy(
+                                lifehack = lifehackDetail.lifehack,
+                                isAuthor = lifehackDetail.isAuthor,
+                                isLiked = lifehackDetail.isLiked,
+                                isSaved = lifehackDetail.isSaved
+                            )
+                        }
                     }
-                }
-                .onFailure { error ->
-                    _uiState.update {
-                        it.copy(
-                            errorMessage = error.message,
-                            isLoading = false
-                        )
+                    .onFailure { error ->
+                        _uiState.update {
+                            it.copy(
+                                errorMessage = error.message,
+                                isLoading = false
+                            )
+                        }
                     }
-                }
+            } finally {
+                _uiState.update { it.copy(isLoading = false) }
+            }
         }
     }
 
