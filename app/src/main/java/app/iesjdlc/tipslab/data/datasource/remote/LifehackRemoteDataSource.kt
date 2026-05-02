@@ -32,8 +32,7 @@ class LifehackRemoteDataSource @Inject constructor(
     override suspend fun getByCategory(
         categoryId: Int,
         orderBy: OrderBy,
-        limit: Int,
-        offset: Int
+        limit: Int
     ): List<LifehackDto> =
         db.collection("lifehacks")
             .whereEqualTo("category_id", categoryId)

@@ -12,8 +12,7 @@ class GetLifehacksByCategoryUseCase @Inject constructor(
     suspend operator fun invoke(
         categoryId: Int,
         section: CategorySection,
-        limit: Int = 10,
-        offset: Int = 0
+        limit: Int,
     ): Result<List<Lifehack>> {
         return lifehackRepository.getLifehacksByCategory(
             categoryId = categoryId,
@@ -21,8 +20,7 @@ class GetLifehacksByCategoryUseCase @Inject constructor(
                 CategorySection.RECENT -> OrderBy.RECENT
                 CategorySection.POPULAR -> OrderBy.POPULAR
             },
-            limit = limit,
-            offset = offset
+            limit = limit
         )
     }
 }

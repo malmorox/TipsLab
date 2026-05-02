@@ -25,10 +25,9 @@ class LifehackRepositoryImpl @Inject constructor(
     override suspend fun getLifehacksByCategory(
         categoryId: Int,
         orderBy: OrderBy,
-        limit: Int,
-        offset: Int
+        limit: Int
     ): Result<List<Lifehack>> = runCatching {
-        resolver.resolve(dataSource.getByCategory(categoryId, orderBy, limit, offset))
+        resolver.resolve(dataSource.getByCategory(categoryId, orderBy, limit))
     }
 
     override suspend fun getRandomLifehacks(limit: Int): Result<List<Lifehack>> =

@@ -63,15 +63,39 @@ private fun HomeTabUI(
             ) {
                 ContentListSection(
                     title = stringResource(R.string.recent),
-                ) {
+                    sectionState = state.sections.forYou,
+                    emptyMessage = stringResource(R.string.no_recent_category_lifehacks),
+                    itemContent = { lifehack ->
 
-                }
+                    }
+                )
 
                 ContentListSection(
-                    title = stringResource(R.string.popular),
-                ) {
+                    title = stringResource(R.string.recent),
+                    sectionState = state.sections.trending,
+                    emptyMessage = stringResource(R.string.no_recent_category_lifehacks),
+                    itemContent = { lifehack ->
 
-                }
+                    }
+                )
+
+                ContentListSection(
+                    title = stringResource(R.string.recent),
+                    sectionState = state.sections.categories,
+                    emptyMessage = stringResource(R.string.no_recent_category_lifehacks),
+                    itemContent = { lifehack ->
+
+                    }
+                )
+
+                ContentListSection(
+                    title = stringResource(R.string.recent),
+                    sectionState = state.sections.recent,
+                    emptyMessage = stringResource(R.string.no_recent_category_lifehacks),
+                    itemContent = { lifehack ->
+
+                    }
+                )
             }
         }
     }

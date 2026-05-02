@@ -59,59 +59,32 @@ class CategoryViewModel @Inject constructor(
         loadSection(CategorySection.POPULAR)
     }
 
-    private fun loadSection(section: CategorySection, offset: Int = 0) {
+    private fun loadSection(section: CategorySection, limit: Int = 10) {
         viewModelScope.launch {
-            getLifehacksByCategoryUseCase(categoryId, section, offset = offset)
+            updateSection(section, SectionState(isLoading = true))
+
+            getLifehacksByCategoryUseCase(categoryId, section, limit = limit)
                 .onSuccess { result ->
-                    val limit = 10
-                    _uiState.update { state ->
-                        val accumulated = if (offset == 0) result.take(limit)
-                        else {
-                            val currentData = when (section) {
-                                CategorySection.RECENT -> state.sections.recent.data ?: emptyList()
-                                CategorySection.POPULAR -> state.sections.popular.data ?: emptyList()
-                            }
-                            currentData + result.take(limit)
-                        }
-                        
-                        val newOffset = offset + result.take(limit).size
-                        val hasMore = result.size > limit
-                        
-                        when (section) {
-                            CategorySection.RECENT -> state.copy(
-                                sections = state.sections.copy(
-                                    recent = SectionState(data = accumulated),
-                                    hasMoreRecent = hasMore,
-                                    recentOffset = newOffset
-                                )
-                            )
-                            CategorySection.POPULAR -> state.copy(
-                                sections = state.sections.copy(
-                                    popular = SectionState(data = accumulated),
-                                    hasMorePopular = hasMore,
-                                    popularOffset = newOffset
-                                )
-                            )
-                        }
-                    }
+                    updateSection(section, SectionState(data = result))
                 }
                 .onFailure { error ->
-                    _uiState.update { state ->
-                        when (section) {
-                            CategorySection.RECENT -> state.copy(sections = state.sections.copy(
-                                recent = SectionState(error = error.message)
-                            ))
-                            CategorySection.POPULAR -> state.copy(sections = state.sections.copy(
-                                popular = SectionState(error = error.message)
-                            ))
-                        }
-                    }
+                    updateSection(section, SectionState(error = error.message))
                 }
         }
     }
 
-    fun onLoadMoreRecent() = loadSection(CategorySection.RECENT, _uiState.value.sections.recentOffset)
-    fun onLoadMorePopular() = loadSection(CategorySection.POPULAR, _uiState.value.sections.popularOffset)
+    private fun updateSection(section: CategorySection, newState: SectionState<List<Lifehack>>) {
+        _uiState.update { state ->
+            when (section) {
+                CategorySection.RECENT -> state.copy(
+                    sections = state.sections.copy(recent = newState)
+                )
+                CategorySection.POPULAR -> state.copy(
+                    sections = state.sections.copy(popular = newState)
+                )
+            }
+        }
+    }
 
     fun onLifehackClick(
         lifehack: Lifehack,
@@ -125,6 +98,4 @@ class CategoryViewModel @Inject constructor(
 
 
     }
-
-
 }

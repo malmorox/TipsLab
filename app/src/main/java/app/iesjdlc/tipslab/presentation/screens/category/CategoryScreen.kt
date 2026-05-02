@@ -32,6 +32,7 @@ import app.iesjdlc.tipslab.R
 import app.iesjdlc.tipslab.domain.model.Lifehack
 import app.iesjdlc.tipslab.presentation.components.ConfirmOrDismissDialog
 import app.iesjdlc.tipslab.presentation.components.ContentListSection
+import app.iesjdlc.tipslab.presentation.components.LifehackSectionListItem
 import app.iesjdlc.tipslab.presentation.components.LifehackStepsList
 import app.iesjdlc.tipslab.presentation.components.OptionsContextMenu
 
@@ -97,15 +98,24 @@ private fun CategoryScreenUI(
                     verticalArrangement = Arrangement.spacedBy(16.dp)
                 ) {
                     ContentListSection(
-                        title = stringResource(R.string.recent),
-                        //sectionState = state.sections.popular,
-                        onLifehackClick = onOpenLifehack
+                        title = stringResource(R.string.popular),
+                        sectionState = state.sections.popular,
+                        emptyMessage = stringResource(R.string.no_popular_category_lifehacks),
+                        itemContent = { lifehack ->
+                            LifehackSectionListItem(
+                                lifehack = lifehack,
+                                onClick = { onOpenLifehack(lifehack) }
+                            )
+                        }
                     )
 
                     ContentListSection(
-                        title = stringResource(R.string.popular),
-                        //sectionState = state.sections.popular,
-                        onLifehackClick = onOpenLifehack
+                        title = stringResource(R.string.recent),
+                        sectionState = state.sections.recent,
+                        emptyMessage = stringResource(R.string.no_recent_category_lifehacks),
+                        itemContent = { lifehack ->
+
+                        }
                     )
                 }
             }

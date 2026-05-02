@@ -10,8 +10,7 @@ interface LifehackDataSource {
     suspend fun getByCategory(
         categoryId: Int,
         orderBy: OrderBy,
-        limit: Int = 10,
-        offset: Int = 0
+        limit: Int
     ): List<LifehackDto>
     suspend fun searchByCategory(
         categoryId: Int,

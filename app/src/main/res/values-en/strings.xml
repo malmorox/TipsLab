@@ -42,6 +42,7 @@
     <string name="category_required">here</string>
     <string name="description_min_length_required">here</string>
     <string name="edit_profile">here</string>
+    <string name="no_popular_category_lifehacks">here</string>
     <string name="close">here</string>
     <string name="go_back">here</string>
     <string name="or">here</string>
@@ -58,4 +59,5 @@
     <string name="steps_validation_error">here</string>
     <string name="select_category">here</string>
     <string name="published_by">here</string>
+    <string name="no_recent_category_lifehacks">here</string>
 </resources>

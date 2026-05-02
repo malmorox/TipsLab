@@ -8,8 +8,7 @@ interface LifehackRepository {
     suspend fun getLifehacksByCategory(
         categoryId: Int,
         orderBy: OrderBy,
-        limit: Int = 10,
-        offset: Int = 0
+        limit: Int
     ): Result<List<Lifehack>>
     suspend fun getRandomLifehacks(limit: Int = 10): Result<List<Lifehack>>
     suspend fun createLifehack(lifehack: Lifehack): Result<String>
