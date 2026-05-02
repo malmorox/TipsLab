@@ -11,12 +11,9 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import app.iesjdlc.tipslab.R
-import app.iesjdlc.tipslab.presentation.components.ContentListSection
 import app.iesjdlc.tipslab.presentation.components.SearchBar
 
 @Composable
@@ -61,7 +58,7 @@ private fun HomeTabUI(
             Column(
 
             ) {
-                ContentListSection(
+                /*ContentListSection(
                     title = stringResource(R.string.recent),
                     sectionState = state.sections.forYou,
                     emptyMessage = stringResource(R.string.no_recent_category_lifehacks),
@@ -95,7 +92,7 @@ private fun HomeTabUI(
                     itemContent = { lifehack ->
 
                     }
-                )
+                )*/
             }
         }
     }

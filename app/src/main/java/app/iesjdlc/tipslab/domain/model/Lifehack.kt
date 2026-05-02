@@ -14,13 +14,3 @@ data class Lifehack(
     val updatedAt: Instant,
     val likesCount: Int
 )
-
-data class Media(
-    val type: MediaType,
-    val url: String,
-)
-
-enum class MediaType {
-    IMAGE,
-    VIDEO
-}

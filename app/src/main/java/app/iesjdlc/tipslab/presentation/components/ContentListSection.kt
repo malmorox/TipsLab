@@ -15,7 +15,7 @@ fun <T> ContentListSection(
     title: String,
     sectionState: SectionState<List<T>>,
     emptyMessage: String,
-    //skeletonContent: @Composable () -> Unit,
+    skeletonItem: @Composable () -> Unit,
     itemContent: @Composable (T) -> Unit,
 ) {
     Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
@@ -26,7 +26,7 @@ fun <T> ContentListSection(
         )
 
         when {
-            sectionState.data == null -> SkeletonContent()
+            sectionState.data == null -> SkeletonContent(skeletonItem = skeletonItem)
 
             sectionState.error != null -> ErrorContent(errorMessage = sectionState.error)
 
@@ -38,8 +38,14 @@ fun <T> ContentListSection(
 }
 
 @Composable
-private fun SkeletonContent() {
-
+private fun SkeletonContent(skeletonItem: @Composable () -> Unit) {
+    LazyRow(
+        horizontalArrangement = Arrangement.spacedBy(6.dp)
+    ) {
+        items(5) {
+            skeletonItem()
+        }
+    }
 }
 
 @Composable

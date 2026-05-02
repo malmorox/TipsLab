@@ -75,5 +75,6 @@
     <string name="recent">Recientes</string>
     <string name="popular">Populares</string>
     <string name="published_by">Publicado por</string>
+    <string name="remove_media">Eliminar contenido</string>
 
 </resources>

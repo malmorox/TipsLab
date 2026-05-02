@@ -7,6 +7,7 @@ import app.iesjdlc.tipslab.R
 import app.iesjdlc.tipslab.core.constants.AppConstants.MIN_DESCRIPTION_LENGTH
 import app.iesjdlc.tipslab.core.utils.UiText
 import app.iesjdlc.tipslab.domain.model.Category
+import app.iesjdlc.tipslab.domain.model.MediaType
 import app.iesjdlc.tipslab.domain.repository.CategoryRepository
 import app.iesjdlc.tipslab.domain.usecase.lifehack.CreateLifehackUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -90,8 +91,13 @@ class CreateLifehackViewModel @Inject constructor(
         _uiState.update { it.copy(showCategorySheet = false) }
     }
 
-    fun onMediaPicked(uri: Uri) {
-        _uiState.update { it.copy(mediaLocalUri = uri) }
+    fun onMediaPicked(uri: Uri, type: MediaType) {
+        _uiState.update {
+            it.copy(
+                mediaLocalUri = uri,
+                mediaType = type
+            )
+        }
     }
 
     fun onMediaRemoved() {

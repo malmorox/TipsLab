@@ -40,6 +40,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import app.iesjdlc.tipslab.R
 import app.iesjdlc.tipslab.core.constants.AppConstants.MAX_DESCRIPTION_LENGTH
 import app.iesjdlc.tipslab.domain.model.Category
+import app.iesjdlc.tipslab.domain.model.MediaType
 import app.iesjdlc.tipslab.presentation.components.CategorySelectorSheet
 import app.iesjdlc.tipslab.presentation.components.ConfirmOrDismissDialog
 import app.iesjdlc.tipslab.presentation.components.FormFieldSection
@@ -64,7 +65,7 @@ fun CreateLifehackScreen(
         onCategoryChange = { viewModel.onCategoryChange(it) },
         onCategorySheetOpen = { viewModel.onCategorySheetOpen() },
         onCategorySheetDismiss = { viewModel.onCategorySheetDismiss() },
-        onMediaPick = { uri -> viewModel.onMediaPicked(uri) },
+        onMediaPick = { uri, type -> viewModel.onMediaPicked(uri, type) },
         onMediaRemove = { viewModel.onMediaRemoved() },
         onSubmit = { viewModel.onSubmit(onLifehackCreated) },
         onClose = { viewModel.onCloseClick(onNavigateBack) },
@@ -85,7 +86,7 @@ private fun CreateLifehackScreenUI(
     onCategoryChange: (Category) -> Unit,
     onCategorySheetOpen: () -> Unit,
     onCategorySheetDismiss: () -> Unit,
-    onMediaPick: (Uri) -> Unit,
+    onMediaPick: (Uri, MediaType) -> Unit,
     onMediaRemove: () -> Unit,
     onSubmit: () -> Unit,
     onClose: () -> Unit,
@@ -142,13 +143,12 @@ private fun CreateLifehackScreenUI(
                     modifier = Modifier.fillMaxWidth(),
                     verticalArrangement = Arrangement.spacedBy(16.dp)
                 ) {
-                    FormFieldSection(label = stringResource(R.string.media)) {
-                        MediaPicker(
-                            mediaUri = state.mediaLocalUri,
-                            onMediaPicked = onMediaPick,
-                            onMediaRemoved = onMediaRemove
-                        )
-                    }
+                    MediaPicker(
+                        mediaUri = state.mediaLocalUri,
+                        mediaType = state.mediaType,
+                        onMediaPicked = onMediaPick,
+                        onMediaRemoved = onMediaRemove
+                    )
 
                     FormFieldSection(
                         label = stringResource(R.string.title),

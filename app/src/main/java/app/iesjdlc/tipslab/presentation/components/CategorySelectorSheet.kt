@@ -43,7 +43,7 @@ fun CategorySelectorSheet(
             modifier = Modifier
                 .fillMaxWidth()
                 .heightIn(max = 600.dp)
-                .padding(start = 24.dp, end = 24.dp, top = 36.dp, bottom = 24.dp),
+                .padding(start = 24.dp, end = 24.dp, top = 24.dp, bottom = 0.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
             Text(
