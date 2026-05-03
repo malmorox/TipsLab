@@ -2,9 +2,6 @@ package app.iesjdlc.tipslab.presentation.components
 
 import android.content.Context
 import android.net.Uri
-import androidx.activity.compose.rememberLauncherForActivityResult
-import androidx.activity.result.PickVisualMediaRequest
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -54,38 +51,12 @@ import java.io.File
 fun MediaPicker(
     mediaUri: Uri?,
     mediaType: MediaType?,
-    onMediaPicked: (Uri, MediaType) -> Unit,
+    onCameraClick: () -> Unit,
+    onGalleryClick: () -> Unit,
     onMediaRemoved: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val context = LocalContext.current
     var showSheet by remember { mutableStateOf(false) }
-    var tempCameraUri by remember { mutableStateOf<Uri?>(null) }
-
-    // Galería (foto o vídeo)
-    val galleryLauncher = rememberLauncherForActivityResult(
-        ActivityResultContracts.PickVisualMedia()
-    ) { uri ->
-        uri?.let {
-            val mime = context.contentResolver.getType(it)
-            val type = if (mime?.startsWith("video") == true) MediaType.VIDEO else MediaType.IMAGE
-            onMediaPicked(it, type)
-        }
-    }
-
-    /*
-    val cameraPhotoLauncher = rememberLauncherForActivityResult(
-        ActivityResultContracts.TakePicture()
-    ) { success ->
-        if (success) tempCameraUri?.let { onMediaPicked(it, MediaType.IMAGE) }
-    }
-
-    // Cámara: vídeo
-    val cameraVideoLauncher = rememberLauncherForActivityResult(
-        ActivityResultContracts.CaptureVideo()
-    ) { success ->
-        if (success) tempCameraUri?.let { onMediaPicked(it, MediaType.VIDEO) }
-    }*/
 
     if (mediaUri == null) {
         MediaEmpty(
@@ -106,13 +77,11 @@ fun MediaPicker(
         MediaPickerSheet(
             onOpenCamera = {
                 showSheet = false
-                // TODO camerax
+                onCameraClick()
             },
             onPickFromGallery = {
                 showSheet = false
-                galleryLauncher.launch(
-                    PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageAndVideo)
-                )
+                onGalleryClick()
             },
             onDismiss = { showSheet = false }
         )

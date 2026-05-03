@@ -8,7 +8,7 @@ import kotlinx.serialization.json.Json
 import javax.inject.Inject
 
 class CategoryLocalDataSource @Inject constructor(
-    @ApplicationContext private val context: Context
+    @param:ApplicationContext private val context: Context
 ) : CategoryDataSource {
     private val json = Json { ignoreUnknownKeys = true }
 
