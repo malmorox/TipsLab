@@ -87,6 +87,7 @@ dependencies {
 
     // Coil
     implementation(libs.coil.compose)
+    implementation(libs.coil.video)
     implementation(libs.coil.network.okhttp)
 
     // Compressor (imágenes)

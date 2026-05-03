@@ -25,4 +25,5 @@ sealed interface Route {
     @Serializable data class LifehacksByCategory(val categoryId: Int) : Route
     @Serializable data class EditLifehack(val lifehackId: String) : Route
     @Serializable data object EditProfile : Route
+    @Serializable data class Camera(val allowVideo: Boolean = true) : Route
 }

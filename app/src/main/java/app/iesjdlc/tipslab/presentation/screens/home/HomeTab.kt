@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
@@ -58,24 +57,43 @@ private fun HomeTabUI(
 
             Column(
 
-            ) { }
+            ) {
+                /*ContentListSection(
+                    title = stringResource(R.string.recent),
+                    sectionState = state.sections.forYou,
+                    emptyMessage = stringResource(R.string.no_recent_category_lifehacks),
+                    itemContent = { lifehack ->
+
+                    }
+                )
+
+                ContentListSection(
+                    title = stringResource(R.string.recent),
+                    sectionState = state.sections.trending,
+                    emptyMessage = stringResource(R.string.no_recent_category_lifehacks),
+                    itemContent = { lifehack ->
+
+                    }
+                )
+
+                ContentListSection(
+                    title = stringResource(R.string.recent),
+                    sectionState = state.sections.categories,
+                    emptyMessage = stringResource(R.string.no_recent_category_lifehacks),
+                    itemContent = { lifehack ->
+
+                    }
+                )
+
+                ContentListSection(
+                    title = stringResource(R.string.recent),
+                    sectionState = state.sections.recent,
+                    emptyMessage = stringResource(R.string.no_recent_category_lifehacks),
+                    itemContent = { lifehack ->
+
+                    }
+                )*/
+            }
         }
     }
 }
-
-@Composable
-private fun ContentSection(
-    label: String,
-    content: @Composable () -> Unit
-) {
-    Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
-        Text(
-            text = label,
-            style = MaterialTheme.typography.labelMedium,
-            color = MaterialTheme.colorScheme.onSurfaceVariant
-        )
-
-        content()
-    }
-}
-

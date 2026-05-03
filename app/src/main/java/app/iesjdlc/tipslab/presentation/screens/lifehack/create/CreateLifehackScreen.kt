@@ -1,6 +1,8 @@
 package app.iesjdlc.tipslab.presentation.screens.lifehack.create
 
-import android.net.Uri
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.PickVisualMediaRequest
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
@@ -32,6 +34,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -40,6 +43,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import app.iesjdlc.tipslab.R
 import app.iesjdlc.tipslab.core.constants.AppConstants.MAX_DESCRIPTION_LENGTH
 import app.iesjdlc.tipslab.domain.model.Category
+import app.iesjdlc.tipslab.domain.model.MediaType
 import app.iesjdlc.tipslab.presentation.components.CategorySelectorSheet
 import app.iesjdlc.tipslab.presentation.components.ConfirmOrDismissDialog
 import app.iesjdlc.tipslab.presentation.components.FormFieldSection
@@ -50,9 +54,21 @@ import app.iesjdlc.tipslab.presentation.components.MediaPicker
 fun CreateLifehackScreen(
     viewModel: CreateLifehackViewModel = hiltViewModel(),
     onNavigateBack: () -> Unit,
-    onLifehackCreated: (String) -> Unit
+    onLifehackCreated: (String) -> Unit,
+    onOpenCamera: () -> Unit
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val context = LocalContext.current
+
+    val galleryLauncher = rememberLauncherForActivityResult(
+        ActivityResultContracts.PickVisualMedia()
+    ) { uri ->
+        uri?.let {
+            val mime = context.contentResolver.getType(it)
+            val type = if (mime?.startsWith("video") == true) MediaType.VIDEO else MediaType.IMAGE
+            viewModel.onMediaPicked(it, type)
+        }
+    }
 
     CreateLifehackScreenUI(
         state = uiState,
@@ -64,7 +80,12 @@ fun CreateLifehackScreen(
         onCategoryChange = { viewModel.onCategoryChange(it) },
         onCategorySheetOpen = { viewModel.onCategorySheetOpen() },
         onCategorySheetDismiss = { viewModel.onCategorySheetDismiss() },
-        onMediaPick = { uri -> viewModel.onMediaPicked(uri) },
+        onOpenCamera = onOpenCamera,
+        onOpenGallery = {
+            galleryLauncher.launch(
+                PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageAndVideo)
+            )
+        },
         onMediaRemove = { viewModel.onMediaRemoved() },
         onSubmit = { viewModel.onSubmit(onLifehackCreated) },
         onClose = { viewModel.onCloseClick(onNavigateBack) },
@@ -85,7 +106,8 @@ private fun CreateLifehackScreenUI(
     onCategoryChange: (Category) -> Unit,
     onCategorySheetOpen: () -> Unit,
     onCategorySheetDismiss: () -> Unit,
-    onMediaPick: (Uri) -> Unit,
+    onOpenCamera: () -> Unit,
+    onOpenGallery: () -> Unit,
     onMediaRemove: () -> Unit,
     onSubmit: () -> Unit,
     onClose: () -> Unit,
@@ -142,13 +164,13 @@ private fun CreateLifehackScreenUI(
                     modifier = Modifier.fillMaxWidth(),
                     verticalArrangement = Arrangement.spacedBy(16.dp)
                 ) {
-                    FormFieldSection(label = stringResource(R.string.media)) {
-                        MediaPicker(
-                            mediaUri = state.mediaLocalUri,
-                            onMediaPicked = onMediaPick,
-                            onMediaRemoved = onMediaRemove
-                        )
-                    }
+                    MediaPicker(
+                        mediaUri = state.mediaLocalUri,
+                        mediaType = state.mediaType,
+                        onCameraClick = onOpenCamera,
+                        onGalleryClick = onOpenGallery,
+                        onMediaRemoved = onMediaRemove
+                    )
 
                     FormFieldSection(
                         label = stringResource(R.string.title),

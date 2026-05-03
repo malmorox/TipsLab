@@ -5,7 +5,7 @@ import app.iesjdlc.tipslab.data.mapper.LifehackMapper
 import app.iesjdlc.tipslab.domain.model.Lifehack
 import app.iesjdlc.tipslab.data.resolver.LifehackResolver
 import app.iesjdlc.tipslab.domain.repository.LifehackRepository
-import com.google.firebase.auth.FirebaseAuth
+import app.iesjdlc.tipslab.domain.repository.OrderBy
 import javax.inject.Inject
 
 class LifehackRepositoryImpl @Inject constructor(
@@ -22,8 +22,12 @@ class LifehackRepositoryImpl @Inject constructor(
         resolver.resolveOne(dto) ?: error("Lifehack no encontrado")
     }
 
-    override suspend fun getLifehacksByCategory(categoryId: Int): Result<List<Lifehack>> = runCatching {
-        resolver.resolve(dataSource.getByCategory(categoryId))
+    override suspend fun getLifehacksByCategory(
+        categoryId: Int,
+        orderBy: OrderBy,
+        limit: Int
+    ): Result<List<Lifehack>> = runCatching {
+        resolver.resolve(dataSource.getByCategory(categoryId, orderBy, limit))
     }
 
     override suspend fun getRandomLifehacks(limit: Int): Result<List<Lifehack>> =
@@ -33,7 +37,10 @@ class LifehackRepositoryImpl @Inject constructor(
         dataSource.create(mapper.toDto(lifehack))
     }
 
-    override suspend fun updateLifehack(id: String, lifehack: Lifehack): Result<Unit> = runCatching {
+    override suspend fun updateLifehack(
+        id: String,
+        lifehack: Lifehack
+    ): Result<Unit> = runCatching {
         dataSource.update(id, mapper.toDto(lifehack))
     }
 

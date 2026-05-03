@@ -1,6 +1,7 @@
 package app.iesjdlc.tipslab.presentation.screens.category
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -10,8 +11,6 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.ArrowBack
-import androidx.compose.material.icons.automirrored.rounded.More
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -21,7 +20,6 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -29,9 +27,9 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import app.iesjdlc.tipslab.R
 import app.iesjdlc.tipslab.domain.model.Lifehack
-import app.iesjdlc.tipslab.presentation.components.ConfirmOrDismissDialog
-import app.iesjdlc.tipslab.presentation.components.LifehackStepsList
-import app.iesjdlc.tipslab.presentation.components.OptionsContextMenu
+import app.iesjdlc.tipslab.presentation.components.ContentListSection
+import app.iesjdlc.tipslab.presentation.components.LifehackSectionListItem
+import app.iesjdlc.tipslab.presentation.components.LifehackSectionListItemSkeleton
 
 @Composable
 fun CategoryScreen(
@@ -87,7 +85,37 @@ private fun CategoryScreenUI(
                 .background(MaterialTheme.colorScheme.background)
         ) {
             state.category?.let { category ->
+                Column(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .verticalScroll(rememberScrollState())
+                        .padding(24.dp),
+                    verticalArrangement = Arrangement.spacedBy(16.dp)
+                ) {
+                    ContentListSection(
+                        title = stringResource(R.string.popular),
+                        sectionState = state.sections.popular,
+                        emptyMessage = stringResource(R.string.no_popular_category_lifehacks),
+                        skeletonItem = { LifehackSectionListItemSkeleton() },
+                    ) { lifehack ->
+                        LifehackSectionListItem(
+                            lifehack = lifehack,
+                            onClick = { onOpenLifehack(lifehack) }
+                        )
+                    }
 
+                    ContentListSection(
+                        title = stringResource(R.string.recent),
+                        sectionState = state.sections.recent,
+                        emptyMessage = stringResource(R.string.no_recent_category_lifehacks),
+                        skeletonItem = { LifehackSectionListItemSkeleton() },
+                    ) { lifehack ->
+                        LifehackSectionListItem(
+                            lifehack = lifehack,
+                            onClick = { onOpenLifehack(lifehack) }
+                        )
+                    }
+                }
             }
         }
     }

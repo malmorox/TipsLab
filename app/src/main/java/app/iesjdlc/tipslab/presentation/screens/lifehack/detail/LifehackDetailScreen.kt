@@ -1,8 +1,11 @@
 package app.iesjdlc.tipslab.presentation.screens.lifehack.detail
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -10,7 +13,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.ArrowBack
-import androidx.compose.material.icons.automirrored.rounded.More
+import androidx.compose.material.icons.rounded.MoreVert
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -23,14 +26,17 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import app.iesjdlc.tipslab.R
 import app.iesjdlc.tipslab.domain.model.Category
+import app.iesjdlc.tipslab.domain.model.User
 import app.iesjdlc.tipslab.presentation.components.ConfirmOrDismissDialog
 import app.iesjdlc.tipslab.presentation.components.LifehackStepsList
 import app.iesjdlc.tipslab.presentation.components.OptionsContextMenu
+import app.iesjdlc.tipslab.presentation.components.UserAvatarImage
 
 @Composable
 fun LifehackDetailScreen(
@@ -74,7 +80,11 @@ private fun LifehackDetailScreenUI(
                 title = {
                     if (state.lifehack != null) {
                         Text(
-                            text = state.lifehack.title
+                            text = state.lifehack.title,
+                            style = MaterialTheme.typography.titleLarge,
+                            color = MaterialTheme.colorScheme.primary,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis
                         )
                     }
                 },
@@ -97,7 +107,7 @@ private fun LifehackDetailScreenUI(
                         ) {
                             Icon(
                                 modifier = Modifier.size(24.dp),
-                                imageVector = Icons.AutoMirrored.Rounded.More,
+                                imageVector = Icons.Rounded.MoreVert,
                                 contentDescription = stringResource(R.string.options),
                                 tint = MaterialTheme.colorScheme.onSurfaceVariant
                             )
@@ -132,9 +142,9 @@ private fun LifehackDetailScreenUI(
                 Column(
                     modifier = Modifier
                         .fillMaxSize()
-                        .background(MaterialTheme.colorScheme.background)
-                        .padding(24.dp)
-                        .verticalScroll(rememberScrollState()),
+                        .verticalScroll(rememberScrollState())
+                        .padding(24.dp),
+                    verticalArrangement = Arrangement.spacedBy(16.dp)
                 ) {
                     Text(
                         text = lifehack.title,
@@ -142,14 +152,33 @@ private fun LifehackDetailScreenUI(
                         color = MaterialTheme.colorScheme.primary
                     )
 
-                    Text(
-                        text = lifehack.description,
-                        style = MaterialTheme.typography.bodyMedium,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.5f)
-                    )
+                    SectionWithHeading(heading = stringResource(R.string.description)) {
+                        Text(
+                            text = lifehack.description,
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.5f)
+                        )
+                    }
 
                     if (lifehack.steps.isNotEmpty()) {
-                        LifehackStepsList(steps = lifehack.steps)
+                        SectionWithHeading(heading = stringResource(R.string.steps)) {
+                            LifehackStepsList(steps = lifehack.steps)
+                        }
+                    }
+
+                    SectionWithHeading(heading = stringResource(R.string.category)) {
+                        Text(
+                            text = lifehack.category.name,
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            modifier = Modifier.clickable {
+                                onOpenCategory(lifehack.category)
+                            }
+                        )
+                    }
+
+                    if (!state.isAuthor) {
+                        AuthorSection(author = lifehack.author)
                     }
                 }
             }
@@ -173,5 +202,51 @@ private fun LifehackDetailScreenUI(
             confirmText = stringResource(R.string.delete),
             dismissText = stringResource(R.string.cancel)
         )
+    }
+}
+
+@Composable
+private fun SectionWithHeading(
+    heading: String,
+    content: @Composable () -> Unit
+) {
+    Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
+        Text(
+            text = heading,
+            style = MaterialTheme.typography.labelMedium,
+            color = MaterialTheme.colorScheme.onSurfaceVariant
+        )
+
+        content()
+    }
+}
+
+@Composable
+private fun AuthorSection(author: User) {
+    Row(
+        horizontalArrangement = Arrangement.spacedBy(5.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Text(
+            text = stringResource(R.string.published_by),
+            style = MaterialTheme.typography.labelMedium,
+            color = MaterialTheme.colorScheme.onSurfaceVariant
+        )
+
+        Row(
+            horizontalArrangement = Arrangement.spacedBy(3.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            UserAvatarImage(
+                user = author,
+                size = 24.dp
+            )
+
+            Text(
+                text = "@${author.username}",
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
+        }
     }
 }

@@ -53,6 +53,10 @@
     <!-- Profile -->
     <string name="edit_profile">Editar perfil</string>
 
+    <!-- Category -->
+    <string name="no_recent_category_lifehacks">No hay lifehacks recientes en esta categoría</string>
+    <string name="no_popular_category_lifehacks">No hay lifehacks populares en esta categoría</string>
+
     <!-- Generic -->
     <string name="close">Cerrar</string>
     <string name="go_back">Volver</string>
@@ -62,10 +66,15 @@
     <string name="cancel">Cancelar</string>
     <string name="edit">Editar</string>
     <string name="delete">Eliminar</string>
+    <string name="confirm">Confirmar</string>
     <string name="options">Opciones</string>
     <string name="discard_changes">Descartar cambios</string>
     <string name="discard_changes_message">Perderás todo el contenido introducido.</string>
     <string name="delete_lifehack">Eliminar Lifehack</string>
     <string name="delete_lifehack_message">¿Estás seguro de que quieres eliminar este lifehack?</string>
+    <string name="recent">Recientes</string>
+    <string name="popular">Populares</string>
+    <string name="published_by">Publicado por</string>
+    <string name="remove_media">Eliminar contenido</string>
 
 </resources>

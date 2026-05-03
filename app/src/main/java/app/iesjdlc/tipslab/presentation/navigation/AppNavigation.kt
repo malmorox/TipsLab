@@ -12,6 +12,7 @@ import app.iesjdlc.tipslab.presentation.screens.lifehack.detail.LifehackDetailSc
 import app.iesjdlc.tipslab.presentation.screens.splash.SplashScreen
 import app.iesjdlc.tipslab.presentation.screens.auth.login.LoginScreen
 import app.iesjdlc.tipslab.presentation.screens.auth.signup.SignupScreen
+import app.iesjdlc.tipslab.presentation.screens.camera.CameraScreen
 import app.iesjdlc.tipslab.presentation.screens.category.CategoryScreen
 import app.iesjdlc.tipslab.presentation.screens.explore.SearchScreen
 import app.iesjdlc.tipslab.presentation.screens.lifehack.create.CreateLifehackScreen
@@ -100,7 +101,24 @@ fun AppNavigation() {
                         popUpTo<Route.CreateLifehack> { inclusive = true }
                         launchSingleTop = true
                     }
+                },
+                onOpenCamera = {
+                    rootNavController.navigate(Route.Camera())
                 }
+            )
+        }
+
+        composable<Route.Camera>(
+
+        ){
+            CameraScreen(
+                onMediaCaptured = { uri, type ->
+                    rootNavController.previousBackStackEntry
+                        ?.savedStateHandle
+                        ?.set("mediaResult", Pair(uri.toString(), type.name))
+                    rootNavController.popBackStack()
+                },
+                onNavigateBack = { rootNavController.popBackStack() }
             )
         }
 
@@ -141,13 +159,22 @@ fun AppNavigation() {
                         popUpTo<Route.EditLifehack> { inclusive = true }
                         launchSingleTop = true
                     }
+                },
+                onOpenCamera = {
+                    rootNavController.navigate(Route.Camera())
                 }
             )
         }
 
         composable<Route.EditProfile> {
             EditProfileScreen(
-                onNavigateBack = { rootNavController.popBackStack() }
+                onNavigateBack = { rootNavController.popBackStack() },
+                onProfileEdited = {
+
+                },
+                onOpenCamera = {
+                    rootNavController.navigate(Route.Camera(allowVideo = false))
+                }
             )
         }
     }

@@ -8,16 +8,24 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 fun EditLifehackScreen(
     viewModel: EditLifehackViewModel = hiltViewModel(),
     onNavigateBack: () -> Unit,
-    onLifehackEdited: (String) -> Unit
+    onLifehackEdited: (String) -> Unit,
+    onOpenCamera: () -> Unit
 ) {
     val uiState = viewModel.uiState.collectAsStateWithLifecycle()
 
+    EditLifehackScreenUI(
+        state = uiState.value,
+        onOpenCamera = onOpenCamera,
+        onSave = { viewModel.onSave(onLifehackEdited) },
+        onBack = onNavigateBack
+    )
 }
 
 @Composable
 private fun EditLifehackScreenUI(
     state: EditLifehackUiState,
-    onEdit: () -> Unit,
+    onOpenCamera: () -> Unit,
+    onSave: () -> Unit,
     onBack: () -> Unit
 ) {
 
