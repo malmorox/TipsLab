@@ -4,7 +4,7 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
-import app.iesjdlc.tipslab.domain.model.CategorySection
+import app.iesjdlc.tipslab.domain.model.screen_sections.CategorySection
 import app.iesjdlc.tipslab.domain.model.Lifehack
 import app.iesjdlc.tipslab.domain.repository.CategoryRepository
 import app.iesjdlc.tipslab.domain.usecase.lifehack.GetLifehacksByCategoryUseCase

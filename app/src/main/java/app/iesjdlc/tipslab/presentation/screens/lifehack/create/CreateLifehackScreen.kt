@@ -49,6 +49,7 @@ import app.iesjdlc.tipslab.presentation.components.ConfirmOrDismissDialog
 import app.iesjdlc.tipslab.presentation.components.FormFieldSection
 import app.iesjdlc.tipslab.presentation.components.LifehackStepsSheet
 import app.iesjdlc.tipslab.presentation.components.MediaPicker
+import app.iesjdlc.tipslab.presentation.screens.lifehack.utils.rememberGalleryLauncher
 
 @Composable
 fun CreateLifehackScreen(
@@ -58,16 +59,9 @@ fun CreateLifehackScreen(
     onOpenCamera: () -> Unit
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
-    val context = LocalContext.current
 
-    val galleryLauncher = rememberLauncherForActivityResult(
-        ActivityResultContracts.PickVisualMedia()
-    ) { uri ->
-        uri?.let {
-            val mime = context.contentResolver.getType(it)
-            val type = if (mime?.startsWith("video") == true) MediaType.VIDEO else MediaType.IMAGE
-            viewModel.onMediaPicked(it, type)
-        }
+    val galleryLauncher = rememberGalleryLauncher { uri, type ->
+        viewModel.onMediaPicked(uri, type)
     }
 
     CreateLifehackScreenUI(
@@ -86,7 +80,7 @@ fun CreateLifehackScreen(
                 PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageAndVideo)
             )
         },
-        onMediaRemove = { viewModel.onMediaRemoved() },
+        onMediaRemove = { viewModel.onMediaRemove() },
         onSubmit = { viewModel.onSubmit(onLifehackCreated) },
         onClose = { viewModel.onCloseClick(onNavigateBack) },
         onDiscardChangesConfirm = { viewModel.onDiscardChangesConfirm(onNavigateBack) },
@@ -165,8 +159,7 @@ private fun CreateLifehackScreenUI(
                     verticalArrangement = Arrangement.spacedBy(16.dp)
                 ) {
                     MediaPicker(
-                        mediaUri = state.mediaLocalUri,
-                        mediaType = state.mediaType,
+                        mediaSource = state.mediaSource,
                         onCameraClick = onOpenCamera,
                         onGalleryClick = onOpenGallery,
                         onMediaRemoved = onMediaRemove

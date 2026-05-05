@@ -1,12 +1,14 @@
 package app.iesjdlc.tipslab.presentation.screens.lifehack.create
 
 import android.net.Uri
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import app.iesjdlc.tipslab.R
 import app.iesjdlc.tipslab.core.constants.AppConstants.MIN_DESCRIPTION_LENGTH
 import app.iesjdlc.tipslab.core.utils.UiText
 import app.iesjdlc.tipslab.domain.model.Category
+import app.iesjdlc.tipslab.domain.model.MediaSource
 import app.iesjdlc.tipslab.domain.model.MediaType
 import app.iesjdlc.tipslab.domain.repository.CategoryRepository
 import app.iesjdlc.tipslab.domain.usecase.lifehack.CreateLifehackUseCase
@@ -14,12 +16,15 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+import androidx.core.net.toUri
 
 @HiltViewModel
 class CreateLifehackViewModel @Inject constructor(
+    private val savedStateHandle: SavedStateHandle,
     private val createLifehackUseCase: CreateLifehackUseCase,
     private val categoryRepository: CategoryRepository
 ) : ViewModel() {
@@ -28,6 +33,7 @@ class CreateLifehackViewModel @Inject constructor(
 
     init {
         loadCategories()
+        observeCameraResult()
     }
 
     private fun loadCategories() {
@@ -35,6 +41,20 @@ class CreateLifehackViewModel @Inject constructor(
             val categories = categoryRepository.getAllCategories()
                 .getOrElse { emptyList() }
             _uiState.update { it.copy(allCategories = categories) }
+        }
+    }
+
+    private fun observeCameraResult() {
+        viewModelScope.launch {
+            savedStateHandle.getStateFlow<Pair<String, String>?>("mediaResult", null)
+                .filterNotNull()
+                .collect { (uriString, typeName) ->
+                    val uri = uriString.toUri()
+                    val type = MediaType.valueOf(typeName)
+                    onMediaPicked(uri, type)
+                    // limpiar para que no se reprocese si vuelve a composar
+                    savedStateHandle["mediaResult"] = null
+                }
         }
     }
 
@@ -92,16 +112,11 @@ class CreateLifehackViewModel @Inject constructor(
     }
 
     fun onMediaPicked(uri: Uri, type: MediaType) {
-        _uiState.update {
-            it.copy(
-                mediaLocalUri = uri,
-                mediaType = type
-            )
-        }
+        _uiState.update { it.copy(mediaSource = MediaSource.Local(uri, type)) }
     }
 
-    fun onMediaRemoved() {
-        _uiState.update { it.copy(mediaLocalUri = null) }
+    fun onMediaRemove() {
+        _uiState.update { it.copy(mediaSource = null) }
     }
 
     fun onSubmit(
@@ -109,6 +124,8 @@ class CreateLifehackViewModel @Inject constructor(
     ) {
         val currentState = _uiState.value
         if (!validate(currentState)) return
+
+        val localMedia = currentState.mediaSource as? MediaSource.Local
 
         viewModelScope.launch {
             _uiState.update { it.copy(isLoading = true, globalErrorMessage = null) }
@@ -119,7 +136,8 @@ class CreateLifehackViewModel @Inject constructor(
                     description = currentState.description,
                     category = currentState.category!!,
                     steps = currentState.steps,
-                    mediaUri = currentState.mediaLocalUri
+                    mediaUri = localMedia?.uri,
+                    mediaType = localMedia?.type
                 )
                     .onSuccess { lifehackId ->
                         onSuccess(lifehackId)
@@ -184,6 +202,6 @@ class CreateLifehackViewModel @Inject constructor(
                 state.description.isNotBlank() ||
                 state.category != null ||
                 state.steps.isNotEmpty() ||
-                state.mediaLocalUri != null
+                state.mediaSource != null
     }
 }
