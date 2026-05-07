@@ -6,6 +6,8 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
 import androidx.navigation.compose.rememberNavController
+import app.iesjdlc.tipslab.core.constants.NavConstants
+import app.iesjdlc.tipslab.core.model.CameraMediaResult
 import app.iesjdlc.tipslab.presentation.screens.lifehack.edit.EditLifehackScreen
 import app.iesjdlc.tipslab.presentation.screens.profile.edit.EditProfileScreen
 import app.iesjdlc.tipslab.presentation.screens.lifehack.detail.LifehackDetailScreen
@@ -115,7 +117,10 @@ fun AppNavigation() {
                 onMediaCaptured = { uri, type ->
                     rootNavController.previousBackStackEntry
                         ?.savedStateHandle
-                        ?.set("mediaResult", Pair(uri.toString(), type.name))
+                        ?.set(
+                            NavConstants.CAMERA_MEDIA_RESULT_KEY,
+                            CameraMediaResult(uri, type)
+                        )
                     rootNavController.popBackStack()
                 },
                 onNavigateBack = { rootNavController.popBackStack() }

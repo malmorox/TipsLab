@@ -6,7 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
 import app.iesjdlc.tipslab.R
-import app.iesjdlc.tipslab.core.constants.AppConstants.MIN_DESCRIPTION_LENGTH
+import app.iesjdlc.tipslab.core.constants.FormConstants
 import app.iesjdlc.tipslab.core.utils.UiText
 import app.iesjdlc.tipslab.domain.model.Category
 import app.iesjdlc.tipslab.domain.model.MediaSource
@@ -182,8 +182,8 @@ class EditLifehackViewModel @Inject constructor(
         if (state.description.isBlank()) {
             _uiState.update { it.copy(descriptionErrorMessage = UiText.StringRes(R.string.description_required)) }
             isValid = false
-        } else if (state.description.length < MIN_DESCRIPTION_LENGTH) {
-            _uiState.update { it.copy(descriptionErrorMessage = UiText.StringResWithArgs(R.string.description_min_length_required, MIN_DESCRIPTION_LENGTH)) }
+        } else if (state.description.length < FormConstants.MIN_DESCRIPTION_LENGTH) {
+            _uiState.update { it.copy(descriptionErrorMessage = UiText.StringResWithArgs(R.string.description_min_length_required, FormConstants.MIN_DESCRIPTION_LENGTH)) }
             isValid = false
         }
 

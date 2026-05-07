@@ -1,6 +1,5 @@
 package app.iesjdlc.tipslab.presentation.screens.lifehack.create
 
-import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
@@ -34,16 +33,14 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import app.iesjdlc.tipslab.R
-import app.iesjdlc.tipslab.core.constants.AppConstants.MAX_DESCRIPTION_LENGTH
+import app.iesjdlc.tipslab.core.constants.FormConstants
 import app.iesjdlc.tipslab.domain.model.Category
-import app.iesjdlc.tipslab.domain.model.MediaType
 import app.iesjdlc.tipslab.presentation.components.CategorySelectorSheet
 import app.iesjdlc.tipslab.presentation.components.ConfirmOrDismissDialog
 import app.iesjdlc.tipslab.presentation.components.FormFieldSection
@@ -225,7 +222,7 @@ private fun CreateLifehackScreenUI(
                             )
 
                             Text(
-                                text = "${state.description.length}/$MAX_DESCRIPTION_LENGTH",
+                                text = "${state.description.length}/${FormConstants.MAX_DESCRIPTION_LENGTH}",
                                 textAlign = TextAlign.End,
                                 modifier = Modifier
                                     .align(Alignment.BottomEnd)

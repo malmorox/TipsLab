@@ -5,7 +5,7 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import app.iesjdlc.tipslab.R
-import app.iesjdlc.tipslab.core.constants.AppConstants.MIN_DESCRIPTION_LENGTH
+import app.iesjdlc.tipslab.core.constants.FormConstants
 import app.iesjdlc.tipslab.core.utils.UiText
 import app.iesjdlc.tipslab.domain.model.Category
 import app.iesjdlc.tipslab.domain.model.MediaSource
@@ -21,6 +21,8 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 import androidx.core.net.toUri
+import app.iesjdlc.tipslab.core.constants.NavConstants
+import app.iesjdlc.tipslab.core.model.CameraMediaResult
 
 @HiltViewModel
 class CreateLifehackViewModel @Inject constructor(
@@ -46,14 +48,15 @@ class CreateLifehackViewModel @Inject constructor(
 
     private fun observeCameraResult() {
         viewModelScope.launch {
-            savedStateHandle.getStateFlow<Pair<String, String>?>("mediaResult", null)
+            savedStateHandle.getStateFlow<CameraMediaResult?>(
+                NavConstants.CAMERA_MEDIA_RESULT_KEY,
+                null
+            )
                 .filterNotNull()
-                .collect { (uriString, typeName) ->
-                    val uri = uriString.toUri()
-                    val type = MediaType.valueOf(typeName)
-                    onMediaPicked(uri, type)
+                .collect { result ->
+                    onMediaPicked(result.uri, result.type)
                     // limpiar para que no se reprocese si vuelve a composar
-                    savedStateHandle["mediaResult"] = null
+                    savedStateHandle.remove<CameraMediaResult>(NavConstants.CAMERA_MEDIA_RESULT_KEY)
                 }
         }
     }
@@ -162,8 +165,8 @@ class CreateLifehackViewModel @Inject constructor(
         if (state.description.isBlank()) {
             _uiState.update { it.copy(descriptionErrorMessage = UiText.StringRes(R.string.description_required)) }
             isValid = false
-        } else if (state.description.length < MIN_DESCRIPTION_LENGTH) {
-            _uiState.update { it.copy(descriptionErrorMessage = UiText.StringResWithArgs(R.string.description_min_length_required, MIN_DESCRIPTION_LENGTH)) }
+        } else if (state.description.length < FormConstants.MIN_DESCRIPTION_LENGTH) {
+            _uiState.update { it.copy(descriptionErrorMessage = UiText.StringResWithArgs(R.string.description_min_length_required, FormConstants.MIN_DESCRIPTION_LENGTH)) }
             isValid = false
         }
 

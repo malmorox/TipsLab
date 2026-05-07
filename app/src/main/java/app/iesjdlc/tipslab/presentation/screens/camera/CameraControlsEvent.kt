@@ -1,6 +1,7 @@
 package app.iesjdlc.tipslab.presentation.screens.camera
 
 sealed class CameraControlsEvent {
+    data object ToggleMode : CameraControlsEvent()
     data object CapturePhoto : CameraControlsEvent()
     data object StartRecording : CameraControlsEvent()
     data object StopRecording : CameraControlsEvent()

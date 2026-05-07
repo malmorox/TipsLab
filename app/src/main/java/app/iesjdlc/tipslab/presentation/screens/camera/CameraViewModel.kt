@@ -4,6 +4,7 @@ import android.Manifest
 import android.content.Context
 import android.content.pm.PackageManager
 import android.net.Uri
+import android.util.Log
 import androidx.camera.core.ImageCapture
 import androidx.camera.core.ImageCaptureException
 import androidx.camera.video.FileOutputOptions
@@ -16,6 +17,7 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
+import app.iesjdlc.tipslab.domain.model.CameraMode
 import app.iesjdlc.tipslab.domain.model.MediaType
 import app.iesjdlc.tipslab.presentation.navigation.Route
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -25,6 +27,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.receiveAsFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.io.File
 import javax.inject.Inject
@@ -32,14 +35,18 @@ import javax.inject.Inject
 @HiltViewModel
 class CameraViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
-    @ApplicationContext private val context: Context,
+    @param:ApplicationContext private val context: Context,
 ) : ViewModel() {
     val allowVideo = savedStateHandle.toRoute<Route.Camera>().allowVideo
+
+    private val _uiState = MutableStateFlow(CameraUiState())
+    val uiState: StateFlow<CameraUiState> = _uiState.asStateFlow()
 
     private val _hasPermission = MutableStateFlow(false)
     val hasPermission: StateFlow<Boolean> = _hasPermission.asStateFlow()
 
     private val _hasAudioPermission = MutableStateFlow(false)
+    val hasAudioPermission: StateFlow<Boolean> = _hasAudioPermission.asStateFlow()
 
     fun onPermissionResult(granted: Boolean) {
         _hasPermission.value = granted
@@ -62,21 +69,24 @@ class CameraViewModel @Inject constructor(
     private val _events = Channel<CameraEvent>(Channel.BUFFERED)
     val events = _events.receiveAsFlow()
 
-    private val _isRecording = MutableStateFlow(false)
-    val isRecording: StateFlow<Boolean> = _isRecording.asStateFlow()
-
-    private val _isFrontCamera = MutableStateFlow(false)
-    val isFrontCamera: StateFlow<Boolean> = _isFrontCamera.asStateFlow()
-
     val imageCapture = ImageCapture.Builder().build()
     var videoCapture: VideoCapture<Recorder>? = null
+        private set
     private var activeRecording: Recording? = null
+
+    fun toggleMode() {
+        if (_uiState.value.isRecording) return
+        _uiState.update {
+            it.copy(mode = if (it.mode == CameraMode.PHOTO) CameraMode.VIDEO else CameraMode.PHOTO)
+        }
+    }
 
     fun onVideoCaptureReady(videoCapture: VideoCapture<Recorder>) {
         this.videoCapture = videoCapture
     }
 
     fun capturePhoto() {
+        Log.d("CameraViewModel", "capturePhoto() llamado")
         val file = File.createTempFile("photo_", ".jpg", context.cacheDir)
         val outputOptions = ImageCapture.OutputFileOptions.Builder(file).build()
         imageCapture.takePicture(
@@ -84,9 +94,11 @@ class CameraViewModel @Inject constructor(
             ContextCompat.getMainExecutor(context),
             object : ImageCapture.OnImageSavedCallback {
                 override fun onImageSaved(output: ImageCapture.OutputFileResults) {
+                    Log.d("CameraViewModel", "foto guardada: ${Uri.fromFile(file)}")
                     sendEvent(CameraEvent.MediaCaptured(Uri.fromFile(file), MediaType.IMAGE))
                 }
                 override fun onError(exception: ImageCaptureException) {
+                    Log.e("CameraViewModel", "error foto: ${exception.message}")
                     sendEvent(CameraEvent.Error(exception.message ?: "Error al capturar foto"))
                 }
             }
@@ -94,7 +106,7 @@ class CameraViewModel @Inject constructor(
     }
 
     fun startRecording() {
-        if (_isRecording.value) return
+        if (_uiState.value.isRecording) return
         val vc = videoCapture ?: return
         try {
             val file = File.createTempFile("video_", ".mp4", context.cacheDir)
@@ -106,9 +118,10 @@ class CameraViewModel @Inject constructor(
             activeRecording = pendingRecording
                 .start(ContextCompat.getMainExecutor(context)) { recordEvent ->
                     when (recordEvent) {
-                        is VideoRecordEvent.Start -> _isRecording.value = true
+                        is VideoRecordEvent.Start ->
+                            _uiState.update { it.copy(isRecording = true) }
                         is VideoRecordEvent.Finalize -> {
-                            _isRecording.value = false
+                            _uiState.update { it.copy(isRecording = false) }
                             activeRecording = null
                             if (!recordEvent.hasError()) {
                                 sendEvent(CameraEvent.MediaCaptured(
@@ -132,11 +145,12 @@ class CameraViewModel @Inject constructor(
     }
 
     fun flipCamera() {
-        if (_isRecording.value) return
-        _isFrontCamera.value = !_isFrontCamera.value
+        if (_uiState.value.isRecording) return
+        _uiState.update { it.copy(isFrontCamera = !it.isFrontCamera) }
     }
 
     private fun sendEvent(event: CameraEvent) {
+        Log.d("CameraViewModel", "sendEvent: $event")
         viewModelScope.launch { _events.send(event) }
     }
 
