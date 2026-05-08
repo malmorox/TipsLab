@@ -1,7 +1,6 @@
 package app.iesjdlc.tipslab.presentation.screens.lifehack.create
 
 import android.net.Uri
-import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import app.iesjdlc.tipslab.R
@@ -16,17 +15,13 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
-import androidx.core.net.toUri
-import app.iesjdlc.tipslab.core.constants.NavConstants
 import app.iesjdlc.tipslab.core.model.CameraMediaResult
 
 @HiltViewModel
 class CreateLifehackViewModel @Inject constructor(
-    private val savedStateHandle: SavedStateHandle,
     private val createLifehackUseCase: CreateLifehackUseCase,
     private val categoryRepository: CategoryRepository
 ) : ViewModel() {
@@ -35,7 +30,6 @@ class CreateLifehackViewModel @Inject constructor(
 
     init {
         loadCategories()
-        observeCameraResult()
     }
 
     private fun loadCategories() {
@@ -43,21 +37,6 @@ class CreateLifehackViewModel @Inject constructor(
             val categories = categoryRepository.getAllCategories()
                 .getOrElse { emptyList() }
             _uiState.update { it.copy(allCategories = categories) }
-        }
-    }
-
-    private fun observeCameraResult() {
-        viewModelScope.launch {
-            savedStateHandle.getStateFlow<CameraMediaResult?>(
-                NavConstants.CAMERA_MEDIA_RESULT_KEY,
-                null
-            )
-                .filterNotNull()
-                .collect { result ->
-                    onMediaPicked(result.uri, result.type)
-                    // limpiar para que no se reprocese si vuelve a composar
-                    savedStateHandle.remove<CameraMediaResult>(NavConstants.CAMERA_MEDIA_RESULT_KEY)
-                }
         }
     }
 
@@ -112,6 +91,10 @@ class CreateLifehackViewModel @Inject constructor(
 
     fun onCategorySheetDismiss() {
         _uiState.update { it.copy(showCategorySheet = false) }
+    }
+
+    fun onCameraResult(result: CameraMediaResult) {
+        onMediaPicked(result.uri, result.type)
     }
 
     fun onMediaPicked(uri: Uri, type: MediaType) {

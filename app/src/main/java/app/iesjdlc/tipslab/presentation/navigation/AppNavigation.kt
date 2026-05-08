@@ -1,6 +1,8 @@
 package app.iesjdlc.tipslab.presentation.navigation
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -95,7 +97,11 @@ fun AppNavigation() {
         composable<Route.CreateLifehack>(
             enterTransition = { NavAnimations.slideInVertical() },
             popExitTransition = { NavAnimations.slideOutVertical() }
-        ) {
+        ) { backStackEntry ->
+            val cameraResult by backStackEntry.savedStateHandle
+                .getStateFlow<CameraMediaResult?>(NavConstants.CAMERA_MEDIA_RESULT_KEY, null)
+                .collectAsStateWithLifecycle()
+
             CreateLifehackScreen(
                 onNavigateBack = { rootNavController.popBackStack() },
                 onLifehackCreated = { lifehackId ->
@@ -106,6 +112,10 @@ fun AppNavigation() {
                 },
                 onOpenCamera = {
                     rootNavController.navigate(Route.Camera())
+                },
+                cameraResult = cameraResult,
+                onCameraResultConsumed = {
+                    backStackEntry.savedStateHandle.remove<CameraMediaResult>(NavConstants.CAMERA_MEDIA_RESULT_KEY)
                 }
             )
         }

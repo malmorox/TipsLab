@@ -29,6 +29,7 @@ import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -40,6 +41,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import app.iesjdlc.tipslab.R
 import app.iesjdlc.tipslab.core.constants.FormConstants
+import app.iesjdlc.tipslab.core.model.CameraMediaResult
 import app.iesjdlc.tipslab.domain.model.Category
 import app.iesjdlc.tipslab.presentation.components.CategorySelectorSheet
 import app.iesjdlc.tipslab.presentation.components.ConfirmOrDismissDialog
@@ -53,12 +55,21 @@ fun CreateLifehackScreen(
     viewModel: CreateLifehackViewModel = hiltViewModel(),
     onNavigateBack: () -> Unit,
     onLifehackCreated: (String) -> Unit,
-    onOpenCamera: () -> Unit
+    onOpenCamera: () -> Unit,
+    cameraResult: CameraMediaResult? = null,
+    onCameraResultConsumed: () -> Unit,
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
     val galleryLauncher = rememberGalleryLauncher { uri, type ->
         viewModel.onMediaPicked(uri, type)
+    }
+
+    LaunchedEffect(cameraResult) {
+        cameraResult?.let {
+            viewModel.onCameraResult(it)
+            onCameraResultConsumed()
+        }
     }
 
     CreateLifehackScreenUI(
