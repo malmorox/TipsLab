@@ -35,6 +35,7 @@ import app.iesjdlc.tipslab.domain.model.Category
 import app.iesjdlc.tipslab.domain.model.User
 import app.iesjdlc.tipslab.presentation.components.ConfirmOrDismissDialog
 import app.iesjdlc.tipslab.presentation.components.LifehackStepsList
+import app.iesjdlc.tipslab.presentation.components.MediaViewer
 import app.iesjdlc.tipslab.presentation.components.OptionsContextMenu
 import app.iesjdlc.tipslab.presentation.components.UserAvatarImage
 
@@ -146,6 +147,13 @@ private fun LifehackDetailScreenUI(
                         .padding(24.dp),
                     verticalArrangement = Arrangement.spacedBy(16.dp)
                 ) {
+                    lifehack.media?.let {
+                        MediaViewer(
+                            mediaUrl = lifehack.media.url,
+                            mediaType = lifehack.media.type
+                        )
+                    }
+
                     Text(
                         text = lifehack.title,
                         style = MaterialTheme.typography.headlineLarge,

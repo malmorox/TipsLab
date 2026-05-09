@@ -42,8 +42,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import app.iesjdlc.tipslab.R
-import app.iesjdlc.tipslab.core.constants.AppConstants.MAX_STEP_LENGTH
-import app.iesjdlc.tipslab.core.constants.AppConstants.MIN_STEP_LENGTH
+import app.iesjdlc.tipslab.core.constants.FormConstants
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -64,7 +63,7 @@ fun LifehackStepsSheet(
     var currentSteps by remember { mutableStateOf(initialSteps.toList()) }
     var attemptedConfirm by remember { mutableStateOf(false) }
 
-    fun isStepValid(step: String) = step.isBlank() || step.length >= MIN_STEP_LENGTH
+    fun isStepValid(step: String) = step.isBlank() || step.length >= FormConstants.MIN_STEP_LENGTH
 
     fun hasValidSteps(): Boolean {
         val filled = currentSteps.filter { it.isNotBlank() }
@@ -96,7 +95,7 @@ fun LifehackStepsSheet(
                 verticalArrangement = Arrangement.spacedBy(12.dp)
             ) {
                 currentSteps.forEachIndexed { index, step ->
-                    val isError = attemptedConfirm && step.isNotBlank() && step.length < MIN_STEP_LENGTH
+                    val isError = attemptedConfirm && step.isNotBlank() && step.length < FormConstants.MIN_STEP_LENGTH
 
                     StepField(
                         index = index,
@@ -106,7 +105,7 @@ fun LifehackStepsSheet(
                         canMoveDown = index < currentSteps.lastIndex,
                         canDelete = currentSteps.size > 3,
                         onValueChange = { newValue ->
-                            if (newValue.length <= MAX_STEP_LENGTH) {
+                            if (newValue.length <= FormConstants.MAX_STEP_LENGTH) {
                                 currentSteps = currentSteps.toMutableList().also {
                                     it[index] = newValue
                                 }
@@ -243,7 +242,7 @@ private fun StepField(
                     if (isError) {
                         {
                             Text(
-                                text = stringResource(R.string.step_min_chars, MIN_STEP_LENGTH),
+                                text = stringResource(R.string.step_min_chars, FormConstants.MIN_STEP_LENGTH),
                                 color = MaterialTheme.colorScheme.error,
                                 style = MaterialTheme.typography.labelSmall
                             )
@@ -251,7 +250,7 @@ private fun StepField(
                     } else if (value.isNotEmpty()) {
                         {
                             Text(
-                                text = "${value.length}/$MAX_STEP_LENGTH",
+                                text = "${value.length}/${FormConstants.MAX_STEP_LENGTH}",
                                 textAlign = TextAlign.End,
                                 modifier = Modifier.fillMaxWidth(),
                                 style = MaterialTheme.typography.labelSmall,

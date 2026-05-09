@@ -9,13 +9,18 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.Dp
+import androidx.core.net.toUri
 import app.iesjdlc.tipslab.domain.model.User
 import coil3.compose.AsyncImage
 
 @Composable
-fun UserAvatarImage(user: User, size: Dp, modifier: Modifier = Modifier) {
+fun UserAvatarImage(
+    user: User,
+    size: Dp,
+    modifier: Modifier = Modifier
+) {
     AsyncImage(
-        model = user.photoUrl,
+        model = user.photoUrl?.toUri(),
         contentDescription = "@${user.username}",
         contentScale = ContentScale.Crop,
         modifier = modifier

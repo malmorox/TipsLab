@@ -6,9 +6,11 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
 import app.iesjdlc.tipslab.R
-import app.iesjdlc.tipslab.core.constants.AppConstants.MIN_DESCRIPTION_LENGTH
+import app.iesjdlc.tipslab.core.constants.FormConstants
 import app.iesjdlc.tipslab.core.utils.UiText
 import app.iesjdlc.tipslab.domain.model.Category
+import app.iesjdlc.tipslab.domain.model.MediaSource
+import app.iesjdlc.tipslab.domain.model.MediaType
 import app.iesjdlc.tipslab.domain.repository.CategoryRepository
 import app.iesjdlc.tipslab.domain.repository.LifehackRepository
 import app.iesjdlc.tipslab.domain.usecase.lifehack.EditLifehackUseCase
@@ -37,6 +39,7 @@ class EditLifehackViewModel @Inject constructor(
     private var originalDescription: String = ""
     private var originalSteps: List<String> = emptyList()
     private var originalCategory: Category? = null
+    private var originalMediaSource: MediaSource? = null
 
     init {
         loadLifehack()
@@ -54,14 +57,17 @@ class EditLifehackViewModel @Inject constructor(
                         originalDescription = lifehack.description
                         originalSteps = lifehack.steps
                         originalCategory = lifehack.category
+                        originalMediaSource = lifehack.media?.let { media ->
+                            MediaSource.Remote(media.url, media.type)
+                        }
 
                         _uiState.update {
                             it.copy(
-                                title = lifehack.title,
-                                description = lifehack.description,
-                                steps = lifehack.steps,
-                                category = lifehack.category,
-                                mediaUrl = lifehack.media?.url,
+                                title = originalTitle,
+                                description = originalDescription,
+                                steps = originalSteps,
+                                category = originalCategory,
+                                mediaSource = originalMediaSource
                             )
                         }
                     }.onFailure { error ->
@@ -80,7 +86,7 @@ class EditLifehackViewModel @Inject constructor(
             try {
                 val categories = categoryRepository.getAllCategories()
                     .getOrElse { emptyList() }
-                _uiState.update { it.copy(availableCategories = categories) }
+                _uiState.update { it.copy(allCategories = categories) }
             } finally {
                 _uiState.update { it.copy(isLoading = false) }
             }
@@ -140,17 +146,12 @@ class EditLifehackViewModel @Inject constructor(
         _uiState.update { it.copy(showCategorySheet = false) }
     }
 
-    fun onMediaPick(uri: Uri) {
-        _uiState.update { it.copy(mediaLocalUri = uri) }
+    fun onMediaPicked(uri: Uri, type: MediaType) {
+        _uiState.update { it.copy(mediaSource = MediaSource.Local(uri, type)) }
     }
 
     fun onMediaRemove() {
-        _uiState.update {
-            it.copy(
-                mediaLocalUri = null,
-                mediaRemoved = true
-            )
-        }
+        _uiState.update { it.copy(mediaSource = null) }
     }
 
     fun onSave(
@@ -181,8 +182,8 @@ class EditLifehackViewModel @Inject constructor(
         if (state.description.isBlank()) {
             _uiState.update { it.copy(descriptionErrorMessage = UiText.StringRes(R.string.description_required)) }
             isValid = false
-        } else if (state.description.length < MIN_DESCRIPTION_LENGTH) {
-            _uiState.update { it.copy(descriptionErrorMessage = UiText.StringResWithArgs(R.string.description_min_length_required, MIN_DESCRIPTION_LENGTH)) }
+        } else if (state.description.length < FormConstants.MIN_DESCRIPTION_LENGTH) {
+            _uiState.update { it.copy(descriptionErrorMessage = UiText.StringResWithArgs(R.string.description_min_length_required, FormConstants.MIN_DESCRIPTION_LENGTH)) }
             isValid = false
         }
 
@@ -194,7 +195,7 @@ class EditLifehackViewModel @Inject constructor(
         return isValid
     }
 
-    fun onCloseClick(
+    fun onBackClick(
         onNavigateBack: () -> Unit
     ) {
         val currentState = _uiState.value
@@ -221,7 +222,6 @@ class EditLifehackViewModel @Inject constructor(
                 state.description != originalDescription ||
                 state.steps != originalSteps ||
                 state.category?.id != originalCategory?.id ||
-                state.mediaLocalUri != null ||
-                state.mediaRemoved
+                state.mediaSource != originalMediaSource
     }
 }

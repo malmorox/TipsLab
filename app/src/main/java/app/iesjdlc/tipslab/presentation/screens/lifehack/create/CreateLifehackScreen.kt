@@ -1,6 +1,5 @@
 package app.iesjdlc.tipslab.presentation.screens.lifehack.create
 
-import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
@@ -30,43 +29,46 @@ import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import app.iesjdlc.tipslab.R
-import app.iesjdlc.tipslab.core.constants.AppConstants.MAX_DESCRIPTION_LENGTH
+import app.iesjdlc.tipslab.core.constants.FormConstants
+import app.iesjdlc.tipslab.core.model.CameraMediaResult
 import app.iesjdlc.tipslab.domain.model.Category
-import app.iesjdlc.tipslab.domain.model.MediaType
 import app.iesjdlc.tipslab.presentation.components.CategorySelectorSheet
 import app.iesjdlc.tipslab.presentation.components.ConfirmOrDismissDialog
 import app.iesjdlc.tipslab.presentation.components.FormFieldSection
 import app.iesjdlc.tipslab.presentation.components.LifehackStepsSheet
 import app.iesjdlc.tipslab.presentation.components.MediaPicker
+import app.iesjdlc.tipslab.presentation.common.rememberLifehackGalleryLauncher
 
 @Composable
 fun CreateLifehackScreen(
     viewModel: CreateLifehackViewModel = hiltViewModel(),
     onNavigateBack: () -> Unit,
     onLifehackCreated: (String) -> Unit,
-    onOpenCamera: () -> Unit
+    onOpenCamera: () -> Unit,
+    cameraResult: CameraMediaResult? = null,
+    onCameraResultConsumed: () -> Unit,
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
-    val context = LocalContext.current
 
-    val galleryLauncher = rememberLauncherForActivityResult(
-        ActivityResultContracts.PickVisualMedia()
-    ) { uri ->
-        uri?.let {
-            val mime = context.contentResolver.getType(it)
-            val type = if (mime?.startsWith("video") == true) MediaType.VIDEO else MediaType.IMAGE
-            viewModel.onMediaPicked(it, type)
+    val galleryLauncher = rememberLifehackGalleryLauncher { uri, type ->
+        viewModel.onMediaPicked(uri, type)
+    }
+
+    LaunchedEffect(cameraResult) {
+        cameraResult?.let {
+            viewModel.onCameraResult(it)
+            onCameraResultConsumed()
         }
     }
 
@@ -86,7 +88,7 @@ fun CreateLifehackScreen(
                 PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageAndVideo)
             )
         },
-        onMediaRemove = { viewModel.onMediaRemoved() },
+        onMediaRemove = { viewModel.onMediaRemove() },
         onSubmit = { viewModel.onSubmit(onLifehackCreated) },
         onClose = { viewModel.onCloseClick(onNavigateBack) },
         onDiscardChangesConfirm = { viewModel.onDiscardChangesConfirm(onNavigateBack) },
@@ -165,8 +167,7 @@ private fun CreateLifehackScreenUI(
                     verticalArrangement = Arrangement.spacedBy(16.dp)
                 ) {
                     MediaPicker(
-                        mediaUri = state.mediaLocalUri,
-                        mediaType = state.mediaType,
+                        mediaSource = state.mediaSource,
                         onCameraClick = onOpenCamera,
                         onGalleryClick = onOpenGallery,
                         onMediaRemoved = onMediaRemove
@@ -232,7 +233,7 @@ private fun CreateLifehackScreenUI(
                             )
 
                             Text(
-                                text = "${state.description.length}/$MAX_DESCRIPTION_LENGTH",
+                                text = "${state.description.length}/${FormConstants.MAX_DESCRIPTION_LENGTH}",
                                 textAlign = TextAlign.End,
                                 modifier = Modifier
                                     .align(Alignment.BottomEnd)

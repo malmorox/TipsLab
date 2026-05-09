@@ -4,9 +4,10 @@ import android.net.Uri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import app.iesjdlc.tipslab.R
-import app.iesjdlc.tipslab.core.constants.AppConstants.MIN_DESCRIPTION_LENGTH
+import app.iesjdlc.tipslab.core.constants.FormConstants
 import app.iesjdlc.tipslab.core.utils.UiText
 import app.iesjdlc.tipslab.domain.model.Category
+import app.iesjdlc.tipslab.domain.model.MediaSource
 import app.iesjdlc.tipslab.domain.model.MediaType
 import app.iesjdlc.tipslab.domain.repository.CategoryRepository
 import app.iesjdlc.tipslab.domain.usecase.lifehack.CreateLifehackUseCase
@@ -17,6 +18,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+import app.iesjdlc.tipslab.core.model.CameraMediaResult
 
 @HiltViewModel
 class CreateLifehackViewModel @Inject constructor(
@@ -91,17 +93,16 @@ class CreateLifehackViewModel @Inject constructor(
         _uiState.update { it.copy(showCategorySheet = false) }
     }
 
-    fun onMediaPicked(uri: Uri, type: MediaType) {
-        _uiState.update {
-            it.copy(
-                mediaLocalUri = uri,
-                mediaType = type
-            )
-        }
+    fun onCameraResult(result: CameraMediaResult) {
+        onMediaPicked(result.uri, result.type)
     }
 
-    fun onMediaRemoved() {
-        _uiState.update { it.copy(mediaLocalUri = null) }
+    fun onMediaPicked(uri: Uri, type: MediaType) {
+        _uiState.update { it.copy(mediaSource = MediaSource.Local(uri, type)) }
+    }
+
+    fun onMediaRemove() {
+        _uiState.update { it.copy(mediaSource = null) }
     }
 
     fun onSubmit(
@@ -109,6 +110,8 @@ class CreateLifehackViewModel @Inject constructor(
     ) {
         val currentState = _uiState.value
         if (!validate(currentState)) return
+
+        val localMedia = currentState.mediaSource as? MediaSource.Local
 
         viewModelScope.launch {
             _uiState.update { it.copy(isLoading = true, globalErrorMessage = null) }
@@ -119,7 +122,8 @@ class CreateLifehackViewModel @Inject constructor(
                     description = currentState.description,
                     category = currentState.category!!,
                     steps = currentState.steps,
-                    mediaUri = currentState.mediaLocalUri
+                    mediaUri = localMedia?.uri,
+                    mediaType = localMedia?.type
                 )
                     .onSuccess { lifehackId ->
                         onSuccess(lifehackId)
@@ -144,8 +148,8 @@ class CreateLifehackViewModel @Inject constructor(
         if (state.description.isBlank()) {
             _uiState.update { it.copy(descriptionErrorMessage = UiText.StringRes(R.string.description_required)) }
             isValid = false
-        } else if (state.description.length < MIN_DESCRIPTION_LENGTH) {
-            _uiState.update { it.copy(descriptionErrorMessage = UiText.StringResWithArgs(R.string.description_min_length_required, MIN_DESCRIPTION_LENGTH)) }
+        } else if (state.description.length < FormConstants.MIN_DESCRIPTION_LENGTH) {
+            _uiState.update { it.copy(descriptionErrorMessage = UiText.StringResWithArgs(R.string.description_min_length_required, FormConstants.MIN_DESCRIPTION_LENGTH)) }
             isValid = false
         }
 
@@ -184,6 +188,6 @@ class CreateLifehackViewModel @Inject constructor(
                 state.description.isNotBlank() ||
                 state.category != null ||
                 state.steps.isNotEmpty() ||
-                state.mediaLocalUri != null
+                state.mediaSource != null
     }
 }

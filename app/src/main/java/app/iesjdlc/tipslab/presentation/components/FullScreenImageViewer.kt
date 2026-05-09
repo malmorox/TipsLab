@@ -1,5 +1,6 @@
 package app.iesjdlc.tipslab.presentation.components
 
+import android.net.Uri
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -23,7 +24,7 @@ import coil3.compose.AsyncImage
 
 @Composable
 fun FullScreenImageViewer(
-    imageUrl: String,
+    imageUri: Uri,
     onDismiss: () -> Unit
 ) {
 
@@ -37,7 +38,7 @@ fun FullScreenImageViewer(
                 .background(Color.Black.copy(alpha = 0.50f))
         ) {
             AsyncImage(
-                model = imageUrl,
+                model = imageUri,
                 contentDescription = null,
                 modifier = Modifier.fillMaxSize(),
                 contentScale = ContentScale.Fit

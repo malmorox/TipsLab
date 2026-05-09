@@ -1,8 +1,8 @@
 package app.iesjdlc.tipslab.presentation.screens.lifehack.edit
 
-import android.net.Uri
 import app.iesjdlc.tipslab.core.utils.UiText
 import app.iesjdlc.tipslab.domain.model.Category
+import app.iesjdlc.tipslab.domain.model.MediaSource
 
 data class EditLifehackUiState(
     val title: String = "",
@@ -10,10 +10,8 @@ data class EditLifehackUiState(
     val steps: List<String> = emptyList(),
     val stepsCount: Int = 0,
     val category: Category? = null,
-    val availableCategories: List<Category> = emptyList(),
-    val mediaUrl: String? = null,
-    val mediaLocalUri: Uri? = null,
-    val mediaRemoved: Boolean = false,
+    val allCategories: List<Category> = emptyList(),
+    val mediaSource: MediaSource? = null,
 
     val showStepsSheet: Boolean = false,
     val showCategorySheet: Boolean = false,
