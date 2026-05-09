@@ -48,7 +48,7 @@ import app.iesjdlc.tipslab.presentation.components.ConfirmOrDismissDialog
 import app.iesjdlc.tipslab.presentation.components.FormFieldSection
 import app.iesjdlc.tipslab.presentation.components.LifehackStepsSheet
 import app.iesjdlc.tipslab.presentation.components.MediaPicker
-import app.iesjdlc.tipslab.presentation.screens.lifehack.utils.rememberGalleryLauncher
+import app.iesjdlc.tipslab.presentation.common.rememberLifehackGalleryLauncher
 
 @Composable
 fun CreateLifehackScreen(
@@ -61,7 +61,7 @@ fun CreateLifehackScreen(
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
-    val galleryLauncher = rememberGalleryLauncher { uri, type ->
+    val galleryLauncher = rememberLifehackGalleryLauncher { uri, type ->
         viewModel.onMediaPicked(uri, type)
     }
 

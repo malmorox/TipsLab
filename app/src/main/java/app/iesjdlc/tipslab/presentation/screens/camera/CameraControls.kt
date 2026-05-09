@@ -66,7 +66,7 @@ fun CameraControls(
         ) {
             Icon(
                 imageVector = Icons.Rounded.Cameraswitch,
-                contentDescription = stringResource(R.string.or), //TODO cambiar string
+                contentDescription = stringResource(R.string.flip_camera),
                 tint = Color.White
             )
         }
@@ -127,7 +127,6 @@ private fun PhotoCaptureButton(
             .size(72.dp)
             .clip(CircleShape)
             .background(Color.Transparent)
-            .clickable(onClick = onClick)
             .border(3.dp, Color.White, CircleShape)
     ) {
         Box(
@@ -135,6 +134,7 @@ private fun PhotoCaptureButton(
                 .size(56.dp)
                 .clip(CircleShape)
                 .background(Color.White)
+                .clickable(onClick = onClick)
         )
     }
 }
@@ -144,27 +144,29 @@ private fun VideoCaptureButton(
     isRecording: Boolean,
     onClick: () -> Unit,
 ) {
+    val innerSize by animateDpAsState(
+        targetValue = if (isRecording) 28.dp else 56.dp,
+        label = "innerSize"
+    )
+
+    val cornerRadius by animateDpAsState(
+        targetValue = if (isRecording) 6.dp else 28.dp, // 28.dp es la mitad del tamaño para que sea un círculo
+        label = "cornerRadius"
+    )
+
     Box(
         contentAlignment = Alignment.Center,
         modifier = Modifier
             .size(72.dp)
             .clip(CircleShape)
             .border(3.dp, Color.White, CircleShape)
-            .clickable(onClick = onClick)
     ) {
-        val innerSize by animateDpAsState(
-            targetValue = if (isRecording) 28.dp else 52.dp,
-            label = "innerSize"
-        )
-        val cornerRadius by animateDpAsState(
-            targetValue = if (isRecording) 6.dp else 26.dp,
-            label = "cornerRadius"
-        )
         Box(
             modifier = Modifier
                 .size(innerSize)
                 .clip(RoundedCornerShape(cornerRadius))
                 .background(Color.Red)
+                .clickable(onClick = onClick)
         )
     }
 }

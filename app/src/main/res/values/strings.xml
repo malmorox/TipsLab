@@ -50,12 +50,17 @@
     <string name="category_required">La categoría es obligatoria</string>
     <string name="description_min_length_required">La descripción debe tener al menos %1$d caracteres</string>
 
+    <!-- Edit lifehack -->
+
     <!-- Profile -->
     <string name="edit_profile">Editar perfil</string>
 
     <!-- Category -->
     <string name="no_recent_category_lifehacks">No hay lifehacks recientes en esta categoría</string>
     <string name="no_popular_category_lifehacks">No hay lifehacks populares en esta categoría</string>
+
+    <!-- Camera -->
+    <string name="flip_camera">Girar cámara</string>
 
     <!-- Generic -->
     <string name="close">Cerrar</string>

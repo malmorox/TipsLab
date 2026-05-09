@@ -1,4 +1,4 @@
-package app.iesjdlc.tipslab.presentation.screens.lifehack.utils
+package app.iesjdlc.tipslab.presentation.common
 
 import android.net.Uri
 import androidx.activity.compose.ManagedActivityResultLauncher
@@ -10,7 +10,7 @@ import androidx.compose.ui.platform.LocalContext
 import app.iesjdlc.tipslab.domain.model.MediaType
 
 @Composable
-fun rememberGalleryLauncher(
+fun rememberLifehackGalleryLauncher(
     onMediaPicked: (Uri, MediaType) -> Unit
 ): ManagedActivityResultLauncher<PickVisualMediaRequest, Uri?> {
     val context = LocalContext.current

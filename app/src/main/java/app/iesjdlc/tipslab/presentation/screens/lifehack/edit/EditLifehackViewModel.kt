@@ -86,7 +86,7 @@ class EditLifehackViewModel @Inject constructor(
             try {
                 val categories = categoryRepository.getAllCategories()
                     .getOrElse { emptyList() }
-                _uiState.update { it.copy(availableCategories = categories) }
+                _uiState.update { it.copy(allCategories = categories) }
             } finally {
                 _uiState.update { it.copy(isLoading = false) }
             }
