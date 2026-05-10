@@ -42,7 +42,11 @@ class CreateLifehackUseCase @Inject constructor(
             .fold(
                 onSuccess = { lifehackId ->
                     if (mediaUri != null && mediaType != null) {
-                        uploadMediaEnqueuer.enqueue(lifehackId, mediaUri, mediaType)
+                        uploadMediaEnqueuer.enqueue(
+                            lifehackId,
+                            mediaUri,
+                            mediaType
+                        )
                     }
                     Result.success(lifehackId)
                 },

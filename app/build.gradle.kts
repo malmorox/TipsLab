@@ -108,4 +108,5 @@ dependencies {
     ksp(libs.hilt.compiler)
     implementation(libs.hilt.common)
     implementation(libs.hilt.work)
+    ksp(libs.hilt.work.compiler)
 }
