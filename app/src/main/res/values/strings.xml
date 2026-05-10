@@ -52,8 +52,12 @@
 
     <!-- Edit lifehack -->
 
-    <!-- Profile -->
+    <!-- Profile y EditProfile -->
+    <string name="my_profile">Mi perfil</string>
+    <string name="log_out">Cerrar sesión</string>
     <string name="edit_profile">Editar perfil</string>
+    <string name="no_posts">Aún no hay publicaciones</string>
+    <string name="save_changes">Guardar cambios</string>
 
     <!-- Category -->
     <string name="no_recent_category_lifehacks">No hay lifehacks recientes en esta categoría</string>

@@ -1,9 +1,10 @@
 package app.iesjdlc.tipslab.presentation.screens.profile
 
 data class ProfileUiState(
-    val emailOrUsername: String = "",
-    val password: String = "",
-    val isPasswordVisible: Boolean = false,
+    val username: String = "",
+    val email: String = "",
+    val photoUrl: String? = null,
+    val posts: List<String> = emptyList(),
     val isLoading: Boolean = false,
     val errorMessage: String? = null
 )
