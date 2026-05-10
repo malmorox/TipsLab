@@ -6,14 +6,14 @@ import app.iesjdlc.tipslab.domain.model.Lifehack
 import app.iesjdlc.tipslab.domain.model.MediaType
 import app.iesjdlc.tipslab.domain.repository.AuthRepository
 import app.iesjdlc.tipslab.domain.repository.LifehackRepository
-import app.iesjdlc.tipslab.domain.repository.MediaRepository
+import app.iesjdlc.tipslab.domain.usecase.lifehack.boundary.UploadLifehackMediaEnqueuer
 import kotlinx.datetime.Clock
 import javax.inject.Inject
 
 class CreateLifehackUseCase @Inject constructor(
     private val lifehackRepository: LifehackRepository,
     private val authRepository: AuthRepository,
-    //private val uploadMediaWorker: UploadLifehackMediaWorker
+    private val uploadMediaEnqueuer: UploadLifehackMediaEnqueuer
 ) {
     suspend operator fun invoke(
         title: String,
@@ -42,7 +42,7 @@ class CreateLifehackUseCase @Inject constructor(
             .fold(
                 onSuccess = { lifehackId ->
                     if (mediaUri != null && mediaType != null) {
-                        Result.success(lifehackId) // TODO subir imagen y actualizar lifehack
+                        uploadMediaEnqueuer.enqueue(lifehackId, mediaUri, mediaType)
                     }
                     Result.success(lifehackId)
                 },

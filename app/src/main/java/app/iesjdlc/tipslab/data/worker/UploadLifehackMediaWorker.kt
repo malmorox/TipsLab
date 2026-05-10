@@ -13,14 +13,14 @@ import app.iesjdlc.tipslab.domain.repository.MediaRepository
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
 
-/*@HiltWorker
+@HiltWorker
 class UploadLifehackMediaWorker @AssistedInject constructor(
     @Assisted context: Context,
     @Assisted workerParams: WorkerParameters,
     private val mediaRepository: MediaRepository,
     private val lifehackRepository: LifehackRepository
 ) : CoroutineWorker(context, workerParams) {
-    /*override suspend fun doWork(): Result {
+    override suspend fun doWork(): Result {
         val lifehackId = inputData.getString(WorkerConstants.LIFEHACK_ID_KEY) ?: return Result.failure()
         val mediaUriString = inputData.getString(WorkerConstants.LIFEHACK_MEDIA_URI) ?: return Result.failure()
         val mediaTypeString = inputData.getString(WorkerConstants.LIFEHACK_MEDIA_TYPE) ?: return Result.failure()
@@ -29,15 +29,15 @@ class UploadLifehackMediaWorker @AssistedInject constructor(
         val mediaType = MediaType.valueOf(mediaTypeString)
 
         val uploadResult = mediaRepository.uploadMediaToLifehack(
-            lifehackId,
-            mediaUri,
-            mediaType
+            lifehackId = lifehackId,
+            mediaUri = mediaUri,
+            mediaType = mediaType
         )
 
         if (uploadResult.isFailure) {
             // Reintentar hasta 3 veces ante fallos de red
             return if (runAttemptCount < 3) Result.retry()
-            else Result.failure(workDataOf(KEY_ERROR to error))
+            else Result.failure()
         }
 
         val mediaUrl = uploadResult.getOrNull() ?: return Result.failure()
@@ -49,10 +49,10 @@ class UploadLifehackMediaWorker @AssistedInject constructor(
         )
 
         return if (updateResult.isSuccess) {
-            Result.success(workDataOf(KEY_MEDIA_URL to mediaUrl))
+            Result.success(workDataOf(WorkerConstants.LIFEHACK_MEDIA_URL to mediaUrl))
         } else {
             val error = updateResult.exceptionOrNull()?.message ?: "Update failed"
-            Result.failure(workDataOf(KEY_ERROR to error))
+            Result.failure()
         }
-    }*/
-}*/
+    }
+}

@@ -12,7 +12,6 @@ import javax.inject.Inject
 
 class EditLifehackUseCase @Inject constructor(
     private val lifehackRepository: LifehackRepository,
-    private val mediaRepository: MediaRepository,
     private val authRepository: AuthRepository
 ) {
     suspend operator fun invoke(

@@ -66,6 +66,19 @@ class LifehackRemoteDataSource @Inject constructor(
         db.collection("lifehacks").document(id).set(dto).await()
     }
 
+    override suspend fun updateMedia(
+        lifehackId: String,
+        mediaUrl: String,
+        mediaType: String
+    ) {
+        db.collection("lifehacks").document(lifehackId).update(
+            mapOf(
+                "media_url" to mediaUrl,
+                "media_type" to mediaType
+            )
+        ).await()
+    }
+
     override suspend fun delete(id: String) {
         db.collection("lifehacks").document(id).delete().await()
     }

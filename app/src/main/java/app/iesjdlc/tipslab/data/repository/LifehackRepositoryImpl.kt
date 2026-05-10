@@ -4,6 +4,7 @@ import app.iesjdlc.tipslab.data.datasource.remote.LifehackDataSource
 import app.iesjdlc.tipslab.data.mapper.LifehackMapper
 import app.iesjdlc.tipslab.domain.model.Lifehack
 import app.iesjdlc.tipslab.data.resolver.LifehackResolver
+import app.iesjdlc.tipslab.domain.model.MediaType
 import app.iesjdlc.tipslab.domain.repository.LifehackRepository
 import app.iesjdlc.tipslab.domain.repository.OrderBy
 import javax.inject.Inject
@@ -43,6 +44,15 @@ class LifehackRepositoryImpl @Inject constructor(
     ): Result<Unit> = runCatching {
         dataSource.update(id, mapper.toDto(lifehack))
     }
+
+    override suspend fun updateLifehackMedia(
+        lifehackId: String,
+        mediaUrl: String,
+        mediaType: MediaType
+    ): Result<Unit> = runCatching {
+        dataSource.updateMedia(lifehackId, mediaUrl, mediaType.name)
+    }
+
 
     override suspend fun deleteLifehack(id: String): Result<Unit> = runCatching {
         dataSource.delete(id)

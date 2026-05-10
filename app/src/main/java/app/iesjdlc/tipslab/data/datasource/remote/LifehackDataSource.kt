@@ -20,5 +20,10 @@ interface LifehackDataSource {
     ): List<LifehackDto>
     suspend fun create(dto: LifehackDto): String
     suspend fun update(id: String, dto: LifehackDto)
+    suspend fun updateMedia(
+        lifehackId: String,
+        mediaUrl: String,
+        mediaType: String
+    )
     suspend fun delete(id: String)
 }
