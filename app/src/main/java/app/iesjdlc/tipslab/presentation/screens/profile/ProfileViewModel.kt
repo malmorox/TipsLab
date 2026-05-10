@@ -18,40 +18,43 @@ class ProfileViewModel @Inject constructor(
     private val _uiState = MutableStateFlow(ProfileUiState())
     val uiState: StateFlow<ProfileUiState> = _uiState.asStateFlow()
 
-    init {
-        loadUser()
-    }
-
-    fun loadUser() {
+    fun refreshUser() {
         viewModelScope.launch {
-            _uiState.value = _uiState.value.copy(isLoading = true)
-
             runCatching {
                 authRepository.getCurrentUser()
             }.onSuccess { user ->
                 _uiState.value = _uiState.value.copy(
                     username = user.username,
                     email = user.email,
-                    photoUrl = user.photoUrl,
-                    isLoading = false
+                    photoUrl = user.photoUrl
                 )
             }.onFailure {
                 _uiState.value = _uiState.value.copy(
-                    isLoading = false,
                     errorMessage = it.message
                 )
             }
         }
     }
 
-    fun onLogout(
-        onSuccess: () -> Unit
-    ) {
+    fun refresh() {
+        viewModelScope.launch {
+            runCatching {
+                authRepository.getCurrentUser()
+            }.onSuccess { user ->
+                _uiState.value = _uiState.value.copy(
+                    username = user.username,
+                    email = user.email,
+                    photoUrl = user.photoUrl
+                )
+            }.onFailure {
+                _uiState.value = _uiState.value.copy(
+                    errorMessage = it.message
+                )
+            }
+        }
+    }
+    fun onLogout(onSuccess: () -> Unit) {
         authRepository.logout()
         onSuccess()
-    }
-
-    fun refreshUser() {
-        loadUser()
     }
 }
