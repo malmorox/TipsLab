@@ -189,10 +189,6 @@ fun AppNavigation() {
                 },
 
                 onProfileEdited = {
-                    rootNavController.previousBackStackEntry
-                        ?.savedStateHandle
-                        ?.set("refresh_profile", true)
-
                     rootNavController.popBackStack()
                 },
 

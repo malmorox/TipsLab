@@ -9,12 +9,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.Logout
 import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material.icons.filled.GridOn
-import androidx.compose.material3.Button
-import androidx.compose.material3.HorizontalDivider
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
+import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -27,9 +22,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.navigation.NavController
-import app.iesjdlc.tipslab.R
 import coil3.compose.AsyncImage
+import app.iesjdlc.tipslab.R
+import androidx.navigation.NavController
 
 @Composable
 fun ProfileTab(
@@ -37,23 +32,11 @@ fun ProfileTab(
     viewModel: ProfileViewModel = hiltViewModel(),
     onEditProfile: () -> Unit,
     onLogout: () -> Unit
-) {
+){
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
-    val refreshState = navController
-        .currentBackStackEntry
-        ?.savedStateHandle
-        ?.getStateFlow("refresh_profile", false)
-        ?.collectAsStateWithLifecycle()
-
-    LaunchedEffect(refreshState?.value) {
-        if (refreshState?.value == true) {
-            viewModel.loadUser()
-
-            navController.currentBackStackEntry
-                ?.savedStateHandle
-                ?.set("refresh_profile", false)
-        }
+    LaunchedEffect(Unit) {
+        viewModel.refresh()
     }
 
     ProfileTabUI(
@@ -90,12 +73,10 @@ private fun ProfileTabUI(
                 modifier = Modifier.weight(1f)
             )
 
-            IconButton(
-                onClick = onLogout
-            ) {
+            IconButton(onClick = onLogout) {
                 Icon(
                     imageVector = Icons.AutoMirrored.Filled.Logout,
-                    contentDescription = null,
+                    contentDescription = stringResource(R.string.log_out),
                     tint = MaterialTheme.colorScheme.error
                 )
             }
@@ -130,8 +111,7 @@ private fun ProfileTabUI(
             Button(
                 onClick = onEditProfile,
                 shape = MaterialTheme.shapes.medium,
-                modifier = Modifier
-                    .height(46.dp)
+                modifier = Modifier.height(46.dp)
             ) {
                 Text(
                     text = stringResource(R.string.edit_profile),
@@ -148,22 +128,13 @@ private fun ProfileTabUI(
                 .padding(vertical = 12.dp),
             horizontalArrangement = Arrangement.SpaceEvenly
         ) {
-
-            Icon(
-                imageVector = Icons.Default.GridOn,
-                contentDescription = null
-            )
-
-            Icon(
-                imageVector = Icons.Default.FavoriteBorder,
-                contentDescription = null
-            )
+            Icon(Icons.Default.GridOn, null)
+            Icon(Icons.Default.FavoriteBorder, null)
         }
 
         HorizontalDivider()
 
         if (state.posts.isEmpty()) {
-
             Box(
                 modifier = Modifier.fillMaxSize(),
                 contentAlignment = Alignment.Center
@@ -173,26 +144,11 @@ private fun ProfileTabUI(
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
             }
-
         } else {
-
             LazyVerticalGrid(
                 columns = GridCells.Fixed(3),
                 modifier = Modifier.fillMaxSize()
-            ) {
-
-//                items(state.posts) { post ->
-//
-//                    AsyncImage(
-//                        model = post,
-//                        contentDescription = null,
-//                        contentScale = ContentScale.Crop,
-//                        modifier = Modifier
-//                            .aspectRatio(1f)
-//                            .padding(2.dp)
-//                    )
-//                }
-            }
+            ) {}
         }
     }
 }

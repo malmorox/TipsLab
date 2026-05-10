@@ -159,8 +159,8 @@ private fun EditProfileScreenUI(
                     OutlinedTextField(
                         value = state.email,
                         onValueChange = onEmailChange,
+                        readOnly = true,
                         singleLine = true,
-                        enabled = !state.isLoading,
                         modifier = Modifier.fillMaxWidth(),
                         shape = MaterialTheme.shapes.medium
                     )

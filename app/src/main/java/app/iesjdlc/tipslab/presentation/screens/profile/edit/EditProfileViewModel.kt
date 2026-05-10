@@ -9,9 +9,7 @@ import app.iesjdlc.tipslab.domain.repository.AuthRepository
 import app.iesjdlc.tipslab.domain.repository.MediaRepository
 import app.iesjdlc.tipslab.domain.repository.UserRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -48,42 +46,31 @@ class EditProfileViewModel @Inject constructor(
         }
     }
 
-    fun onEmailChange(email: String) {
-
-        _uiState.value = _uiState.value.copy(
-            email = email
-        )
+    fun onEmailChange(v: String) {
+        _uiState.value = _uiState.value.copy(email = v)
     }
 
-    fun onUsernameChange(username: String) {
-
-        _uiState.value = _uiState.value.copy(
-            username = username
-        )
+    fun onUsernameChange(v: String) {
+        _uiState.value = _uiState.value.copy(username = v)
     }
 
-    fun onPasswordChange(password: String) {
-
-        _uiState.value = _uiState.value.copy(
-            password = password
-        )
+    fun onPasswordChange(v: String) {
+        _uiState.value = _uiState.value.copy(password = v)
     }
 
     fun onTogglePasswordVisibility() {
-
         _uiState.value = _uiState.value.copy(
             isPasswordVisible = !_uiState.value.isPasswordVisible
         )
     }
 
     fun onProfileImageSelected(uri: Uri) {
-
-        _uiState.value = _uiState.value.copy(
-            selectedImageUri = uri
-        )
+        _uiState.value = _uiState.value.copy(selectedImageUri = uri)
     }
 
-    fun onSaveProfile(onSuccess: () -> Unit) {
+    fun onSaveProfile(
+        onSuccess: () -> Unit
+    ) {
 
         viewModelScope.launch {
 
@@ -110,7 +97,7 @@ class EditProfileViewModel @Inject constructor(
 
                 val updatedUser = User(
                     id = currentUser.id,
-                    email = _uiState.value.email,
+                    email = currentUser.email,
                     username = _uiState.value.username,
                     photoUrl = uploadedPhotoUrl,
                     provider = currentUser.provider
@@ -118,7 +105,7 @@ class EditProfileViewModel @Inject constructor(
 
                 userRepository.updateUser(updatedUser).getOrThrow()
 
-                (authRepository as AuthRepositoryImpl).updateCachedUser(updatedUser)
+                authRepository.loadProfile(currentUser.id)
 
                 _uiState.value = _uiState.value.copy(
                     isLoading = false
