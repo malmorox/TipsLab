@@ -12,8 +12,8 @@ import javax.inject.Inject
 
 class CreateLifehackUseCase @Inject constructor(
     private val lifehackRepository: LifehackRepository,
-    private val mediaRepository: MediaRepository,
-    private val authRepository: AuthRepository
+    private val authRepository: AuthRepository,
+    //private val uploadMediaWorker: UploadLifehackMediaWorker
 ) {
     suspend operator fun invoke(
         title: String,
@@ -41,11 +41,10 @@ class CreateLifehackUseCase @Inject constructor(
         return lifehackRepository.createLifehack(lifehack)
             .fold(
                 onSuccess = { lifehackId ->
-                    if (mediaUri != null) {
+                    if (mediaUri != null && mediaType != null) {
                         Result.success(lifehackId) // TODO subir imagen y actualizar lifehack
-                    } else {
-                        Result.success(lifehackId)
                     }
+                    Result.success(lifehackId)
                 },
                 onFailure = { error ->
                     Result.failure(error)
