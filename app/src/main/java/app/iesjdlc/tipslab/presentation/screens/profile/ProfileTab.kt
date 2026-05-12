@@ -90,7 +90,7 @@ private fun ProfileTabUI(
         ) {
 
             AsyncImage(
-                model = state.photoUrl,
+                model = "${state.photoUrl}?t=${System.currentTimeMillis()}",
                 contentDescription = null,
                 contentScale = ContentScale.Crop,
                 modifier = Modifier

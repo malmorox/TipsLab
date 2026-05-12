@@ -271,7 +271,10 @@ private fun EditProfileImagePicker(
     ) {
 
         AsyncImage(
-            model = photoUrl,
+            model = when (photoUrl) {
+                is String -> "${photoUrl}?t=${System.currentTimeMillis()}"
+                else -> photoUrl
+            },
             contentDescription = null,
             contentScale = ContentScale.Crop,
             modifier = Modifier
