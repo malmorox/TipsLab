@@ -7,6 +7,7 @@ import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
 import app.iesjdlc.tipslab.R
 import app.iesjdlc.tipslab.core.constants.FormConstants
+import app.iesjdlc.tipslab.core.model.CameraMediaResult
 import app.iesjdlc.tipslab.core.utils.UiText
 import app.iesjdlc.tipslab.domain.model.Category
 import app.iesjdlc.tipslab.domain.model.MediaSource
@@ -144,6 +145,10 @@ class EditLifehackViewModel @Inject constructor(
 
     fun onCategorySheetDismiss() {
         _uiState.update { it.copy(showCategorySheet = false) }
+    }
+
+    fun onCameraResult(result: CameraMediaResult) {
+        onMediaPicked(result.uri, result.type)
     }
 
     fun onMediaPicked(uri: Uri, type: MediaType) {

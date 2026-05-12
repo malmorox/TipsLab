@@ -19,9 +19,11 @@ class EditProfileViewModel @Inject constructor(
     private val userRepository: UserRepository,
     private val mediaRepository: MediaRepository
 ) : ViewModel() {
-
     private val _uiState = MutableStateFlow(EditProfileUiState())
     val uiState: StateFlow<EditProfileUiState> = _uiState.asStateFlow()
+
+    private var originalUsername: String = ""
+    private var originalPhotoUrl: String? = null
 
     init {
         loadUser()
@@ -36,11 +38,13 @@ class EditProfileViewModel @Inject constructor(
                 authRepository.getCurrentUser()
 
             }.onSuccess { user ->
+                originalUsername = user.username
+                originalPhotoUrl = user.photoUrl
 
                 _uiState.value = _uiState.value.copy(
                     email = user.email,
                     username = user.username,
-                    photoUrl = user.photoUrl
+                    profilePhoto = user.photoUrl
                 )
             }
         }
@@ -54,72 +58,82 @@ class EditProfileViewModel @Inject constructor(
         _uiState.value = _uiState.value.copy(username = v)
     }
 
-    fun onPasswordChange(v: String) {
-        _uiState.value = _uiState.value.copy(password = v)
+    fun onProfilePhotoPicked(uri: Uri) {
+        _uiState.value = _uiState.value.copy(profilePhoto = uri)
     }
 
-    fun onTogglePasswordVisibility() {
-        _uiState.value = _uiState.value.copy(
-            isPasswordVisible = !_uiState.value.isPasswordVisible
-        )
+    fun onPhotoRemove() {
+        _uiState.value = _uiState.value.copy(profilePhoto = null)
     }
 
-    fun onProfileImageSelected(uri: Uri) {
-        _uiState.value = _uiState.value.copy(selectedImageUri = uri)
-    }
-
-    fun onSaveProfile(
-        onSuccess: () -> Unit
-    ) {
+    fun onSave(onSuccess: () -> Unit) {
+        val currentState = _uiState.value
+        if (!validate(currentState)) return
 
         viewModelScope.launch {
-
+            _uiState.update { it.copy(isLoading = true, globalErrorMessage = null) }
             try {
-
-                _uiState.value = _uiState.value.copy(
-                    isLoading = true,
-                    errorMessage = null
-                )
-
                 val currentUser = authRepository.getCurrentUser()
 
-                val uploadedPhotoUrl =
-                    if (_uiState.value.selectedImageUri != null) {
-
-                        mediaRepository.uploadProfilePhoto(
-                            uid = currentUser.id,
-                            imageUri = _uiState.value.selectedImageUri!!
-                        ).getOrThrow()
-
-                    } else {
-                        currentUser.photoUrl
-                    }
+                val uploadedPhotoUrl = when (val photo = currentState.profilePhoto) {
+                    is Uri -> mediaRepository.uploadProfilePhoto(
+                        uid = currentUser.id,
+                        imageUri = photo
+                    ).getOrThrow()
+                    is String -> photo
+                    else -> null
+                }
 
                 val updatedUser = User(
                     id = currentUser.id,
                     email = currentUser.email,
-                    username = _uiState.value.username,
+                    username = currentState.username,
                     photoUrl = uploadedPhotoUrl,
                     provider = currentUser.provider
                 )
 
                 userRepository.updateUser(updatedUser).getOrThrow()
-
                 authRepository.loadProfile(currentUser.id)
-
-                _uiState.value = _uiState.value.copy(
-                    isLoading = false
-                )
-
                 onSuccess()
 
             } catch (e: Exception) {
-
-                _uiState.value = _uiState.value.copy(
-                    isLoading = false,
-                    errorMessage = e.message
-                )
+                _uiState.update { it.copy(globalErrorMessage = e.message) }
+            } finally {
+                _uiState.update { it.copy(isLoading = false) }
             }
         }
+    }
+
+    private fun validate(state: EditProfileUiState): Boolean {
+        var isValid = true
+
+        if (state.username.isBlank()) {
+            _uiState.update { it.copy(usernameErrorMessage = "El nombre de usuario es obligatorio") }
+            isValid = false
+        }
+
+        return isValid
+    }
+
+    fun onBackClick(onNavigateBack: () -> Unit) {
+        if (hasChanges(_uiState.value)) {
+            _uiState.update { it.copy(showDiscardChangesDialog = true) }
+        } else {
+            onNavigateBack()
+        }
+    }
+
+    fun onDiscardChangesConfirm(onNavigateBack: () -> Unit) {
+        _uiState.update { it.copy(showDiscardChangesDialog = false) }
+        onNavigateBack()
+    }
+
+    fun onDiscardChangesDismiss() {
+        _uiState.update { it.copy(showDiscardChangesDialog = false) }
+    }
+
+    private fun hasChanges(state: EditProfileUiState): Boolean {
+        return state.username != originalUsername ||
+                state.profilePhoto != originalPhotoUrl
     }
 }

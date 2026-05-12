@@ -28,7 +28,6 @@ import androidx.navigation.NavController
 
 @Composable
 fun ProfileTab(
-    navController: NavController,
     viewModel: ProfileViewModel = hiltViewModel(),
     onEditProfile: () -> Unit,
     onLogout: () -> Unit

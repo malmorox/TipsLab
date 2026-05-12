@@ -2,6 +2,7 @@ package app.iesjdlc.tipslab.presentation.screens.profile.edit
 
 import android.net.Uri
 import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -52,6 +53,9 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import app.iesjdlc.tipslab.R
+import app.iesjdlc.tipslab.core.model.CameraMediaResult
+import app.iesjdlc.tipslab.presentation.components.ConfirmOrDismissDialog
+import app.iesjdlc.tipslab.presentation.components.ProfilePhotoPicker
 import coil3.compose.AsyncImage
 
 @Composable
@@ -61,35 +65,30 @@ fun EditProfileScreen(
     onProfileEdited: () -> Unit,
     onOpenCamera: () -> Unit
 ) {
-
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
-    val snackbarHostState = remember {
-        SnackbarHostState()
-    }
-
-    LaunchedEffect(uiState.errorMessage) {
-
-        uiState.errorMessage?.let {
-            snackbarHostState.showSnackbar(it)
-        }
+    val galleryLauncher = rememberLauncherForActivityResult(
+        ActivityResultContracts.PickVisualMedia()
+    ) { uri ->
+        uri?.let { viewModel.onProfilePhotoPicked(it) }
     }
 
     EditProfileScreenUI(
         state = uiState,
-        snackbarHostState = snackbarHostState,
-        onNavigateBack = onNavigateBack,
-        onEmailChange = viewModel::onEmailChange,
-        onUsernameChange = viewModel::onUsernameChange,
-        onPasswordChange = viewModel::onPasswordChange,
-        onTogglePasswordVisibility = viewModel::onTogglePasswordVisibility,
-        onSaveClick = {
-            viewModel.onSaveProfile {
-                onProfileEdited()
-            }
+        onUsernameChange = { viewModel.onUsernameChange(it) },
+        onEmailChange = { viewModel.onEmailChange(it) },
+        onPasswordChangeClick = {},
+        onOpenCamera = onOpenCamera,
+        onOpenGallery = {
+            galleryLauncher.launch(
+                PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)
+            )
         },
-        onProfileImageSelected = viewModel::onProfileImageSelected,
-        onOpenCamera = onOpenCamera
+        onPhotoRemove = { viewModel.onPhotoRemove() },
+        onSave = { viewModel.onSave(onProfileEdited) },
+        onBack = { viewModel.onBackClick(onNavigateBack) },
+        onDiscardChangesConfirm = { viewModel.onDiscardChangesConfirm(onNavigateBack) },
+        onDiscardChangesDismiss = { viewModel.onDiscardChangesDismiss() }
     )
 }
 
@@ -97,21 +96,18 @@ fun EditProfileScreen(
 @Composable
 private fun EditProfileScreenUI(
     state: EditProfileUiState,
-    snackbarHostState: SnackbarHostState,
-    onNavigateBack: () -> Unit,
     onEmailChange: (String) -> Unit,
     onUsernameChange: (String) -> Unit,
-    onPasswordChange: (String) -> Unit,
-    onTogglePasswordVisibility: () -> Unit,
-    onSaveClick: () -> Unit,
-    onProfileImageSelected: (Uri) -> Unit,
-    onOpenCamera: () -> Unit
+    onPasswordChangeClick: () -> Unit,
+    onOpenCamera: () -> Unit,
+    onOpenGallery: () -> Unit,
+    onPhotoRemove: () -> Unit,
+    onSave: () -> Unit,
+    onBack: () -> Unit,
+    onDiscardChangesConfirm: () -> Unit,
+    onDiscardChangesDismiss: () -> Unit,
 ) {
-
     Scaffold(
-        snackbarHost = {
-            SnackbarHost(snackbarHostState)
-        },
         topBar = {
             CenterAlignedTopAppBar(
                 title = {
@@ -122,7 +118,7 @@ private fun EditProfileScreenUI(
                     )
                 },
                 navigationIcon = {
-                    IconButton(onClick = onNavigateBack) {
+                    IconButton(onClick = onBack) {
                         Icon(Icons.Rounded.ArrowBack, null)
                     }
                 }
@@ -138,18 +134,17 @@ private fun EditProfileScreenUI(
                 .padding(horizontal = 24.dp, vertical = 20.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-
             Column(
                 modifier = Modifier
                     .weight(1f)
                     .verticalScroll(rememberScrollState()),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-
-                EditProfileImagePicker(
-                    photoUrl = state.selectedImageUri ?: state.photoUrl,
-                    onImageSelected = onProfileImageSelected,
-                    onOpenCamera = onOpenCamera
+                ProfilePhotoPicker(
+                    photo = state.profilePhoto,
+                    onCameraClick = onOpenCamera,
+                    onGalleryClick = onOpenGallery,
+                    onRemoveClick = onPhotoRemove
                 )
 
                 Spacer(modifier = Modifier.height(32.dp))
@@ -184,48 +179,12 @@ private fun EditProfileScreenUI(
                         )
                     )
                 }
-
-                Spacer(modifier = Modifier.height(16.dp))
-
-                FieldSection(label = stringResource(R.string.password)) {
-
-                    OutlinedTextField(
-                        value = state.password,
-                        onValueChange = onPasswordChange,
-                        placeholder = {
-                            Text(stringResource(R.string.password))
-                        },
-                        singleLine = true,
-                        enabled = !state.isLoading,
-                        modifier = Modifier.fillMaxWidth(),
-                        visualTransformation =
-                            if (state.isPasswordVisible)
-                                VisualTransformation.None
-                            else
-                                PasswordVisualTransformation(),
-                        trailingIcon = {
-
-                            IconButton(
-                                onClick = onTogglePasswordVisibility
-                            ) {
-                                Icon(
-                                    if (state.isPasswordVisible)
-                                        Icons.Default.VisibilityOff
-                                    else
-                                        Icons.Default.Visibility,
-                                    null
-                                )
-                            }
-                        },
-                        shape = MaterialTheme.shapes.medium
-                    )
-                }
             }
 
             Spacer(modifier = Modifier.height(24.dp))
 
             Button(
-                onClick = onSaveClick,
+                onClick = onSave,
                 enabled = !state.isLoading,
                 shape = MaterialTheme.shapes.medium,
                 modifier = Modifier
@@ -251,60 +210,16 @@ private fun EditProfileScreenUI(
             }
         }
     }
-}
 
-@Composable
-private fun EditProfileImagePicker(
-    photoUrl: Any?,
-    onImageSelected: (Uri) -> Unit,
-    onOpenCamera: () -> Unit
-) {
-
-    val launcher = rememberLauncherForActivityResult(
-        ActivityResultContracts.GetContent()
-    ) { uri ->
-        uri?.let(onImageSelected)
-    }
-
-    Box(
-        contentAlignment = Alignment.BottomEnd
-    ) {
-
-        AsyncImage(
-            model = photoUrl,
-            contentDescription = null,
-            contentScale = ContentScale.Crop,
-            modifier = Modifier
-                .size(120.dp)
-                .clip(CircleShape)
-                .border(
-                    width = 2.dp,
-                    color = MaterialTheme.colorScheme.primary.copy(alpha = 0.4f),
-                    shape = CircleShape
-                )
-                .clickable {
-                    launcher.launch("image/*")
-                }
+    if (state.showDiscardChangesDialog) {
+        ConfirmOrDismissDialog(
+            onConfirm = onDiscardChangesConfirm,
+            onDismiss = onDiscardChangesDismiss,
+            title = stringResource(R.string.discard_changes),
+            message = stringResource(R.string.discard_changes_message),
+            confirmText = stringResource(R.string.discard),
+            dismissText = stringResource(R.string.cancel)
         )
-
-        Box(
-            modifier = Modifier
-                .size(34.dp)
-                .clip(CircleShape)
-                .background(MaterialTheme.colorScheme.primary)
-                .clickable {
-                    onOpenCamera()
-                },
-            contentAlignment = Alignment.Center
-        ) {
-
-            Icon(
-                imageVector = Icons.Default.Edit,
-                contentDescription = null,
-                tint = Color.White,
-                modifier = Modifier.size(18.dp)
-            )
-        }
     }
 }
 

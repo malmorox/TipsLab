@@ -30,6 +30,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -40,25 +41,35 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import app.iesjdlc.tipslab.R
 import app.iesjdlc.tipslab.core.constants.FormConstants
+import app.iesjdlc.tipslab.core.model.CameraMediaResult
 import app.iesjdlc.tipslab.domain.model.Category
 import app.iesjdlc.tipslab.presentation.components.CategorySelectorSheet
 import app.iesjdlc.tipslab.presentation.components.ConfirmOrDismissDialog
 import app.iesjdlc.tipslab.presentation.components.FormFieldSection
 import app.iesjdlc.tipslab.presentation.components.LifehackStepsSheet
-import app.iesjdlc.tipslab.presentation.components.MediaPicker
 import app.iesjdlc.tipslab.presentation.common.rememberLifehackGalleryLauncher
+import app.iesjdlc.tipslab.presentation.components.LifehackMediaPicker
 
 @Composable
 fun EditLifehackScreen(
     viewModel: EditLifehackViewModel = hiltViewModel(),
     onNavigateBack: () -> Unit,
     onLifehackEdited: (String) -> Unit,
-    onOpenCamera: () -> Unit
+    onOpenCamera: () -> Unit,
+    cameraResult: CameraMediaResult? = null,
+    onCameraResultConsumed: () -> Unit,
 ) {
     val uiState = viewModel.uiState.collectAsStateWithLifecycle()
 
     val galleryLauncher = rememberLifehackGalleryLauncher { uri, type ->
         viewModel.onMediaPicked(uri, type)
+    }
+
+    LaunchedEffect(cameraResult) {
+        cameraResult?.let {
+            viewModel.onCameraResult(it)
+            onCameraResultConsumed()
+        }
     }
 
     EditLifehackScreenUI(
@@ -150,7 +161,7 @@ private fun EditLifehackScreenUI(
                         .padding(24.dp),
                     verticalArrangement = Arrangement.spacedBy(16.dp)
                 ) {
-                    MediaPicker(
+                    LifehackMediaPicker(
                         mediaSource = state.mediaSource,
                         onCameraClick = onOpenCamera,
                         onGalleryClick = onOpenGallery,

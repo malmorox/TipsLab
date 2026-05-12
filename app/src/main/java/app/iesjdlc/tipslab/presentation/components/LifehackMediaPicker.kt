@@ -45,40 +45,40 @@ import coil3.video.VideoFrameDecoder
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MediaPicker(
+fun LifehackMediaPicker(
     mediaSource: MediaSource?,
     onCameraClick: () -> Unit,
     onGalleryClick: () -> Unit,
     onMediaRemoved: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    var showSheet by remember { mutableStateOf(false) }
+    var showPickerSheet by remember { mutableStateOf(false) }
 
     if (mediaSource == null) {
         MediaEmpty(
-            onClick = { showSheet = true },
+            onClick = { showPickerSheet = true },
             modifier = modifier
         )
     } else {
         MediaPreview(
             source = mediaSource,
             onRemove = onMediaRemoved,
-            onReplace = { showSheet = true },
+            onReplace = { showPickerSheet = true },
             modifier = modifier
         )
     }
 
-    if (showSheet) {
+    if (showPickerSheet) {
         MediaPickerSheet(
             onOpenCamera = {
-                showSheet = false
+                showPickerSheet = false
                 onCameraClick()
             },
             onPickFromGallery = {
-                showSheet = false
+                showPickerSheet = false
                 onGalleryClick()
             },
-            onDismiss = { showSheet = false }
+            onDismiss = { showPickerSheet = false }
         )
     }
 }

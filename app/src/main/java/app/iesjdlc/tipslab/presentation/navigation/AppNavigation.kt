@@ -166,7 +166,11 @@ fun AppNavigation() {
             )
         }
 
-        composable<Route.EditLifehack> {
+        composable<Route.EditLifehack> { backStackEntry ->
+            val cameraResult by backStackEntry.savedStateHandle
+                .getStateFlow<CameraMediaResult?>(NavConstants.CAMERA_MEDIA_RESULT_KEY, null)
+                .collectAsStateWithLifecycle()
+
             EditLifehackScreen(
                 onNavigateBack = { rootNavController.popBackStack() },
                 onLifehackEdited = { lifehackId ->
@@ -177,21 +181,18 @@ fun AppNavigation() {
                 },
                 onOpenCamera = {
                     rootNavController.navigate(Route.Camera())
+                },
+                cameraResult = cameraResult,
+                onCameraResultConsumed = {
+                    backStackEntry.savedStateHandle.remove<CameraMediaResult>(NavConstants.CAMERA_MEDIA_RESULT_KEY)
                 }
             )
         }
 
         composable<Route.EditProfile> {
-
             EditProfileScreen(
-                onNavigateBack = {
-                    rootNavController.popBackStack()
-                },
-
-                onProfileEdited = {
-                    rootNavController.popBackStack()
-                },
-
+                onNavigateBack = { rootNavController.popBackStack() },
+                onProfileEdited = { rootNavController.popBackStack() },
                 onOpenCamera = {
                     rootNavController.navigate(Route.Camera(allowVideo = false))
                 }
