@@ -5,10 +5,12 @@ import android.net.Uri
 data class EditProfileUiState(
     val email: String = "",
     val username: String = "",
-    val password: String = "",
-    val photoUrl: String? = null,
-    val selectedImageUri: Uri? = null,
-    val isPasswordVisible: Boolean = false,
+    val profilePhoto: Any? = null,
+
+    val showDiscardChangesDialog: Boolean = false,
     val isLoading: Boolean = false,
-    val errorMessage: String? = null
+
+    val emailErrorMessage: String? = null,
+    val usernameErrorMessage: String? = null,
+    val globalErrorMessage: String? = null
 )

@@ -47,8 +47,8 @@ import app.iesjdlc.tipslab.presentation.components.CategorySelectorSheet
 import app.iesjdlc.tipslab.presentation.components.ConfirmOrDismissDialog
 import app.iesjdlc.tipslab.presentation.components.FormFieldSection
 import app.iesjdlc.tipslab.presentation.components.LifehackStepsSheet
-import app.iesjdlc.tipslab.presentation.components.MediaPicker
 import app.iesjdlc.tipslab.presentation.common.rememberLifehackGalleryLauncher
+import app.iesjdlc.tipslab.presentation.components.LifehackMediaPicker
 
 @Composable
 fun CreateLifehackScreen(
@@ -166,7 +166,7 @@ private fun CreateLifehackScreenUI(
                     modifier = Modifier.fillMaxWidth(),
                     verticalArrangement = Arrangement.spacedBy(16.dp)
                 ) {
-                    MediaPicker(
+                    LifehackMediaPicker(
                         mediaSource = state.mediaSource,
                         onCameraClick = onOpenCamera,
                         onGalleryClick = onOpenGallery,
