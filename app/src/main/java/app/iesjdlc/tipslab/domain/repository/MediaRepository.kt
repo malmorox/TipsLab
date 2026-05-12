@@ -1,6 +1,7 @@
 package app.iesjdlc.tipslab.domain.repository
 
 import android.net.Uri
+import app.iesjdlc.tipslab.domain.model.MediaType
 
 interface MediaRepository {
     suspend fun uploadProfilePhoto(
@@ -9,6 +10,7 @@ interface MediaRepository {
     ): Result<String>
     suspend fun uploadMediaToLifehack(
         lifehackId: String,
-        mediaUri: Uri
+        mediaUri: Uri,
+        mediaType: MediaType
     ): Result<String?>
 }

@@ -6,7 +6,9 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
@@ -33,6 +35,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import app.iesjdlc.tipslab.R
 import app.iesjdlc.tipslab.domain.model.Category
 import app.iesjdlc.tipslab.domain.model.User
+import app.iesjdlc.tipslab.presentation.common.UploadState
 import app.iesjdlc.tipslab.presentation.components.ConfirmOrDismissDialog
 import app.iesjdlc.tipslab.presentation.components.LifehackStepsList
 import app.iesjdlc.tipslab.presentation.components.MediaViewer
@@ -143,50 +146,86 @@ private fun LifehackDetailScreenUI(
                 Column(
                     modifier = Modifier
                         .fillMaxSize()
-                        .verticalScroll(rememberScrollState())
-                        .padding(24.dp),
+                        .verticalScroll(rememberScrollState()),
                     verticalArrangement = Arrangement.spacedBy(16.dp)
                 ) {
-                    lifehack.media?.let {
-                        MediaViewer(
-                            mediaUrl = lifehack.media.url,
-                            mediaType = lifehack.media.type
-                        )
-                    }
-
-                    Text(
-                        text = lifehack.title,
-                        style = MaterialTheme.typography.headlineLarge,
-                        color = MaterialTheme.colorScheme.primary
-                    )
-
-                    SectionWithHeading(heading = stringResource(R.string.description)) {
-                        Text(
-                            text = lifehack.description,
-                            style = MaterialTheme.typography.bodyMedium,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.5f)
-                        )
-                    }
-
-                    if (lifehack.steps.isNotEmpty()) {
-                        SectionWithHeading(heading = stringResource(R.string.steps)) {
-                            LifehackStepsList(steps = lifehack.steps)
+                    when {
+                        state.uploadState == UploadState.Loading -> {
+                            Box(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .aspectRatio(16f / 9f),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                CircularProgressIndicator()
+                            }
+                        }
+                        state.uploadState == UploadState.Error -> {
+                            Box(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .aspectRatio(16f / 9f),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                Text(
+                                    text = "Error al subir el media",
+                                    color = MaterialTheme.colorScheme.error
+                                )
+                            }
+                        }
+                        lifehack.media != null -> {
+                            MediaViewer(
+                                mediaUrl = lifehack.media.url,
+                                mediaType = lifehack.media.type
+                            )
                         }
                     }
 
-                    SectionWithHeading(heading = stringResource(R.string.category)) {
+                    Column(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(
+                                start = 24.dp,
+                                end = 24.dp,
+                                top = if (lifehack.media == null && state.uploadState == null) 24.dp else 0.dp,
+                                bottom = 24.dp
+                            ),
+                        verticalArrangement = Arrangement.spacedBy(16.dp)
+                    ) {
                         Text(
-                            text = lifehack.category.name,
-                            style = MaterialTheme.typography.bodyMedium,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant,
-                            modifier = Modifier.clickable {
-                                onOpenCategory(lifehack.category)
-                            }
+                            text = lifehack.title,
+                            style = MaterialTheme.typography.headlineLarge,
+                            color = MaterialTheme.colorScheme.primary
                         )
-                    }
 
-                    if (!state.isAuthor) {
-                        AuthorSection(author = lifehack.author)
+                        SectionWithHeading(heading = stringResource(R.string.description)) {
+                            Text(
+                                text = lifehack.description,
+                                style = MaterialTheme.typography.bodyMedium,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.5f)
+                            )
+                        }
+
+                        if (lifehack.steps.isNotEmpty()) {
+                            SectionWithHeading(heading = stringResource(R.string.steps)) {
+                                LifehackStepsList(steps = lifehack.steps)
+                            }
+                        }
+
+                        SectionWithHeading(heading = stringResource(R.string.category)) {
+                            Text(
+                                text = lifehack.category.name,
+                                style = MaterialTheme.typography.bodyMedium,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                modifier = Modifier.clickable {
+                                    onOpenCategory(lifehack.category)
+                                }
+                            )
+                        }
+
+                        if (!state.isAuthor) {
+                            AuthorSection(author = lifehack.author)
+                        }
                     }
                 }
             }

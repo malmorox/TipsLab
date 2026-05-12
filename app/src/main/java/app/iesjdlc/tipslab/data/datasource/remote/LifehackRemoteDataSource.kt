@@ -3,6 +3,9 @@ package app.iesjdlc.tipslab.data.datasource.remote
 import app.iesjdlc.tipslab.data.model.LifehackDto
 import app.iesjdlc.tipslab.domain.repository.OrderBy
 import com.google.firebase.firestore.FirebaseFirestore
+import kotlinx.coroutines.channels.awaitClose
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 
@@ -40,6 +43,20 @@ class LifehackRemoteDataSource @Inject constructor(
             .documents
             .mapNotNull { it.toObject(LifehackDto::class.java) }
 
+    override fun observeById(id: String): Flow<LifehackDto> = callbackFlow {
+        val subscription = db.collection("lifehacks")
+            .document(id)
+            .addSnapshotListener { snapshot, error ->
+                if (error != null) {
+                    close(error)
+                    return@addSnapshotListener
+                }
+
+                snapshot?.toObject(LifehackDto::class.java)?.let { trySend(it) }
+            }
+        awaitClose { subscription.remove() }
+    }
+
     override suspend fun searchByCategory(
         categoryId: Int,
         query: String,
@@ -64,6 +81,19 @@ class LifehackRemoteDataSource @Inject constructor(
         dto: LifehackDto
     ) {
         db.collection("lifehacks").document(id).set(dto).await()
+    }
+
+    override suspend fun updateMedia(
+        lifehackId: String,
+        mediaUrl: String,
+        mediaType: String
+    ) {
+        db.collection("lifehacks").document(lifehackId).update(
+            mapOf(
+                "media_url" to mediaUrl,
+                "media_type" to mediaType
+            )
+        ).await()
     }
 
     override suspend fun delete(id: String) {

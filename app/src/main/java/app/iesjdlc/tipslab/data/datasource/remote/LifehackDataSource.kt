@@ -2,6 +2,7 @@ package app.iesjdlc.tipslab.data.datasource.remote
 
 import app.iesjdlc.tipslab.data.model.LifehackDto
 import app.iesjdlc.tipslab.domain.repository.OrderBy
+import kotlinx.coroutines.flow.Flow
 
 interface LifehackDataSource {
     suspend fun getByAuthor(authorId: String): List<LifehackDto>
@@ -12,6 +13,7 @@ interface LifehackDataSource {
         orderBy: OrderBy,
         limit: Int
     ): List<LifehackDto>
+    fun observeById(id: String): Flow<LifehackDto>
     suspend fun searchByCategory(
         categoryId: Int,
         query: String,
@@ -20,5 +22,10 @@ interface LifehackDataSource {
     ): List<LifehackDto>
     suspend fun create(dto: LifehackDto): String
     suspend fun update(id: String, dto: LifehackDto)
+    suspend fun updateMedia(
+        lifehackId: String,
+        mediaUrl: String,
+        mediaType: String
+    )
     suspend fun delete(id: String)
 }

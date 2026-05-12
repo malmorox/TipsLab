@@ -4,8 +4,11 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
+import androidx.work.WorkInfo
+import androidx.work.WorkManager
 import app.iesjdlc.tipslab.domain.repository.LifehackRepository
 import app.iesjdlc.tipslab.domain.usecase.lifehack.GetLifehackDetailUseCase
+import app.iesjdlc.tipslab.presentation.common.UploadState
 import app.iesjdlc.tipslab.presentation.navigation.Route
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -19,7 +22,8 @@ import javax.inject.Inject
 class LifehackDetailViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
     private val getLifehackDetailUseCase: GetLifehackDetailUseCase,
-    private val lifehackRepository: LifehackRepository
+    private val lifehackRepository: LifehackRepository,
+    private val workManager: WorkManager
 ) : ViewModel() {
     private val lifehackId = savedStateHandle.toRoute<Route.LifehackDetail>().lifehackId
 
@@ -28,6 +32,8 @@ class LifehackDetailViewModel @Inject constructor(
 
     init {
         loadLifehack()
+        observeLifehack()
+        observeMediaUploadState()
     }
 
     private fun loadLifehack() {
@@ -57,6 +63,32 @@ class LifehackDetailViewModel @Inject constructor(
             } finally {
                 _uiState.update { it.copy(isLoading = false) }
             }
+        }
+    }
+
+    private fun observeLifehack() {
+        viewModelScope.launch {
+            lifehackRepository.observeLifehack(lifehackId)
+                .collect { lifehack ->
+                    _uiState.update { it.copy(lifehack = lifehack) }
+                }
+        }
+    }
+
+    private fun observeMediaUploadState() {
+        viewModelScope.launch {
+            workManager.getWorkInfosByTagFlow(lifehackId)
+                .collect { workInfos ->
+                    val work = workInfos.firstOrNull()
+                    val uploadState = when (work?.state) {
+                        WorkInfo.State.ENQUEUED,
+                        WorkInfo.State.RUNNING -> UploadState.Loading
+                        WorkInfo.State.SUCCEEDED -> UploadState.Success // TODO mostrar que se ha subido el media
+                        WorkInfo.State.FAILED -> UploadState.Error
+                        else -> null
+                    }
+                    _uiState.update { it.copy(uploadState = uploadState) }
+                }
         }
     }
 

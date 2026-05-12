@@ -2,6 +2,7 @@ package app.iesjdlc.tipslab.data.repository
 
 import android.content.Context
 import android.net.Uri
+import app.iesjdlc.tipslab.domain.model.MediaType
 import app.iesjdlc.tipslab.domain.repository.MediaRepository
 import dagger.hilt.android.qualifiers.ApplicationContext
 import id.zelory.compressor.Compressor
@@ -46,8 +47,42 @@ class MediaRepositoryImpl @Inject constructor(
 
     override suspend fun uploadMediaToLifehack(
         lifehackId: String,
-        mediaUri: Uri
+        mediaUri: Uri,
+        mediaType: MediaType
     ): Result<String?> {
-        return Result.success(null)
+        return try {
+            val bucket = storage.from("lifehack_media")
+
+            val (fileBytes, fileName) = when (mediaType) {
+                MediaType.IMAGE -> {
+                    // Copiamos a fichero temporal y comprimimos
+                    val tempFile = File(context.cacheDir, "lh_img_$lifehackId.jpg")
+                    context.contentResolver.openInputStream(mediaUri)?.use { input ->
+                        tempFile.outputStream().use { output -> input.copyTo(output) }
+                    }
+                    val compressed = Compressor.compress(context, tempFile) {
+                        default(width = 1080, height = 1080, quality = 80)
+                    }
+                    val bytes = compressed.readBytes()
+                    tempFile.delete()
+                    compressed.delete()
+                    bytes to "lh_${lifehackId}.jpg"
+                }
+                MediaType.VIDEO -> {
+                    // Los vídeos no se comprimen, se suben directamente
+                    val bytes = context.contentResolver
+                        .openInputStream(mediaUri)
+                        ?.use { it.readBytes() }
+                        ?: return Result.failure(Exception("No se pudo leer el vídeo"))
+                    bytes to "lh_${lifehackId}.mp4"
+                }
+            }
+
+            bucket.upload(fileName, fileBytes, upsert = true)
+            Result.success(bucket.publicUrl(fileName))
+
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
     }
 }
