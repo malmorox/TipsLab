@@ -28,6 +28,7 @@ class WorkManagerUploadLifehackMediaEnqueuer @Inject constructor(
 
         val request = OneTimeWorkRequestBuilder<UploadLifehackMediaWorker>()
             .setInputData(inputData)
+            .addTag(lifehackId)
             .build()
 
         WorkManager.getInstance(context).enqueue(request)

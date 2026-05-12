@@ -7,6 +7,8 @@ import app.iesjdlc.tipslab.data.resolver.LifehackResolver
 import app.iesjdlc.tipslab.domain.model.MediaType
 import app.iesjdlc.tipslab.domain.repository.LifehackRepository
 import app.iesjdlc.tipslab.domain.repository.OrderBy
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
 class LifehackRepositoryImpl @Inject constructor(
@@ -33,6 +35,10 @@ class LifehackRepositoryImpl @Inject constructor(
 
     override suspend fun getRandomLifehacks(limit: Int): Result<List<Lifehack>> =
         Result.failure(NotImplementedError("getRandomLifehacks no implementado"))
+
+    override fun observeLifehack(id: String): Flow<Lifehack> =
+        dataSource.observeById(id)
+            .map { dto -> resolver.resolveOne(dto) ?: error("Lifehack no encontrado") }
 
     override suspend fun createLifehack(lifehack: Lifehack): Result<String> = runCatching {
         dataSource.create(mapper.toDto(lifehack))
