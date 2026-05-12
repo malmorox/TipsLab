@@ -6,6 +6,7 @@ plugins {
     alias(libs.plugins.google.services)
     alias(libs.plugins.ksp)
     alias(libs.plugins.hilt.android)
+    id("kotlin-parcelize")
 }
 
 android {
@@ -45,7 +46,6 @@ android {
 
 dependencies {
     implementation(libs.androidx.core.ktx)
-    implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
     implementation(platform(libs.androidx.compose.bom))
     implementation(libs.androidx.compose.ui)
@@ -63,6 +63,9 @@ dependencies {
 
     implementation(libs.androidx.navigation.compose)
     implementation(libs.kotlinx.serialization.json)
+    implementation(libs.kotlinx.coroutines.guava)
+    implementation(libs.androidx.lifecycle.runtime.ktx)
+    implementation(libs.androidx.work.runtime.ktx)
 
     // Credenciales (Google)
     implementation(libs.androidx.credentials)
@@ -78,18 +81,20 @@ dependencies {
     implementation(libs.supabase.storage)
     implementation(libs.ktor.client.android)
 
+    // Room
+    implementation(libs.androidx.room.runtime)
+    ksp(libs.androidx.room.compiler)
+
     // CameraX
     implementation(libs.bundles.camerax)
 
     // Coil
     implementation(libs.coil.compose)
+    implementation(libs.coil.video)
     implementation(libs.coil.network.okhttp)
 
     // Compressor (imágenes)
     implementation(libs.compressor)
-
-    // Compressor (videos)
-
 
     // Media3 / ExoPlayer
     implementation(libs.bundles.media3)
@@ -101,4 +106,7 @@ dependencies {
     implementation(libs.hilt.android)
     implementation(libs.hilt.navigation.compose)
     ksp(libs.hilt.compiler)
+    implementation(libs.hilt.common)
+    implementation(libs.hilt.work)
+    ksp(libs.hilt.work.compiler)
 }

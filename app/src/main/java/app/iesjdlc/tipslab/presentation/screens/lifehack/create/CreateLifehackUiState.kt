@@ -1,0 +1,26 @@
+package app.iesjdlc.tipslab.presentation.screens.lifehack.create
+
+import app.iesjdlc.tipslab.core.utils.UiText
+import app.iesjdlc.tipslab.domain.model.Category
+import app.iesjdlc.tipslab.domain.model.MediaSource
+
+data class CreateLifehackUiState(
+    val title: String = "",
+    val description: String = "",
+    val steps: List<String> = emptyList(),
+    val stepsCount: Int = 0,
+    val category: Category? = null,
+    val allCategories: List<Category> = emptyList(),
+    val mediaSource: MediaSource? = null,
+
+    val showStepsSheet: Boolean = false,
+    val showCategorySheet: Boolean = false,
+    val showDiscardChangesDialog: Boolean = false,
+    val isLoading: Boolean = false,
+
+    val titleErrorMessage: UiText? = null,
+    val descriptionErrorMessage: UiText? = null,
+    val categoryErrorMessage: UiText? = null,
+
+    val globalErrorMessage: String? = null
+)

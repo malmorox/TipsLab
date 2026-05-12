@@ -3,25 +3,23 @@ package app.iesjdlc.tipslab.data.repository
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import app.iesjdlc.tipslab.data.datasource.remote.UserDataSource
 import app.iesjdlc.tipslab.data.mapper.UserMapper
 import app.iesjdlc.tipslab.domain.model.User
-import app.iesjdlc.tipslab.data.model.UserDto
 import app.iesjdlc.tipslab.domain.repository.AuthRepository
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.GoogleAuthProvider
-import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 
 class AuthRepositoryImpl @Inject constructor(
     private val auth: FirebaseAuth,
-    private val db: FirebaseFirestore,
+    private val userDataSource: UserDataSource,
     private val mapper: UserMapper
 ) : AuthRepository {
     // Para guardar los datos del usuario en memoria
     var userProfile by mutableStateOf<User?>(null)
-        private set
 
     // Verificamos si hay ya un usuario al iniciar la aplicación
     override suspend fun checkUserSession(): Boolean {
@@ -36,18 +34,23 @@ class AuthRepositoryImpl @Inject constructor(
 
     // Cargamos los datos de Firestore y los convertimos a nuestro modelo de dominio (el que usamos en el UI)
     private suspend fun fetchUserData(uid: String) {
-        try {
-            val snapshot = db.collection("users").document(uid).get().await()
-            val dto = snapshot.toObject(UserDto::class.java)
-            userProfile = mapper.toDomain(dto ?: throw Exception("Usuario no encontrado") )
-        } catch (_: Exception) {
-            userProfile = null
-        }
+        userProfile = runCatching {
+            userDataSource.getById(uid)?.let { mapper.toDomain(it) }
+                ?: error("Usuario no encontrado")
+        }.getOrNull()
     }
 
     // Función para cargar el perfil del usuario desde UseCases
     override suspend fun loadProfile(uid: String) {
         fetchUserData(uid)
+    }
+
+    override suspend fun getCurrentUser(): User {
+        if (userProfile == null) {
+            val uid = auth.currentUser?.uid ?: error("No hay sesión activa")
+            fetchUserData(uid)
+        }
+        return userProfile ?: error("No se pudo cargar el usuario")
     }
 
     override suspend fun login(
@@ -79,15 +82,10 @@ class AuthRepositoryImpl @Inject constructor(
     override suspend fun authenticateWithGoogle(idToken: String): Result<GoogleAuthResult> {
         return try {
             val credential = GoogleAuthProvider.getCredential(idToken, null)
-            val result = auth.signInWithCredential(credential).await()
-            val firebaseUser = result.user ?: return Result.failure(Exception("Usuario nulo"))
+            val firebaseUser = auth.signInWithCredential(credential).await()
+                .user ?: error("Usuario nulo")
 
-            val userDoc = db.collection("users")
-                .document(firebaseUser.uid)
-                .get()
-                .await()
-
-            val isNewUser = !userDoc.exists()
+            val isNewUser = !userDataSource.existsById(firebaseUser.uid)
 
             if (!isNewUser) {
                 fetchUserData(firebaseUser.uid)
@@ -105,6 +103,10 @@ class AuthRepositoryImpl @Inject constructor(
         } catch (e: Exception) {
             Result.failure(e)
         }
+    }
+
+    fun updateCachedUser(user: User) {
+        userProfile = user
     }
 
     override fun logout() {

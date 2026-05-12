@@ -1,40 +1,24 @@
 package app.iesjdlc.tipslab.data.repository
 
 import app.iesjdlc.tipslab.data.mapper.CategoryMapper
+import app.iesjdlc.tipslab.data.datasource.local.CategoryDataSource
 import app.iesjdlc.tipslab.domain.model.Category
-import app.iesjdlc.tipslab.data.model.CategoryDto
 import app.iesjdlc.tipslab.domain.repository.CategoryRepository
-import com.google.firebase.firestore.FirebaseFirestore
-import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 
 class CategoryRepositoryImpl @Inject constructor(
-    private val db: FirebaseFirestore,
+    private val dataSource: CategoryDataSource,
     private val mapper: CategoryMapper
 ) : CategoryRepository {
-    override suspend fun getAllCategories(): Result<List<Category>> {
-        return try {
-            val snapshot = db.collection("categories").get().await()
-
-            val categories = snapshot.documents.mapNotNull { doc ->
-                doc.toObject(CategoryDto::class.java)
-                    ?.let { mapper.toDomain(it) }
-            }
-
-            Result.success(categories)
-        } catch (e: Exception) {
-            Result.failure(e)
+    override fun getAllCategories(): Result<List<Category>> =
+        runCatching {
+            dataSource.getCategories().map { mapper.toDomain(it) }
         }
-    }
 
-    override suspend fun getCategoryById(id: String): Result<Category> {
-        return try {
-            val doc = db.collection("categories").document(id).get().await()
-            doc.toObject(CategoryDto::class.java)
-                ?.let { Result.success(mapper.toDomain(it)) }
-                ?: Result.failure(Exception("Categoría no encontrada"))
-        } catch (e: Exception) {
-            Result.failure(e)
+    override fun getCategoryById(id: Int): Result<Category> =
+        runCatching {
+            dataSource.getById(id)
+                ?.let { mapper.toDomain(it) }
+                ?: error("Categoría no encontrada: $id")
         }
-    }
 }

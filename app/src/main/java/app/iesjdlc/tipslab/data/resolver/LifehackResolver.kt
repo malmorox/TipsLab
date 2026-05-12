@@ -1,21 +1,21 @@
 package app.iesjdlc.tipslab.data.resolver
 
+import app.iesjdlc.tipslab.data.datasource.local.CategoryDataSource
+import app.iesjdlc.tipslab.data.datasource.remote.UserDataSource
 import app.iesjdlc.tipslab.data.mapper.CategoryMapper
 import app.iesjdlc.tipslab.data.mapper.LifehackMapper
 import app.iesjdlc.tipslab.data.mapper.UserMapper
-import app.iesjdlc.tipslab.data.model.CategoryDto
 import app.iesjdlc.tipslab.data.model.LifehackDto
-import app.iesjdlc.tipslab.data.model.UserDto
+import app.iesjdlc.tipslab.domain.model.Category
 import app.iesjdlc.tipslab.domain.model.Lifehack
-import com.google.firebase.firestore.FieldPath
-import com.google.firebase.firestore.FirebaseFirestore
-import kotlinx.coroutines.tasks.await
+import app.iesjdlc.tipslab.domain.model.User
 import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
 class LifehackResolver @Inject constructor(
-    private val db: FirebaseFirestore,
+    private val categoryDataSource: CategoryDataSource,
+    private val userDataSource: UserDataSource,
     private val lifehackMapper: LifehackMapper,
     private val categoryMapper: CategoryMapper,
     private val userMapper: UserMapper
@@ -23,33 +23,39 @@ class LifehackResolver @Inject constructor(
     suspend fun resolve(dtos: List<LifehackDto>): List<Lifehack> {
         if (dtos.isEmpty()) return emptyList()
 
-        val categoryIds = dtos.map { it.category_id }.distinct()
-        val authorIds = dtos.map { it.author_id }.distinct()
+        val categoriesById = fetchCategories(dtos.map { it.categoryId }.distinct())
+        val usersById = fetchUsers(dtos.map { it.authorId }.distinct())
 
-        val categoriesById = db.collection("categories")
-            .whereIn(FieldPath.documentId(), categoryIds)
-            .get().await()
-            .documents
-            .mapNotNull { doc ->
-                doc.toObject(CategoryDto::class.java)
-                    ?.let { doc.id to categoryMapper.toDomain(it) }
-            }.toMap()
-
-        val usersById = db.collection("users")
-            .whereIn(FieldPath.documentId(), authorIds)
-            .get().await()
-            .documents
-            .mapNotNull { doc ->
-                doc.toObject(UserDto::class.java)
-                    ?.let { doc.id to userMapper.toDomain(it) }
-            }.toMap()
-
-        return dtos.mapNotNull { dto ->
-            val category = categoriesById[dto.category_id] ?: return@mapNotNull null
-            val author = usersById[dto.author_id] ?: return@mapNotNull null
-            lifehackMapper.toDomain(dto, category, author)
-        }
+        return dtos.mapNotNull { dto -> enrich(dto, categoriesById, usersById) }
     }
 
-    suspend fun resolveOne(dto: LifehackDto): Lifehack? = resolve(listOf(dto)).firstOrNull()
+    suspend fun resolveOne(dto: LifehackDto): Lifehack? {
+        val category = categoryDataSource.getById(dto.categoryId)
+            ?.let { categoryMapper.toDomain(it) } ?: return null
+        val author = userDataSource.getById(dto.authorId)
+            ?.let { userMapper.toDomain(it) } ?: return null
+        return lifehackMapper.toDomain(dto, category, author)
+    }
+
+    // Obtiene las categorías por sus IDs desde el JSON local y las mapea a dominio
+    private fun fetchCategories(ids: List<Int>): Map<Int, Category> =
+        ids.mapNotNull { id ->
+            categoryDataSource.getById(id)?.let { id to categoryMapper.toDomain(it) }
+        }.toMap()
+
+    // Obtiene los usuarios por sus IDs desde Firestore en una sola query y los mapea a dominio.
+    private suspend fun fetchUsers(ids: List<String>): Map<String, User> =
+        userDataSource.getByIds(ids)
+            .mapValues { (_, dto) -> userMapper.toDomain(dto) }
+
+    // Construye un Lifehack de dominio a partir de un LifehackDto y los mapas de categorías y usuarios ya resueltos
+    private fun enrich(
+        dto: LifehackDto,
+        categoriesById: Map<Int, Category>,
+        usersById: Map<String, User>
+    ): Lifehack? {
+        val category = categoriesById[dto.categoryId] ?: return null
+        val author = usersById[dto.authorId] ?: return null
+        return lifehackMapper.toDomain(dto, category, author)
+    }
 }

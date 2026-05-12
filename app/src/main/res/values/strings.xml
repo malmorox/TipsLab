@@ -8,7 +8,6 @@
     <string name="toggle_password_visibility">Alternar visibilidad de la contraseña</string>
     <string name="dont_have_account">Si no tienes cuenta, crea una&#160;</string>
     <string name="here">aquí</string>
-    <string name="or">O</string>
     <string name="continue_with_google">Continua con Google</string>
     <string name="login_button">Acceder</string>
 
@@ -21,10 +20,70 @@
     <string name="back_to_login">¿Ya tienes cuenta? Inicia sesión</string>
 
     <!-- Home -->
+    <string name="categories">Categorías</string>
 
     <!-- Explore -->
 
     <!-- Create lifehack -->
+    <string name="create_lifehack">Crear Lifehack</string>
+    <string name="media">Multimedia</string>
+    <string name="title">Título</string>
+    <string name="title_placeholder">Indica claramente qué quieres compartir</string>
+    <string name="description">Descripción</string>
+    <string name="description_placeholder">Añade información detallada</string>
+    <string name="steps">Pasos</string>
+    <string name="step">Paso</string>
+    <string name="steps_placeholder">Describe los pasos a seguir</string>
+    <string name="category">Categoría</string>
+    <string name="category_placeholder">Selecciona una categoría</string>
     <string name="publish">Publicar</string>
+    <string name="add_steps_to_lifehack">Añade pasos</string>
+    <string name="add_step">Añadir paso</string>
+    <string name="step_placeholder">Describe este paso…</string>
+    <string name="step_min_chars">Mínimo %1$d caracteres</string>
+    <string name="steps_validation_error">Rellena los pasos correctamente antes de guardar</string>
+    <string name="select_category">Selecciona una categoría</string>
+    <string name="search_category">Buscar categoría</string>
+    <string name="no_results">No se encontraron resultados</string>
+    <string name="title_required">El título es obligatorio</string>
+    <string name="description_required">La descripción es obligatoria</string>
+    <string name="category_required">La categoría es obligatoria</string>
+    <string name="description_min_length_required">La descripción debe tener al menos %1$d caracteres</string>
+
+    <!-- Edit lifehack -->
+
+    <!-- Profile y EditProfile -->
+    <string name="my_profile">Mi perfil</string>
+    <string name="log_out">Cerrar sesión</string>
+    <string name="edit_profile">Editar perfil</string>
+    <string name="no_posts">Aún no hay publicaciones</string>
+    <string name="save_changes">Guardar cambios</string>
+
+    <!-- Category -->
+    <string name="no_recent_category_lifehacks">No hay lifehacks recientes en esta categoría</string>
+    <string name="no_popular_category_lifehacks">No hay lifehacks populares en esta categoría</string>
+
+    <!-- Camera -->
+    <string name="flip_camera">Girar cámara</string>
+
+    <!-- Generic -->
+    <string name="close">Cerrar</string>
+    <string name="go_back">Volver</string>
+    <string name="or">o</string>
+    <string name="save">Guardar</string>
+    <string name="discard">Descartar</string>
+    <string name="cancel">Cancelar</string>
+    <string name="edit">Editar</string>
+    <string name="delete">Eliminar</string>
+    <string name="confirm">Confirmar</string>
+    <string name="options">Opciones</string>
+    <string name="discard_changes">Descartar cambios</string>
+    <string name="discard_changes_message">Perderás todo el contenido introducido.</string>
+    <string name="delete_lifehack">Eliminar Lifehack</string>
+    <string name="delete_lifehack_message">¿Estás seguro de que quieres eliminar este lifehack?</string>
+    <string name="recent">Recientes</string>
+    <string name="popular">Populares</string>
+    <string name="published_by">Publicado por</string>
+    <string name="remove_media">Eliminar contenido</string>
 
 </resources>
