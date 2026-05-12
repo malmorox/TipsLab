@@ -69,6 +69,7 @@ fun MainScaffold(
 
 			composable<Route.Profile> {
 				ProfileTab(
+					navController = rootNavController,
 					onEditProfile = {
 						rootNavController.navigate(Route.EditProfile)
 					},

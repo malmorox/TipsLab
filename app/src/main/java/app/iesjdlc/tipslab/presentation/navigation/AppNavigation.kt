@@ -182,11 +182,16 @@ fun AppNavigation() {
         }
 
         composable<Route.EditProfile> {
-            EditProfileScreen(
-                onNavigateBack = { rootNavController.popBackStack() },
-                onProfileEdited = {
 
+            EditProfileScreen(
+                onNavigateBack = {
+                    rootNavController.popBackStack()
                 },
+
+                onProfileEdited = {
+                    rootNavController.popBackStack()
+                },
+
                 onOpenCamera = {
                     rootNavController.navigate(Route.Camera(allowVideo = false))
                 }

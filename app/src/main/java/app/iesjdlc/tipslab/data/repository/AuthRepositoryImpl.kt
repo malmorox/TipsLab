@@ -20,7 +20,6 @@ class AuthRepositoryImpl @Inject constructor(
 ) : AuthRepository {
     // Para guardar los datos del usuario en memoria
     var userProfile by mutableStateOf<User?>(null)
-        private set
 
     // Verificamos si hay ya un usuario al iniciar la aplicación
     override suspend fun checkUserSession(): Boolean {
@@ -104,6 +103,10 @@ class AuthRepositoryImpl @Inject constructor(
         } catch (e: Exception) {
             Result.failure(e)
         }
+    }
+
+    fun updateCachedUser(user: User) {
+        userProfile = user
     }
 
     override fun logout() {
