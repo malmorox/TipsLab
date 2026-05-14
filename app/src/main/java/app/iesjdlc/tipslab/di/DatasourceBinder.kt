@@ -2,6 +2,8 @@ package app.iesjdlc.tipslab.di
 
 import app.iesjdlc.tipslab.data.datasource.local.CategoryDataSource
 import app.iesjdlc.tipslab.data.datasource.local.CategoryLocalDataSource
+import app.iesjdlc.tipslab.data.datasource.remote.CommentDataSource
+import app.iesjdlc.tipslab.data.datasource.remote.CommentRemoteDataSource
 import app.iesjdlc.tipslab.data.datasource.remote.LifehackDataSource
 import app.iesjdlc.tipslab.data.datasource.remote.LifehackRemoteDataSource
 import app.iesjdlc.tipslab.data.datasource.remote.SavedLikedDataSource
@@ -19,17 +21,21 @@ import javax.inject.Singleton
 abstract class DatasourceBinder {
     @Binds
     @Singleton
-    abstract fun bindLifehackDataSource(impl: LifehackRemoteDataSource): LifehackDataSource
-
-    @Binds
-    @Singleton
     abstract fun bindCategoryDataSource(impl: CategoryLocalDataSource): CategoryDataSource
 
     @Binds
     @Singleton
-    abstract fun bindUserDataSource(impl: UserRemoteDataSource): UserDataSource
+    abstract fun bindCommentDataSource(impl: CommentRemoteDataSource): CommentDataSource
+
+    @Binds
+    @Singleton
+    abstract fun bindLifehackDataSource(impl: LifehackRemoteDataSource): LifehackDataSource
 
     @Binds
     @Singleton
     abstract fun bindSavedLikedDataSource(impl: SavedLikedRemoteDataSource): SavedLikedDataSource
+
+    @Binds
+    @Singleton
+    abstract fun bindUserDataSource(impl: UserRemoteDataSource): UserDataSource
 }

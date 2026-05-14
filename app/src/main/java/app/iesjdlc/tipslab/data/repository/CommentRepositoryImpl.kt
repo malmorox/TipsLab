@@ -1,6 +1,7 @@
 package app.iesjdlc.tipslab.data.repository
 
 import app.iesjdlc.tipslab.domain.model.Comment
+import app.iesjdlc.tipslab.domain.model.CommentReply
 import app.iesjdlc.tipslab.domain.repository.CommentRepository
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
@@ -14,7 +15,7 @@ class CommentRepositoryImpl @Inject constructor(
 
     override suspend fun addComment(
         lifehackId: String,
-        text: String
+        comment: Comment
     ): Result<Unit> {
         TODO("Not yet implemented")
     }
@@ -22,7 +23,7 @@ class CommentRepositoryImpl @Inject constructor(
     override suspend fun addReply(
         lifehackId: String,
         commentId: String,
-        text: String
+        reply: CommentReply
     ): Result<Unit> {
         TODO("Not yet implemented")
     }
