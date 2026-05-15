@@ -8,20 +8,20 @@ interface CommentDataSource {
     fun observeByLifehack(lifehackId: String): Flow<List<CommentDto>>
     suspend fun add(
         lifehackId: String,
-        comment: CommentDto
-    ): Result<Unit>
+        dto: CommentDto
+    )
     suspend fun addReply(
         lifehackId: String,
         commentId: String,
-        reply: CommentReplyDto
-    ): Result<Unit>
+        dto: CommentReplyDto
+    )
     suspend fun delete(
         lifehackId: String,
         commentId: String
-    ): Result<Unit>
+    )
     suspend fun deleteReply(
         lifehackId: String,
         commentId: String,
         replyId: String
-    ): Result<Unit>
+    )
 }

@@ -1,20 +1,22 @@
 package app.iesjdlc.tipslab.data.datasource.remote
 
+import app.iesjdlc.tipslab.core.constants.DBConstants
 import app.iesjdlc.tipslab.data.model.CommentDto
 import app.iesjdlc.tipslab.data.model.CommentReplyDto
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
+import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 
 class CommentRemoteDataSource @Inject constructor(
     private val db: FirebaseFirestore
 ) : CommentDataSource {
     override fun observeByLifehack(lifehackId: String): Flow<List<CommentDto>> = callbackFlow {
-        val subscription = db.collection("lifehacks")
+        val subscription = db.collection(DBConstants.LIFEHACKS_COLLECTION)
             .document(lifehackId)
-            .collection("comments")
+            .collection(DBConstants.COMMENTS_COLLECTION)
             .addSnapshotListener { snapshot, error ->
                 if (error != null) {
                     close(error)
@@ -27,31 +29,49 @@ class CommentRemoteDataSource @Inject constructor(
 
     override suspend fun add(
         lifehackId: String,
-        comment: CommentDto
-    ): Result<Unit> {
-        TODO("Not yet implemented")
+        dto: CommentDto
+    ) {
+        db.collection(DBConstants.LIFEHACKS_COLLECTION)
+            .document(lifehackId)
+            .collection(DBConstants.COMMENTS_COLLECTION)
+            .add(dto).await()
     }
 
     override suspend fun addReply(
         lifehackId: String,
         commentId: String,
-        reply: CommentReplyDto
-    ): Result<Unit> {
-        TODO("Not yet implemented")
+        dto: CommentReplyDto
+    ) {
+        db.collection(DBConstants.LIFEHACKS_COLLECTION)
+            .document(lifehackId)
+            .collection(DBConstants.COMMENTS_COLLECTION)
+            .document(commentId)
+            .collection(DBConstants.REPLIES_COLLECTION)
+            .add(dto).await()
     }
 
     override suspend fun delete(
         lifehackId: String,
         commentId: String
-    ): Result<Unit> {
-        TODO("Not yet implemented")
+    ) {
+        db.collection(DBConstants.LIFEHACKS_COLLECTION)
+            .document(lifehackId)
+            .collection(DBConstants.COMMENTS_COLLECTION)
+            .document(commentId)
+            .delete().await()
     }
 
     override suspend fun deleteReply(
         lifehackId: String,
         commentId: String,
         replyId: String
-    ): Result<Unit> {
-        TODO("Not yet implemented")
+    ) {
+        db.collection(DBConstants.LIFEHACKS_COLLECTION)
+            .document(lifehackId)
+            .collection(DBConstants.COMMENTS_COLLECTION)
+            .document(commentId)
+            .collection(DBConstants.REPLIES_COLLECTION)
+            .document(replyId)
+            .delete().await()
     }
 }
