@@ -9,45 +9,49 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+import app.iesjdlc.tipslab.domain.repository.LifehackRepository
 
 @HiltViewModel
 class ProfileViewModel @Inject constructor(
-    private val authRepository: AuthRepository
+    private val authRepository: AuthRepository,
+    private val lifehackRepository: LifehackRepository
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(ProfileUiState())
     val uiState: StateFlow<ProfileUiState> = _uiState.asStateFlow()
 
-    fun refreshUser() {
-        viewModelScope.launch {
-            runCatching {
-                authRepository.getCurrentUser()
-            }.onSuccess { user ->
-                _uiState.value = _uiState.value.copy(
-                    username = user.username,
-                    email = user.email,
-                    photoUrl = user.photoUrl
-                )
-            }.onFailure {
-                _uiState.value = _uiState.value.copy(
-                    errorMessage = it.message
-                )
-            }
-        }
-    }
-
     fun refresh() {
         viewModelScope.launch {
+
+            _uiState.value = _uiState.value.copy(
+                isLoading = true
+            )
+
             runCatching {
-                authRepository.getCurrentUser()
-            }.onSuccess { user ->
+
+                val user = authRepository.getCurrentUser()
+
+                val posts = lifehackRepository
+                    .getUserLifehacks(user.id)
+                    .getOrThrow()
+                    .sortedByDescending { it.createdAt }
+
+                user to posts
+
+            }.onSuccess { (user, posts) ->
+
                 _uiState.value = _uiState.value.copy(
                     username = user.username,
                     email = user.email,
-                    photoUrl = user.photoUrl
+                    photoUrl = user.photoUrl,
+                    posts = posts,
+                    isLoading = false
                 )
+
             }.onFailure {
+
                 _uiState.value = _uiState.value.copy(
-                    errorMessage = it.message
+                    errorMessage = it.message,
+                    isLoading = false
                 )
             }
         }

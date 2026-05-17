@@ -24,7 +24,16 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil3.compose.AsyncImage
 import app.iesjdlc.tipslab.R
-import androidx.navigation.NavController
+import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.material3.Tab
+import androidx.compose.material3.TabRow
+import androidx.compose.material3.TabRowDefaults
+import androidx.compose.material3.TabRowDefaults.tabIndicatorOffset
+import kotlinx.coroutines.launch
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.material.icons.filled.BookmarkBorder
+import androidx.compose.foundation.layout.aspectRatio
 
 @Composable
 fun ProfileTab(
@@ -51,6 +60,15 @@ private fun ProfileTabUI(
     onEditProfile: () -> Unit,
     onLogout: () -> Unit
 ) {
+
+    val pages = listOf(0, 1, 2)
+
+    val pagerState = rememberPagerState(
+        initialPage = 0,
+        pageCount = { pages.size }
+    )
+
+    val scope = rememberCoroutineScope()
 
     Column(
         modifier = Modifier
@@ -121,33 +139,114 @@ private fun ProfileTabUI(
 
         HorizontalDivider()
 
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(vertical = 12.dp),
-            horizontalArrangement = Arrangement.SpaceEvenly
-        ) {
-            Icon(Icons.Default.GridOn, null)
-            Icon(Icons.Default.FavoriteBorder, null)
-        }
-
-        HorizontalDivider()
-
-        if (state.posts.isEmpty()) {
-            Box(
-                modifier = Modifier.fillMaxSize(),
-                contentAlignment = Alignment.Center
-            ) {
-                Text(
-                    text = stringResource(R.string.no_posts),
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
+        TabRow(
+            selectedTabIndex = pagerState.currentPage,
+            containerColor = MaterialTheme.colorScheme.background,
+            indicator = { tabPositions ->
+                TabRowDefaults.Indicator(
+                    modifier = Modifier.tabIndicatorOffset(
+                        tabPositions[pagerState.currentPage]
+                    ),
+                    color = MaterialTheme.colorScheme.primary
                 )
             }
-        } else {
-            LazyVerticalGrid(
-                columns = GridCells.Fixed(3),
-                modifier = Modifier.fillMaxSize()
-            ) {}
+        ) {
+
+            pages.forEachIndexed { index, title ->
+
+                Tab(
+                    selected = pagerState.currentPage == index,
+                    onClick = {
+                        scope.launch {
+                            pagerState.animateScrollToPage(index)
+                        }
+                    },
+                    selectedContentColor = MaterialTheme.colorScheme.primary,
+                    unselectedContentColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                    icon = {
+                        when (index) {
+                            0 -> Icon(
+                                imageVector = Icons.Default.GridOn,
+                                contentDescription = stringResource(R.string.my_posts)
+                            )
+
+                            1 -> Icon(
+                                imageVector = Icons.Default.FavoriteBorder,
+                                contentDescription = stringResource(R.string.my_favorites)
+                            )
+
+                            2 -> Icon(
+                                imageVector = Icons.Default.BookmarkBorder,
+                                contentDescription = stringResource(R.string.my_saved)
+                            )
+                        }
+                    }
+                )
+            }
+        }
+
+        HorizontalPager(
+            state = pagerState,
+            modifier = Modifier.fillMaxSize()
+        ) { page ->
+
+            when (page) {
+
+                //PUBLICACIONES
+                0 -> {
+                    if (state.posts.isEmpty()) {
+                        Box(
+                            modifier = Modifier.fillMaxSize(),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Text(text = stringResource(R.string.no_posts))
+                        }
+                    } else {
+                        LazyVerticalGrid(
+                            columns = GridCells.Fixed(3),
+                            modifier = Modifier.fillMaxSize(),
+                            contentPadding = PaddingValues(2.dp),
+                            horizontalArrangement = Arrangement.spacedBy(2.dp),
+                            verticalArrangement = Arrangement.spacedBy(2.dp)
+                        ) {
+
+                            items(state.posts.size) { index ->
+
+                                val post = state.posts[index]
+
+                                AsyncImage(
+                                    model = post.media?.url,
+                                    contentDescription = post.title,
+                                    contentScale = ContentScale.Crop,
+                                    modifier = Modifier
+                                        .aspectRatio(1f)
+                                        .fillMaxWidth()
+                                )
+                            }
+                        }
+                    }
+                }
+
+                //FAVORITOS
+                1 -> {
+                    Box(
+                        modifier = Modifier.fillMaxSize(),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Text(stringResource(R.string.no_favorites))
+                    }
+                }
+
+                //GUARDADOS
+                2 -> {
+                    Box(
+                        modifier = Modifier.fillMaxSize(),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Text(stringResource(R.string.no_saved))
+                    }
+                }
+            }
         }
     }
 }
