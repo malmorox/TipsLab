@@ -34,12 +34,14 @@ import kotlinx.coroutines.launch
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.material.icons.filled.BookmarkBorder
 import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.clickable
 
 @Composable
 fun ProfileTab(
     viewModel: ProfileViewModel = hiltViewModel(),
     onEditProfile: () -> Unit,
-    onLogout: () -> Unit
+    onLogout: () -> Unit,
+    onOpenLifehack: (String) -> Unit
 ){
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
@@ -50,7 +52,8 @@ fun ProfileTab(
     ProfileTabUI(
         state = uiState,
         onEditProfile = onEditProfile,
-        onLogout = { viewModel.onLogout(onLogout) }
+        onLogout = { viewModel.onLogout(onLogout) },
+        onOpenLifehack = onOpenLifehack
     )
 }
 
@@ -58,7 +61,8 @@ fun ProfileTab(
 private fun ProfileTabUI(
     state: ProfileUiState,
     onEditProfile: () -> Unit,
-    onLogout: () -> Unit
+    onLogout: () -> Unit,
+    onOpenLifehack: (String) -> Unit
 ) {
 
     val pages = listOf(0, 1, 2)
@@ -221,6 +225,9 @@ private fun ProfileTabUI(
                                     modifier = Modifier
                                         .aspectRatio(1f)
                                         .fillMaxWidth()
+                                        .clickable {
+                                            onOpenLifehack(post.id)
+                                        }
                                 )
                             }
                         }
