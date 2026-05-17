@@ -10,48 +10,61 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 import app.iesjdlc.tipslab.domain.repository.LifehackRepository
+import app.iesjdlc.tipslab.domain.repository.SavedLikedRepository
 
 @HiltViewModel
 class ProfileViewModel @Inject constructor(
     private val authRepository: AuthRepository,
-    private val lifehackRepository: LifehackRepository
+    private val lifehackRepository: LifehackRepository,
+    private val savedLikedRepository: SavedLikedRepository
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(ProfileUiState())
     val uiState: StateFlow<ProfileUiState> = _uiState.asStateFlow()
 
     fun refresh() {
+
         viewModelScope.launch {
 
             _uiState.value = _uiState.value.copy(
-                isLoading = true
+                isLoading = true,
+                errorMessage = null
             )
 
             runCatching {
 
-                val user = authRepository.getCurrentUser()
+                authRepository.getCurrentUser()
+
+            }.onSuccess { user ->
 
                 val posts = lifehackRepository
                     .getUserLifehacks(user.id)
-                    .getOrThrow()
-                    .sortedByDescending { it.createdAt }
+                    .getOrDefault(emptyList())
 
-                user to posts
+                val favoritePosts = savedLikedRepository
+                    .getUserLikedLifehacks(user.id)
+                    .getOrDefault(emptyList())
 
-            }.onSuccess { (user, posts) ->
+                val savedPosts = savedLikedRepository
+                    .getUserSavedLifehacks(user.id)
+                    .getOrDefault(emptyList())
 
                 _uiState.value = _uiState.value.copy(
                     username = user.username,
                     email = user.email,
                     photoUrl = user.photoUrl,
+
                     posts = posts,
+                    favoritePosts = favoritePosts,
+                    savedPosts = savedPosts,
+
                     isLoading = false
                 )
 
             }.onFailure {
 
                 _uiState.value = _uiState.value.copy(
-                    errorMessage = it.message,
-                    isLoading = false
+                    isLoading = false,
+                    errorMessage = it.message
                 )
             }
         }

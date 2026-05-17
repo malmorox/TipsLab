@@ -7,6 +7,8 @@ data class ProfileUiState(
     val email: String = "",
     val photoUrl: String? = null,
     val posts: List<Lifehack> = emptyList(),
+    val favoritePosts: List<Lifehack> = emptyList(),
+    val savedPosts: List<Lifehack> = emptyList(),
     val isLoading: Boolean = false,
     val errorMessage: String? = null
 )

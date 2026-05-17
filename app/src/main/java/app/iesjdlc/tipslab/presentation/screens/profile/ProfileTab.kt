@@ -35,6 +35,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.material.icons.filled.BookmarkBorder
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.clickable
+import app.iesjdlc.tipslab.domain.model.Lifehack
 
 @Composable
 fun ProfileTab(
@@ -193,66 +194,80 @@ private fun ProfileTabUI(
             state = pagerState,
             modifier = Modifier.fillMaxSize()
         ) { page ->
-
             when (page) {
 
                 //PUBLICACIONES
                 0 -> {
-                    if (state.posts.isEmpty()) {
-                        Box(
-                            modifier = Modifier.fillMaxSize(),
-                            contentAlignment = Alignment.Center
-                        ) {
-                            Text(text = stringResource(R.string.no_posts))
-                        }
-                    } else {
-                        LazyVerticalGrid(
-                            columns = GridCells.Fixed(3),
-                            modifier = Modifier.fillMaxSize(),
-                            contentPadding = PaddingValues(2.dp),
-                            horizontalArrangement = Arrangement.spacedBy(2.dp),
-                            verticalArrangement = Arrangement.spacedBy(2.dp)
-                        ) {
-
-                            items(state.posts.size) { index ->
-
-                                val post = state.posts[index]
-
-                                AsyncImage(
-                                    model = post.media?.url,
-                                    contentDescription = post.title,
-                                    contentScale = ContentScale.Crop,
-                                    modifier = Modifier
-                                        .aspectRatio(1f)
-                                        .fillMaxWidth()
-                                        .clickable {
-                                            onOpenLifehack(post.id)
-                                        }
-                                )
-                            }
-                        }
-                    }
+                    ProfilePostsGrid(
+                        posts = state.posts,
+                        emptyText = stringResource(R.string.no_posts),
+                        onOpenLifehack = onOpenLifehack
+                    )
                 }
 
                 //FAVORITOS
                 1 -> {
-                    Box(
-                        modifier = Modifier.fillMaxSize(),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        Text(stringResource(R.string.no_favorites))
-                    }
+                    ProfilePostsGrid(
+                        posts = state.favoritePosts,
+                        emptyText = stringResource(R.string.no_favorites),
+                        onOpenLifehack = onOpenLifehack
+                    )
                 }
 
                 //GUARDADOS
                 2 -> {
-                    Box(
-                        modifier = Modifier.fillMaxSize(),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        Text(stringResource(R.string.no_saved))
-                    }
+                    ProfilePostsGrid(
+                        posts = state.savedPosts,
+                        emptyText = stringResource(R.string.no_saved),
+                        onOpenLifehack = onOpenLifehack
+                    )
                 }
+            }
+        }
+    }
+}
+
+@Composable
+private fun ProfilePostsGrid(
+    posts: List<Lifehack>,
+    emptyText: String,
+    onOpenLifehack: (String) -> Unit
+) {
+
+    if (posts.isEmpty()) {
+
+        Box(
+            modifier = Modifier.fillMaxSize(),
+            contentAlignment = Alignment.Center
+        ) {
+            Text(text = emptyText)
+        }
+
+    } else {
+
+        LazyVerticalGrid(
+            columns = GridCells.Fixed(3),
+            modifier = Modifier.fillMaxSize(),
+            contentPadding = PaddingValues(2.dp),
+            horizontalArrangement = Arrangement.spacedBy(2.dp),
+            verticalArrangement = Arrangement.spacedBy(2.dp)
+        ) {
+
+            items(posts.size) { index ->
+
+                val post = posts[index]
+
+                AsyncImage(
+                    model = post.media?.url,
+                    contentDescription = post.title,
+                    contentScale = ContentScale.Crop,
+                    modifier = Modifier
+                        .aspectRatio(1f)
+                        .fillMaxWidth()
+                        .clickable {
+                            onOpenLifehack(post.id)
+                        }
+                )
             }
         }
     }
