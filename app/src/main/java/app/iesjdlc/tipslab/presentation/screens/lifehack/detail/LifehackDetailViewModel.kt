@@ -8,6 +8,8 @@ import androidx.work.WorkInfo
 import androidx.work.WorkManager
 import app.iesjdlc.tipslab.domain.repository.LifehackRepository
 import app.iesjdlc.tipslab.domain.usecase.lifehack.GetLifehackDetailUseCase
+import app.iesjdlc.tipslab.domain.usecase.lifehack.ToggleLikeLifehackUseCase
+import app.iesjdlc.tipslab.domain.usecase.lifehack.ToggleSaveLifehackUseCase
 import app.iesjdlc.tipslab.presentation.common.UploadState
 import app.iesjdlc.tipslab.presentation.navigation.Route
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -22,6 +24,8 @@ import javax.inject.Inject
 class LifehackDetailViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
     private val getLifehackDetailUseCase: GetLifehackDetailUseCase,
+    private val toggleLikeUseCase: ToggleLikeLifehackUseCase,
+    private val toggleSaveUseCase: ToggleSaveLifehackUseCase,
     private val lifehackRepository: LifehackRepository,
     private val workManager: WorkManager
 ) : ViewModel() {
@@ -33,6 +37,7 @@ class LifehackDetailViewModel @Inject constructor(
     init {
         loadLifehack()
         observeLifehack()
+        observeComments()
         observeMediaUploadState()
     }
 
@@ -75,6 +80,15 @@ class LifehackDetailViewModel @Inject constructor(
         }
     }
 
+    fun onShowComments() {
+        _uiState.update { it.copy(showComments = true) }
+        observeComments()
+    }
+
+    private fun observeComments() {
+        // TODO observar comentarios
+    }
+
     private fun observeMediaUploadState() {
         viewModelScope.launch {
             workManager.getWorkInfosByTagFlow(lifehackId)
@@ -89,6 +103,26 @@ class LifehackDetailViewModel @Inject constructor(
                     }
                     _uiState.update { it.copy(uploadState = uploadState) }
                 }
+        }
+    }
+
+    fun onLikeClick() {
+        viewModelScope.launch {
+            val wasLiked = uiState.value.isLiked
+            _uiState.update { it.copy(isLiked = !wasLiked) }
+            toggleLikeUseCase(lifehackId)
+                .onSuccess { newIsLiked -> _uiState.update { it.copy(isLiked = newIsLiked) } }
+                .onFailure { _uiState.update { it.copy(isLiked = wasLiked) } }
+        }
+    }
+
+    fun onSaveClick() {
+        viewModelScope.launch {
+            val wasSaved = uiState.value.isSaved
+            _uiState.update { it.copy(isSaved = !wasSaved) }
+            toggleSaveUseCase(lifehackId)
+                .onSuccess { newIsSaved -> _uiState.update { it.copy(isSaved = newIsSaved) } }
+                .onFailure { _uiState.update { it.copy(isSaved = wasSaved) } }
         }
     }
 

@@ -1,4 +1,4 @@
-package app.iesjdlc.tipslab.data.datasource.local
+package app.iesjdlc.tipslab.data.datasource
 
 interface SearchDataSource {
     fun getSearchHistory(): List<String>

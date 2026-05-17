@@ -6,6 +6,7 @@ import app.iesjdlc.tipslab.presentation.common.UploadState
 
 data class LifehackDetailUiState(
     val lifehack: Lifehack? = null,
+    val showComments: Boolean = false,
     val comments: List<Comment> = emptyList(),
     val isLoading: Boolean = true,
     val uploadState: UploadState? = null,

@@ -66,4 +66,7 @@
     <string name="remove_media">Delete content</string>
     <string name="my_profile">My profile</string>
     <string name="no_posts">There are no posts yet</string>
+    <string name="like">todo</string>
+    <string name="unlike">todo</string>
+    <string name="unsave">todo</string>
 </resources>

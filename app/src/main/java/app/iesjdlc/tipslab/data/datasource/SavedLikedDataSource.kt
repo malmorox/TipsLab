@@ -1,4 +1,4 @@
-package app.iesjdlc.tipslab.data.datasource.remote
+package app.iesjdlc.tipslab.data.datasource
 
 interface SavedLikedDataSource {
     suspend fun getSavedIds(userId: String): List<String>

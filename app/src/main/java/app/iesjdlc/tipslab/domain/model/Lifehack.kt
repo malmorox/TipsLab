@@ -12,5 +12,6 @@ data class Lifehack(
     val media: Media?,
     val createdAt: Instant,
     val updatedAt: Instant,
-    val likesCount: Int
+    val likesCount: Int,
+    val commentsCount: Int
 )

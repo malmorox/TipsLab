@@ -1,4 +1,4 @@
-package app.iesjdlc.tipslab.data.datasource.remote
+package app.iesjdlc.tipslab.data.datasource
 
 import app.iesjdlc.tipslab.data.model.CommentDto
 import app.iesjdlc.tipslab.data.model.CommentReplyDto

@@ -1,14 +1,14 @@
 package app.iesjdlc.tipslab.di
 
-import app.iesjdlc.tipslab.data.datasource.local.CategoryDataSource
+import app.iesjdlc.tipslab.data.datasource.CategoryDataSource
 import app.iesjdlc.tipslab.data.datasource.local.CategoryLocalDataSource
-import app.iesjdlc.tipslab.data.datasource.remote.CommentDataSource
+import app.iesjdlc.tipslab.data.datasource.CommentDataSource
 import app.iesjdlc.tipslab.data.datasource.remote.CommentRemoteDataSource
-import app.iesjdlc.tipslab.data.datasource.remote.LifehackDataSource
+import app.iesjdlc.tipslab.data.datasource.LifehackDataSource
 import app.iesjdlc.tipslab.data.datasource.remote.LifehackRemoteDataSource
-import app.iesjdlc.tipslab.data.datasource.remote.SavedLikedDataSource
+import app.iesjdlc.tipslab.data.datasource.SavedLikedDataSource
 import app.iesjdlc.tipslab.data.datasource.remote.SavedLikedRemoteDataSource
-import app.iesjdlc.tipslab.data.datasource.remote.UserDataSource
+import app.iesjdlc.tipslab.data.datasource.UserDataSource
 import app.iesjdlc.tipslab.data.datasource.remote.UserRemoteDataSource
 import dagger.Binds
 import dagger.Module

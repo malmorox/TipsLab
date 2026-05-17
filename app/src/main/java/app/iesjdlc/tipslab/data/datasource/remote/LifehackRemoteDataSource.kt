@@ -1,6 +1,7 @@
 package app.iesjdlc.tipslab.data.datasource.remote
 
 import app.iesjdlc.tipslab.core.constants.DBConstants
+import app.iesjdlc.tipslab.data.datasource.LifehackDataSource
 import app.iesjdlc.tipslab.data.model.LifehackDto
 import app.iesjdlc.tipslab.domain.repository.OrderBy
 import com.google.firebase.firestore.FirebaseFirestore
@@ -57,6 +58,17 @@ class LifehackRemoteDataSource @Inject constructor(
             }
         awaitClose { subscription.remove() }
     }
+
+    override suspend fun searchByQuery(
+        query: String,
+        limit: Int,
+        offset: Int
+    ): List<LifehackDto> =
+        db.collection(DBConstants.LIFEHACKS_COLLECTION)
+            .whereArrayContains("tags", query)
+            .get().await()
+            .documents
+            .mapNotNull { it.toObject(LifehackDto::class.java) }
 
     override suspend fun searchByCategory(
         categoryId: Int,
