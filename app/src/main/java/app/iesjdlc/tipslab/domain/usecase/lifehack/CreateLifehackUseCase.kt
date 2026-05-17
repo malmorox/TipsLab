@@ -36,6 +36,7 @@ class CreateLifehackUseCase @Inject constructor(
             createdAt = Clock.System.now(),
             updatedAt = Clock.System.now(),
             likesCount = 0,
+            commentsCount = 0
         )
 
         return lifehackRepository.createLifehack(lifehack)
