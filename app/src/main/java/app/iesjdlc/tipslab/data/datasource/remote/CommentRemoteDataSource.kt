@@ -17,7 +17,7 @@ class CommentRemoteDataSource @Inject constructor(
     override fun observeByLifehack(lifehackId: String): Flow<List<CommentDto>> = callbackFlow {
         val subscription = db.collection(DBConstants.LIFEHACKS_COLLECTION)
             .document(lifehackId)
-            .collection(DBConstants.COMMENTS_COLLECTION)
+            .collection(DBConstants.COMMENTS_SUBCOLLECTION)
             .addSnapshotListener { snapshot, error ->
                 if (error != null) {
                     close(error)
@@ -34,7 +34,7 @@ class CommentRemoteDataSource @Inject constructor(
     ) {
         db.collection(DBConstants.LIFEHACKS_COLLECTION)
             .document(lifehackId)
-            .collection(DBConstants.COMMENTS_COLLECTION)
+            .collection(DBConstants.COMMENTS_SUBCOLLECTION)
             .add(dto).await()
     }
 
@@ -45,9 +45,9 @@ class CommentRemoteDataSource @Inject constructor(
     ) {
         db.collection(DBConstants.LIFEHACKS_COLLECTION)
             .document(lifehackId)
-            .collection(DBConstants.COMMENTS_COLLECTION)
+            .collection(DBConstants.COMMENTS_SUBCOLLECTION)
             .document(commentId)
-            .collection(DBConstants.REPLIES_COLLECTION)
+            .collection(DBConstants.REPLIES_SUBCOLLECTION)
             .add(dto).await()
     }
 
@@ -57,7 +57,7 @@ class CommentRemoteDataSource @Inject constructor(
     ) {
         db.collection(DBConstants.LIFEHACKS_COLLECTION)
             .document(lifehackId)
-            .collection(DBConstants.COMMENTS_COLLECTION)
+            .collection(DBConstants.COMMENTS_SUBCOLLECTION)
             .document(commentId)
             .delete().await()
     }
@@ -69,9 +69,9 @@ class CommentRemoteDataSource @Inject constructor(
     ) {
         db.collection(DBConstants.LIFEHACKS_COLLECTION)
             .document(lifehackId)
-            .collection(DBConstants.COMMENTS_COLLECTION)
+            .collection(DBConstants.COMMENTS_SUBCOLLECTION)
             .document(commentId)
-            .collection(DBConstants.REPLIES_COLLECTION)
+            .collection(DBConstants.REPLIES_SUBCOLLECTION)
             .document(replyId)
             .delete().await()
     }

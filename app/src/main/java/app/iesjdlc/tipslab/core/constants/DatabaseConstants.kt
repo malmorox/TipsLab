@@ -4,8 +4,10 @@ object DBConstants {
     // Colecciones
     const val USERS_COLLECTION = "users"
     const val LIFEHACKS_COLLECTION = "lifehacks"
-    const val COMMENTS_COLLECTION = "comments"
-    const val REPLIES_COLLECTION = "replies"
+    const val COMMENTS_SUBCOLLECTION = "comments"
+    const val REPLIES_SUBCOLLECTION = "replies"
+    const val LIKED_SUBCOLLECTION = "liked"
+    const val SAVED_SUBCOLLECTION = "saved"
 
     // Campos comunes
     const val ID_FIELD = "id"

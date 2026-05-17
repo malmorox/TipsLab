@@ -14,12 +14,12 @@ class SavedLikedRemoteDataSource @Inject constructor(
     private fun savedCollection(userId: String) =
         db.collection(DBConstants.USERS_COLLECTION)
             .document(userId)
-            .collection("saved")
+            .collection(DBConstants.SAVED_SUBCOLLECTION)
 
     private fun likedCollection(userId: String) =
         db.collection(DBConstants.USERS_COLLECTION)
             .document(userId)
-            .collection("liked")
+            .collection(DBConstants.LIKED_SUBCOLLECTION)
 
     override suspend fun getSavedIds(userId: String): List<String> =
         savedCollection(userId)
