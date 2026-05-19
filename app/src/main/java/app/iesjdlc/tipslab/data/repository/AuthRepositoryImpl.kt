@@ -3,7 +3,7 @@ package app.iesjdlc.tipslab.data.repository
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
-import app.iesjdlc.tipslab.data.datasource.remote.UserDataSource
+import app.iesjdlc.tipslab.data.datasource.UserDataSource
 import app.iesjdlc.tipslab.data.mapper.UserMapper
 import app.iesjdlc.tipslab.domain.model.User
 import app.iesjdlc.tipslab.domain.repository.AuthRepository

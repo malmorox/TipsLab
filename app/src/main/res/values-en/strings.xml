@@ -71,4 +71,7 @@
     <string name="no_posts">There are no posts yet</string>
     <string name="no_favorites">You have no favorites</string>
     <string name="my_favorites">My favorites</string>
+    <string name="like">todo</string>
+    <string name="unlike">todo</string>
+    <string name="unsave">todo</string>
 </resources>

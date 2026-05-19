@@ -34,5 +34,9 @@ data class LifehackDto(
 
     @get:PropertyName("likes_count")
     @set:PropertyName("likes_count")
-    var likesCount: Int = 0
+    var likesCount: Int = 0,
+
+    @get:PropertyName("comments_count")
+    @set:PropertyName("comments_count")
+    var commentsCount: Int = 0
 )
