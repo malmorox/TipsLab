@@ -22,7 +22,7 @@ sealed interface Route {
     // Pantallas de destino
     @Serializable data object Search : Route
     @Serializable data class LifehackDetail(val lifehackId: String) : Route
-    @Serializable data class LifehacksByCategory(val categoryId: Int) : Route
+    @Serializable data class Category(val categoryId: Int) : Route
     @Serializable data class EditLifehack(val lifehackId: String) : Route
     @Serializable data object EditProfile : Route
     @Serializable data class Camera(val allowVideo: Boolean = true) : Route

@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.ArrowBack
@@ -45,6 +46,7 @@ import app.iesjdlc.tipslab.domain.model.Category
 import app.iesjdlc.tipslab.domain.model.User
 import app.iesjdlc.tipslab.presentation.common.CommentInputMode
 import app.iesjdlc.tipslab.presentation.common.UploadState
+import app.iesjdlc.tipslab.presentation.components.AnimatedCircleButton
 import app.iesjdlc.tipslab.presentation.components.CommentsSection
 import app.iesjdlc.tipslab.presentation.components.ConfirmOrDismissDialog
 import app.iesjdlc.tipslab.presentation.components.LifehackStepsList
@@ -223,6 +225,32 @@ private fun LifehackDetailScreenUI(
                             style = MaterialTheme.typography.headlineLarge,
                             color = MaterialTheme.colorScheme.primary
                         )
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.spacedBy(16.dp),
+                            verticalAlignment = Alignment.Top
+                        ) {
+                            Text(
+                                text = lifehack.title,
+                                style = MaterialTheme.typography.headlineLarge,
+                                color = MaterialTheme.colorScheme.primary,
+                                modifier = Modifier.weight(1f)
+                            )
+
+                            Row(
+                                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                LikeButton(
+                                    isLiked = state.isLiked,
+                                    onClick = onLike
+                                )
+                                SaveButton(
+                                    isSaved = state.isSaved,
+                                    onClick = onSave
+                                )
+                            }
+                        }
 
                         SectionWithHeading(heading = stringResource(R.string.description)) {
                             Text(
@@ -353,13 +381,13 @@ private fun LikeButton(
     isLiked: Boolean,
     onClick: () -> Unit
 ) {
-    IconButton(onClick = onClick) {
-        Icon(
-            imageVector = if (isLiked) Icons.Rounded.Favorite else Icons.Rounded.FavoriteBorder,
-            contentDescription = if (isLiked) stringResource(R.string.unlike) else stringResource(R.string.like),
-            tint = if (isLiked) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant
-        )
-    }
+    AnimatedCircleButton(
+        isActive = isLiked,
+        onClick = onClick,
+        activeIcon = Icons.Rounded.Favorite,
+        inactiveIcon = Icons.Rounded.FavoriteBorder,
+        contentDescription = if (isLiked) stringResource(R.string.unlike) else stringResource(R.string.like)
+    )
 }
 
 @Composable
@@ -367,11 +395,11 @@ private fun SaveButton(
     isSaved: Boolean,
     onClick: () -> Unit
 ) {
-    IconButton(onClick = onClick) {
-        Icon(
-            imageVector = if (isSaved) Icons.Rounded.Bookmark else Icons.Rounded.BookmarkBorder,
-            contentDescription = if (isSaved) stringResource(R.string.unsave) else stringResource(R.string.save),
-            tint = if (isSaved) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant
-        )
-    }
+    AnimatedCircleButton(
+        isActive = isSaved,
+        onClick = onClick,
+        activeIcon = Icons.Rounded.Bookmark,
+        inactiveIcon = Icons.Rounded.BookmarkBorder,
+        contentDescription = if (isSaved) stringResource(R.string.unsave) else stringResource(R.string.save)
+    )
 }
