@@ -57,7 +57,15 @@
     <string name="log_out">Cerrar sesión</string>
     <string name="edit_profile">Editar perfil</string>
     <string name="no_posts">Aún no hay publicaciones</string>
+    <string name="no_favorites">No tienes favoritos</string>
+    <string name="no_saved">No tienes guardados</string>
     <string name="save_changes">Guardar cambios</string>
+    <string name="my_favorites">Mis favoritos</string>
+    <string name="my_saved">Mis guardados</string>
+    <string name="my_posts">Mis publicaciones</string>
+
+
+
 
     <!-- Category -->
     <string name="no_recent_category_lifehacks">No hay lifehacks recientes en esta categoría</string>
@@ -85,5 +93,8 @@
     <string name="popular">Populares</string>
     <string name="published_by">Publicado por</string>
     <string name="remove_media">Eliminar contenido</string>
+    <string name="like">Me gusta</string>
+    <string name="unlike">No me gusta</string>
+    <string name="unsave">No guardar</string>
 
 </resources>

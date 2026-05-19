@@ -39,6 +39,10 @@ abstract class RepositoryBinder {
     */
     @Binds
     @Singleton
+    abstract fun bindCommentRepository(impl: CommentRepositoryImpl): CommentRepository
+    
+    @Binds
+    @Singleton
     abstract fun bindLifehackRepository(impl: LifehackRepositoryImpl): LifehackRepository
 
     @Binds

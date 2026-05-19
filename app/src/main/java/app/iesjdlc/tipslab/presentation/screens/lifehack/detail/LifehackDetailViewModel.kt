@@ -6,8 +6,14 @@ import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
 import androidx.work.WorkInfo
 import androidx.work.WorkManager
+import app.iesjdlc.tipslab.domain.repository.CommentRepository
 import app.iesjdlc.tipslab.domain.repository.LifehackRepository
+import app.iesjdlc.tipslab.domain.usecase.comment.AddCommentUseCase
+import app.iesjdlc.tipslab.domain.usecase.comment.AddCommentReplyUseCase
 import app.iesjdlc.tipslab.domain.usecase.lifehack.GetLifehackDetailUseCase
+import app.iesjdlc.tipslab.domain.usecase.lifehack.ToggleLikeLifehackUseCase
+import app.iesjdlc.tipslab.domain.usecase.lifehack.ToggleSaveLifehackUseCase
+import app.iesjdlc.tipslab.presentation.common.CommentInputMode
 import app.iesjdlc.tipslab.presentation.common.UploadState
 import app.iesjdlc.tipslab.presentation.navigation.Route
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -22,7 +28,12 @@ import javax.inject.Inject
 class LifehackDetailViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
     private val getLifehackDetailUseCase: GetLifehackDetailUseCase,
+    private val toggleLikeUseCase: ToggleLikeLifehackUseCase,
+    private val toggleSaveUseCase: ToggleSaveLifehackUseCase,
+    private val addCommentUseCase: AddCommentUseCase,
+    private val addReplyUseCase: AddCommentReplyUseCase,
     private val lifehackRepository: LifehackRepository,
+    private val commentRepository: CommentRepository,
     private val workManager: WorkManager
 ) : ViewModel() {
     private val lifehackId = savedStateHandle.toRoute<Route.LifehackDetail>().lifehackId
@@ -75,6 +86,21 @@ class LifehackDetailViewModel @Inject constructor(
         }
     }
 
+    fun onShowComments() {
+        if (uiState.value.showComments) return
+        _uiState.update { it.copy(showComments = true) }
+        observeComments()
+    }
+
+    private fun observeComments() {
+        viewModelScope.launch {
+            commentRepository.observeComments(lifehackId)
+                .collect { comments ->
+                    _uiState.update { it.copy(comments = comments) }
+                }
+        }
+    }
+
     private fun observeMediaUploadState() {
         viewModelScope.launch {
             workManager.getWorkInfosByTagFlow(lifehackId)
@@ -89,6 +115,26 @@ class LifehackDetailViewModel @Inject constructor(
                     }
                     _uiState.update { it.copy(uploadState = uploadState) }
                 }
+        }
+    }
+
+    fun onLikeClick() {
+        viewModelScope.launch {
+            val wasLiked = uiState.value.isLiked
+            _uiState.update { it.copy(isLiked = !wasLiked) }
+            toggleLikeUseCase(lifehackId)
+                .onSuccess { newIsLiked -> _uiState.update { it.copy(isLiked = newIsLiked) } }
+                .onFailure { _uiState.update { it.copy(isLiked = wasLiked) } }
+        }
+    }
+
+    fun onSaveClick() {
+        viewModelScope.launch {
+            val wasSaved = uiState.value.isSaved
+            _uiState.update { it.copy(isSaved = !wasSaved) }
+            toggleSaveUseCase(lifehackId)
+                .onSuccess { newIsSaved -> _uiState.update { it.copy(isSaved = newIsSaved) } }
+                .onFailure { _uiState.update { it.copy(isSaved = wasSaved) } }
         }
     }
 
@@ -139,6 +185,34 @@ class LifehackDetailViewModel @Inject constructor(
     ) {
         uiState.value.lifehack?.category?.let { category ->
             onNavigate(category.id)
+        }
+    }
+
+    fun onCommentTextChange(text: String) {
+        _uiState.update { it.copy(commentText = text) }
+    }
+
+    fun onSendComment(inputMode: CommentInputMode) {
+        viewModelScope.launch {
+            val text = uiState.value.commentText.trim()
+            if (text.isBlank()) return@launch
+            _uiState.update { it.copy(commentText = "") }
+            when (inputMode) {
+                is CommentInputMode.NewComment -> addCommentUseCase(lifehackId, text)
+                is CommentInputMode.Reply -> addReplyUseCase(lifehackId, inputMode.commentId, text)
+            }
+        }
+    }
+
+    fun onDeleteComment(commentId: String) {
+        viewModelScope.launch {
+            commentRepository.deleteComment(lifehackId, commentId)
+        }
+    }
+
+    fun onDeleteReply(commentId: String, replyId: String) {
+        viewModelScope.launch {
+            commentRepository.deleteReply(lifehackId, commentId, replyId)
         }
     }
 }
