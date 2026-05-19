@@ -72,7 +72,10 @@ fun MainScaffold(
 					onEditProfile = {
 						rootNavController.navigate(Route.EditProfile)
 					},
-					onLogout = onLogout
+					onLogout = onLogout,
+					onOpenLifehack = { lifehackId ->
+						rootNavController.navigate(Route.LifehackDetail(lifehackId))
+					}
 				)
 			}
 		}

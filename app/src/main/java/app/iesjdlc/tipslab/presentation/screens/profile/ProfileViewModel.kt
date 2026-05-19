@@ -9,44 +9,61 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+import app.iesjdlc.tipslab.domain.repository.LifehackRepository
+import app.iesjdlc.tipslab.domain.repository.SavedLikedRepository
 
 @HiltViewModel
 class ProfileViewModel @Inject constructor(
-    private val authRepository: AuthRepository
+    private val authRepository: AuthRepository,
+    private val lifehackRepository: LifehackRepository,
+    private val savedLikedRepository: SavedLikedRepository
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(ProfileUiState())
     val uiState: StateFlow<ProfileUiState> = _uiState.asStateFlow()
 
-    fun refreshUser() {
-        viewModelScope.launch {
-            runCatching {
-                authRepository.getCurrentUser()
-            }.onSuccess { user ->
-                _uiState.value = _uiState.value.copy(
-                    username = user.username,
-                    email = user.email,
-                    photoUrl = user.photoUrl
-                )
-            }.onFailure {
-                _uiState.value = _uiState.value.copy(
-                    errorMessage = it.message
-                )
-            }
-        }
-    }
-
     fun refresh() {
+
         viewModelScope.launch {
+
+            _uiState.value = _uiState.value.copy(
+                isLoading = true,
+                errorMessage = null
+            )
+
             runCatching {
+
                 authRepository.getCurrentUser()
+
             }.onSuccess { user ->
+
+                val posts = lifehackRepository
+                    .getUserLifehacks(user.id)
+                    .getOrDefault(emptyList())
+
+                val favoritePosts = savedLikedRepository
+                    .getUserLikedLifehacks(user.id)
+                    .getOrDefault(emptyList())
+
+                val savedPosts = savedLikedRepository
+                    .getUserSavedLifehacks(user.id)
+                    .getOrDefault(emptyList())
+
                 _uiState.value = _uiState.value.copy(
                     username = user.username,
                     email = user.email,
-                    photoUrl = user.photoUrl
+                    photoUrl = user.photoUrl,
+
+                    posts = posts,
+                    favoritePosts = favoritePosts,
+                    savedPosts = savedPosts,
+
+                    isLoading = false
                 )
+
             }.onFailure {
+
                 _uiState.value = _uiState.value.copy(
+                    isLoading = false,
                     errorMessage = it.message
                 )
             }
