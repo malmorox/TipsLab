@@ -156,7 +156,8 @@ private fun EditLifehackScreenUI(
             ) {
                 Column(
                     modifier = Modifier
-                        .fillMaxSize()
+                        .weight(1f)
+                        .fillMaxWidth()
                         .verticalScroll(rememberScrollState())
                         .padding(24.dp),
                     verticalArrangement = Arrangement.spacedBy(16.dp)
@@ -339,19 +340,25 @@ private fun EditLifehackScreenUI(
                     }
                 }
 
-                Button(
-                    onClick = onSave,
-                    enabled = !state.isLoading,
-                    shape = MaterialTheme.shapes.medium,
+                Box(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .height(52.dp)
+                        .padding(horizontal = 24.dp)
                 ) {
-                    Text(
-                        text = stringResource(R.string.save).uppercase(),
-                        style = MaterialTheme.typography.bodyLarge,
-                        color = Color.White,
-                    )
+                    Button(
+                        onClick = onSave,
+                        enabled = !state.isLoading,
+                        shape = MaterialTheme.shapes.medium,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(52.dp)
+                    ) {
+                        Text(
+                            text = stringResource(R.string.save).uppercase(),
+                            style = MaterialTheme.typography.bodyLarge,
+                            color = Color.White,
+                        )
+                    }
                 }
             }
         }

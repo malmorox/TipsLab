@@ -23,7 +23,8 @@ class LifehackMapper @Inject constructor() {
             media = dto.mapMedia(),
             createdAt = Instant.fromEpochMilliseconds(dto.createdAt),
             updatedAt = Instant.fromEpochMilliseconds(dto.updatedAt),
-            likesCount = dto.likesCount
+            likesCount = dto.likesCount,
+            commentsCount = dto.commentsCount
         )
     }
 
@@ -38,7 +39,8 @@ class LifehackMapper @Inject constructor() {
         mediaUrl = domain.media?.url,
         createdAt = domain.createdAt.toEpochMilliseconds(),
         updatedAt = domain.updatedAt.toEpochMilliseconds(),
-        likesCount = domain.likesCount
+        likesCount = domain.likesCount,
+        commentsCount = domain.commentsCount
     )
 
     private fun LifehackDto.mapMedia(): Media? {

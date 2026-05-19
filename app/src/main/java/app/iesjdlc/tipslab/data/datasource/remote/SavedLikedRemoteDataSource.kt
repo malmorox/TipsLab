@@ -1,5 +1,7 @@
 package app.iesjdlc.tipslab.data.datasource.remote
 
+import app.iesjdlc.tipslab.core.constants.DBConstants
+import app.iesjdlc.tipslab.data.datasource.SavedLikedDataSource
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
@@ -10,10 +12,14 @@ class SavedLikedRemoteDataSource @Inject constructor(
     private val db: FirebaseFirestore
 ) : SavedLikedDataSource {
     private fun savedCollection(userId: String) =
-        db.collection("users").document(userId).collection("saved")
+        db.collection(DBConstants.Remote.USERS_COLLECTION)
+            .document(userId)
+            .collection(DBConstants.Remote.SAVED_SUBCOLLECTION)
 
     private fun likedCollection(userId: String) =
-        db.collection("users").document(userId).collection("liked")
+        db.collection(DBConstants.Remote.USERS_COLLECTION)
+            .document(userId)
+            .collection(DBConstants.Remote.LIKED_SUBCOLLECTION)
 
     override suspend fun getSavedIds(userId: String): List<String> =
         savedCollection(userId)

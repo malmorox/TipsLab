@@ -1,6 +1,6 @@
 package app.iesjdlc.tipslab.data.repository
 
-import app.iesjdlc.tipslab.data.datasource.remote.LifehackDataSource
+import app.iesjdlc.tipslab.data.datasource.LifehackDataSource
 import app.iesjdlc.tipslab.data.mapper.LifehackMapper
 import app.iesjdlc.tipslab.domain.model.Lifehack
 import app.iesjdlc.tipslab.data.resolver.LifehackResolver

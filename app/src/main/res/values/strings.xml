@@ -85,5 +85,8 @@
     <string name="popular">Populares</string>
     <string name="published_by">Publicado por</string>
     <string name="remove_media">Eliminar contenido</string>
+    <string name="like">Me gusta</string>
+    <string name="unlike">No me gusta</string>
+    <string name="unsave">No guardar</string>
 
 </resources>
