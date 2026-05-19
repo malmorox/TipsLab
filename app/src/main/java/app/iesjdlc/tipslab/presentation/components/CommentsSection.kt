@@ -26,7 +26,7 @@ import androidx.compose.ui.unit.dp
 import app.iesjdlc.tipslab.domain.model.Comment
 import app.iesjdlc.tipslab.presentation.common.CommentInputMode
 
-/*@Composable
+@Composable
 fun CommentsSection(
     commentsCount: Int,
     comments: List<Comment>,
@@ -65,24 +65,40 @@ fun CommentsSection(
         }
 
         if (showComments) {
-            // Input comentario
-            if (replyingToCommentId != null) {
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    modifier = Modifier.fillMaxWidth()
-                ) {
-                    Text(
-                        text = "Respondiendo a un comentario",
-                        style = MaterialTheme.typography.labelSmall,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
-                    )
-                    TextButton(onClick = onCancelReply) {
-                        Text("Cancelar")
+
+            // Input mode label + cancelar
+            when (inputMode) {
+                is CommentInputMode.Reply -> {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        Text(
+                            text = "Respondiendo a un comentario",
+                            style = MaterialTheme.typography.labelSmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                        TextButton(onClick = onCancelReply) {
+                            Text("Cancelar")
+                        }
+                    }
+                }
+                is CommentInputMode.NewComment -> {
+                    if (commentText.isNotBlank()) {
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.End
+                        ) {
+                            TextButton(onClick = onCancelReply) {
+                                Text("Cancelar")
+                            }
+                        }
                     }
                 }
             }
 
+            // Input field
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
@@ -92,8 +108,10 @@ fun CommentsSection(
                     onValueChange = onCommentTextChange,
                     placeholder = {
                         Text(
-                            if (replyingToCommentId != null) "Escribe una respuesta..."
-                            else "Escribe un comentario..."
+                            when (inputMode) {
+                                is CommentInputMode.Reply -> "Escribe una respuesta..."
+                                is CommentInputMode.NewComment -> "Escribe un comentario..."
+                            }
                         )
                     },
                     modifier = Modifier.weight(1f),
@@ -135,7 +153,8 @@ fun CommentsSection(
                         comment = comment,
                         isAuthor = isAuthor,
                         onReplyTo = { onReplyTo(comment.id) },
-                        onDelete = { onDeleteComment(comment.id) }
+                        onDelete = { onDeleteComment(comment.id) },
+                        onDeleteReply = { replyId -> onDeleteReply(comment.id, replyId) }
                     )
                 }
             }
@@ -148,7 +167,8 @@ private fun CommentItem(
     comment: Comment,
     isAuthor: Boolean,
     onReplyTo: () -> Unit,
-    onDelete: () -> Unit
+    onDelete: () -> Unit,
+    onDeleteReply: (String) -> Unit
 ) {
     Column(
         modifier = Modifier.fillMaxWidth(),
@@ -193,11 +213,6 @@ private fun CommentItem(
             horizontalArrangement = Arrangement.spacedBy(8.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Text(
-                text = comment.commentedAt.toRelativeTime(),
-                style = MaterialTheme.typography.labelSmall,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
-            )
             TextButton(onClick = onReplyTo) {
                 Text("Responder", style = MaterialTheme.typography.labelSmall)
             }
@@ -211,4 +226,4 @@ private fun CommentItem(
             }
         }
     }
-}*/
+}

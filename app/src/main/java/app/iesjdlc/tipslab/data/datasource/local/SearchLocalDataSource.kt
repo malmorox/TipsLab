@@ -12,7 +12,13 @@ class SearchLocalRoomDataSource @Inject constructor(
         dao.getRecentSearches(userId).map { it.query }
 
     override suspend fun saveSearch(userId: String, query: String) {
-        dao.insert(SearchEntity(id = 0, userId = userId, query = query))
+        dao.insert(
+            SearchEntity(
+                id = 0,
+                userId = userId,
+                query = query
+            )
+        )
     }
 
     override suspend fun clearHistory(userId: String) {

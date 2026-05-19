@@ -45,7 +45,7 @@ import app.iesjdlc.tipslab.domain.model.Category
 import app.iesjdlc.tipslab.domain.model.User
 import app.iesjdlc.tipslab.presentation.common.CommentInputMode
 import app.iesjdlc.tipslab.presentation.common.UploadState
-//import app.iesjdlc.tipslab.presentation.components.CommentsSection
+import app.iesjdlc.tipslab.presentation.components.CommentsSection
 import app.iesjdlc.tipslab.presentation.components.ConfirmOrDismissDialog
 import app.iesjdlc.tipslab.presentation.components.LifehackStepsList
 import app.iesjdlc.tipslab.presentation.components.MediaViewer
@@ -253,7 +253,7 @@ private fun LifehackDetailScreenUI(
                             AuthorSection(author = lifehack.author)
                         }
 
-                        /*CommentsSection(
+                        CommentsSection(
                             commentsCount = lifehack.commentsCount,
                             comments = state.comments,
                             showComments = state.showComments,
@@ -275,7 +275,7 @@ private fun LifehackDetailScreenUI(
                             },
                             onDeleteComment = onDeleteComment,
                             onDeleteReply = onDeleteReply
-                        )*/
+                        )
                     }
                 }
             }
