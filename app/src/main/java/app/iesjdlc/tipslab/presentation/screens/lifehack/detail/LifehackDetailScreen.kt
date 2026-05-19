@@ -29,6 +29,10 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -39,7 +43,9 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import app.iesjdlc.tipslab.R
 import app.iesjdlc.tipslab.domain.model.Category
 import app.iesjdlc.tipslab.domain.model.User
+import app.iesjdlc.tipslab.presentation.common.CommentInputMode
 import app.iesjdlc.tipslab.presentation.common.UploadState
+//import app.iesjdlc.tipslab.presentation.components.CommentsSection
 import app.iesjdlc.tipslab.presentation.components.ConfirmOrDismissDialog
 import app.iesjdlc.tipslab.presentation.components.LifehackStepsList
 import app.iesjdlc.tipslab.presentation.components.MediaViewer
@@ -65,6 +71,13 @@ fun LifehackDetailScreen(
         onConfirmDelete = { viewModel.onConfirmDelete(onDeleteLifehack) },
         onDismissDelete = { viewModel.onDismissDelete() },
         onOpenCategory = { viewModel.onCategoryClick(onOpenCategory) },
+        onLike = { viewModel.onLikeClick() },
+        onSave = { viewModel.onSaveClick() },
+        onShowComments = { viewModel.onShowComments() },
+        onCommentTextChange = { viewModel.onCommentTextChange(it) },
+        onSendComment = { viewModel.onSendComment(it) },
+        onDeleteComment = { viewModel.onDeleteComment(it) },
+        onDeleteReply = { commentId, replyId -> viewModel.onDeleteReply(commentId, replyId) },
         onBack = onNavigateBack
     )
 }
@@ -80,8 +93,17 @@ private fun LifehackDetailScreenUI(
     onConfirmDelete: () -> Unit,
     onDismissDelete: () -> Unit,
     onOpenCategory: (Category) -> Unit,
+    onLike: () -> Unit,
+    onSave: () -> Unit,
+    onShowComments: () -> Unit,
+    onCommentTextChange: (String) -> Unit,
+    onSendComment: (CommentInputMode) -> Unit,
+    onDeleteComment: (String) -> Unit,
+    onDeleteReply: (String, String) -> Unit,
     onBack: () -> Unit,
 ) {
+    var inputMode by remember { mutableStateOf<CommentInputMode>(CommentInputMode.NewComment) }
+
     Scaffold(
         topBar = {
             TopAppBar(
@@ -230,6 +252,30 @@ private fun LifehackDetailScreenUI(
                         if (!state.isAuthor) {
                             AuthorSection(author = lifehack.author)
                         }
+
+                        /*CommentsSection(
+                            commentsCount = lifehack.commentsCount,
+                            comments = state.comments,
+                            showComments = state.showComments,
+                            onShowComments = onShowComments,
+                            commentText = state.commentText,
+                            onCommentTextChange = onCommentTextChange,
+                            inputMode = inputMode,
+                            isAuthor = state.isAuthor,
+                            onSendComment = {
+                                onSendComment(inputMode)
+                                inputMode = CommentInputMode.NewComment
+                            },
+                            onReplyTo = { commentId ->
+                                inputMode = CommentInputMode.Reply(commentId)
+                            },
+                            onCancelReply = {
+                                inputMode = CommentInputMode.NewComment
+                                onCommentTextChange("")
+                            },
+                            onDeleteComment = onDeleteComment,
+                            onDeleteReply = onDeleteReply
+                        )*/
                     }
                 }
             }

@@ -14,17 +14,6 @@ interface LifehackDataSource {
         limit: Int
     ): List<LifehackDto>
     fun observeById(id: String): Flow<LifehackDto>
-    suspend fun searchByQuery(
-        query: String,
-        limit: Int = 20,
-        offset: Int = 0
-    ): List<LifehackDto>
-    suspend fun searchByCategory(
-        categoryId: Int,
-        query: String,
-        limit: Int = 20,
-        offset: Int = 0
-    ): List<LifehackDto>
     suspend fun create(dto: LifehackDto): String
     suspend fun update(id: String, dto: LifehackDto)
     suspend fun updateMedia(

@@ -1,13 +1,19 @@
 package app.iesjdlc.tipslab.data.datasource.local.db
 
+import androidx.room.ColumnInfo
 import androidx.room.Entity
+import androidx.room.Index
 import androidx.room.PrimaryKey
 
-@Entity(tableName = "search_history")
+@Entity(
+    tableName = "search_history",
+    indices = [Index(value = ["userId", "query"], unique = true)]
+)
 data class SearchEntity(
     @PrimaryKey(autoGenerate = true)
-    var id: Int,
-    var userId: String,
-    var query: String,
-    var timestamp: Long = System.currentTimeMillis()
+    val id: Int,
+    @ColumnInfo(name = "user_id")
+    val userId: String,
+    val query: String,
+    val timestamp: Long = System.currentTimeMillis()
 )

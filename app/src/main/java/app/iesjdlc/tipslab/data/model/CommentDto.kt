@@ -18,6 +18,7 @@ data class CommentDto(
     @set:PropertyName("likes_count")
     var likesCount: Int = 0,
 
-    val replies: List<CommentReplyDto> = emptyList(),
-
-    )
+    @get:PropertyName("replies_count")
+    @set:PropertyName("replies_count")
+    var repliesCount: Int = 0
+)

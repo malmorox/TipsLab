@@ -12,14 +12,14 @@ class SavedLikedRemoteDataSource @Inject constructor(
     private val db: FirebaseFirestore
 ) : SavedLikedDataSource {
     private fun savedCollection(userId: String) =
-        db.collection(DBConstants.USERS_COLLECTION)
+        db.collection(DBConstants.Remote.USERS_COLLECTION)
             .document(userId)
-            .collection(DBConstants.SAVED_SUBCOLLECTION)
+            .collection(DBConstants.Remote.SAVED_SUBCOLLECTION)
 
     private fun likedCollection(userId: String) =
-        db.collection(DBConstants.USERS_COLLECTION)
+        db.collection(DBConstants.Remote.USERS_COLLECTION)
             .document(userId)
-            .collection(DBConstants.LIKED_SUBCOLLECTION)
+            .collection(DBConstants.Remote.LIKED_SUBCOLLECTION)
 
     override suspend fun getSavedIds(userId: String): List<String> =
         savedCollection(userId)

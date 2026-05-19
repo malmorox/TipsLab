@@ -14,7 +14,6 @@ import javax.inject.Singleton
 class CommentResolver @Inject constructor(
     private val userDataSource: UserDataSource,
     private val commentMapper: CommentMapper,
-    private val replyMapper: CommentReplyMapper,
     private val userMapper: UserMapper
 ) {
     suspend fun resolve(dtos: List<CommentDto>): List<Comment> {
@@ -22,8 +21,7 @@ class CommentResolver @Inject constructor(
 
         // Recoge todos los authorIds de comentarios y replies
         val commentAuthorIds = dtos.map { it.authorId }
-        val replyAuthorIds = dtos.flatMap { it.replies.map { r -> r.authorId } }
-        val allAuthorIds = (commentAuthorIds + replyAuthorIds).distinct()
+        val allAuthorIds = commentAuthorIds.distinct()
 
         val usersById = fetchUsers(allAuthorIds)
 
@@ -31,8 +29,7 @@ class CommentResolver @Inject constructor(
     }
 
     suspend fun resolveOne(dto: CommentDto): Comment? {
-        val replyAuthorIds = dto.replies.map { it.authorId }.distinct()
-        val allAuthorIds = (listOf(dto.authorId) + replyAuthorIds).distinct()
+        val allAuthorIds = listOf(dto.authorId).distinct()
         val usersById = fetchUsers(allAuthorIds)
         return enrich(dto, usersById)
     }
@@ -46,10 +43,6 @@ class CommentResolver @Inject constructor(
         usersById: Map<String, User>
     ): Comment? {
         val author = usersById[dto.authorId] ?: return null
-        val replies = dto.replies.mapNotNull { replyDto ->
-            val replyAuthor = usersById[replyDto.authorId] ?: return@mapNotNull null
-            replyMapper.toDomain(replyDto, replyAuthor)
-        }
-        return commentMapper.toDomain(dto, author, replies)
+        return commentMapper.toDomain(dto, author)
     }
 }

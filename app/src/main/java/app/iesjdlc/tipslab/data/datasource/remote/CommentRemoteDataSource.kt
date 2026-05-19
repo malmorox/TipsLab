@@ -15,9 +15,9 @@ class CommentRemoteDataSource @Inject constructor(
     private val db: FirebaseFirestore
 ) : CommentDataSource {
     override fun observeByLifehack(lifehackId: String): Flow<List<CommentDto>> = callbackFlow {
-        val subscription = db.collection(DBConstants.LIFEHACKS_COLLECTION)
+        val subscription = db.collection(DBConstants.Remote.LIFEHACKS_COLLECTION)
             .document(lifehackId)
-            .collection(DBConstants.COMMENTS_SUBCOLLECTION)
+            .collection(DBConstants.Remote.COMMENTS_SUBCOLLECTION)
             .addSnapshotListener { snapshot, error ->
                 if (error != null) {
                     close(error)
@@ -32,9 +32,9 @@ class CommentRemoteDataSource @Inject constructor(
         lifehackId: String,
         dto: CommentDto
     ) {
-        db.collection(DBConstants.LIFEHACKS_COLLECTION)
+        db.collection(DBConstants.Remote.LIFEHACKS_COLLECTION)
             .document(lifehackId)
-            .collection(DBConstants.COMMENTS_SUBCOLLECTION)
+            .collection(DBConstants.Remote.COMMENTS_SUBCOLLECTION)
             .add(dto).await()
     }
 
@@ -43,11 +43,11 @@ class CommentRemoteDataSource @Inject constructor(
         commentId: String,
         dto: CommentReplyDto
     ) {
-        db.collection(DBConstants.LIFEHACKS_COLLECTION)
+        db.collection(DBConstants.Remote.LIFEHACKS_COLLECTION)
             .document(lifehackId)
-            .collection(DBConstants.COMMENTS_SUBCOLLECTION)
+            .collection(DBConstants.Remote.COMMENTS_SUBCOLLECTION)
             .document(commentId)
-            .collection(DBConstants.REPLIES_SUBCOLLECTION)
+            .collection(DBConstants.Remote.REPLIES_SUBCOLLECTION)
             .add(dto).await()
     }
 
@@ -55,9 +55,9 @@ class CommentRemoteDataSource @Inject constructor(
         lifehackId: String,
         commentId: String
     ) {
-        db.collection(DBConstants.LIFEHACKS_COLLECTION)
+        db.collection(DBConstants.Remote.LIFEHACKS_COLLECTION)
             .document(lifehackId)
-            .collection(DBConstants.COMMENTS_SUBCOLLECTION)
+            .collection(DBConstants.Remote.COMMENTS_SUBCOLLECTION)
             .document(commentId)
             .delete().await()
     }
@@ -67,11 +67,11 @@ class CommentRemoteDataSource @Inject constructor(
         commentId: String,
         replyId: String
     ) {
-        db.collection(DBConstants.LIFEHACKS_COLLECTION)
+        db.collection(DBConstants.Remote.LIFEHACKS_COLLECTION)
             .document(lifehackId)
-            .collection(DBConstants.COMMENTS_SUBCOLLECTION)
+            .collection(DBConstants.Remote.COMMENTS_SUBCOLLECTION)
             .document(commentId)
-            .collection(DBConstants.REPLIES_SUBCOLLECTION)
+            .collection(DBConstants.Remote.REPLIES_SUBCOLLECTION)
             .document(replyId)
             .delete().await()
     }

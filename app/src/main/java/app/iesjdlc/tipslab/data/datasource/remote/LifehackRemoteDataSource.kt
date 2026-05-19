@@ -15,21 +15,21 @@ class LifehackRemoteDataSource @Inject constructor(
     private val db: FirebaseFirestore
 ) : LifehackDataSource {
     override suspend fun getByAuthor(authorId: String): List<LifehackDto> =
-        db.collection(DBConstants.LIFEHACKS_COLLECTION)
-            .whereEqualTo(DBConstants.AUTHOR_ID_FIELD, authorId)
+        db.collection(DBConstants.Remote.LIFEHACKS_COLLECTION)
+            .whereEqualTo(DBConstants.Remote.AUTHOR_ID_FIELD, authorId)
             .get().await()
             .documents
             .mapNotNull { it.toObject(LifehackDto::class.java) }
 
     override suspend fun getById(id: String): LifehackDto? =
-        db.collection(DBConstants.LIFEHACKS_COLLECTION)
+        db.collection(DBConstants.Remote.LIFEHACKS_COLLECTION)
             .document(id)
             .get().await()
             .toObject(LifehackDto::class.java)
 
     override suspend fun getByIds(ids: List<String>): List<LifehackDto> =
-        db.collection(DBConstants.LIFEHACKS_COLLECTION)
-            .whereIn(DBConstants.ID_FIELD, ids)
+        db.collection(DBConstants.Remote.LIFEHACKS_COLLECTION)
+            .whereIn(DBConstants.Remote.ID_FIELD, ids)
             .get().await()
             .documents
             .mapNotNull { it.toObject(LifehackDto::class.java) }
@@ -39,14 +39,14 @@ class LifehackRemoteDataSource @Inject constructor(
         orderBy: OrderBy,
         limit: Int
     ): List<LifehackDto> =
-        db.collection(DBConstants.LIFEHACKS_COLLECTION)
-            .whereEqualTo(DBConstants.CATEGORY_ID_FIELD, categoryId)
+        db.collection(DBConstants.Remote.LIFEHACKS_COLLECTION)
+            .whereEqualTo(DBConstants.Remote.CATEGORY_ID_FIELD, categoryId)
             .get().await()
             .documents
             .mapNotNull { it.toObject(LifehackDto::class.java) }
 
     override fun observeById(id: String): Flow<LifehackDto> = callbackFlow {
-        val subscription = db.collection(DBConstants.LIFEHACKS_COLLECTION)
+        val subscription = db.collection(DBConstants.Remote.LIFEHACKS_COLLECTION)
             .document(id)
             .addSnapshotListener { snapshot, error ->
                 if (error != null) {
@@ -59,32 +59,8 @@ class LifehackRemoteDataSource @Inject constructor(
         awaitClose { subscription.remove() }
     }
 
-    override suspend fun searchByQuery(
-        query: String,
-        limit: Int,
-        offset: Int
-    ): List<LifehackDto> =
-        db.collection(DBConstants.LIFEHACKS_COLLECTION)
-            .whereArrayContains("tags", query)
-            .get().await()
-            .documents
-            .mapNotNull { it.toObject(LifehackDto::class.java) }
-
-    override suspend fun searchByCategory(
-        categoryId: Int,
-        query: String,
-        limit: Int,
-        offset: Int
-    ): List<LifehackDto> =
-        db.collection(DBConstants.LIFEHACKS_COLLECTION)
-            .whereEqualTo(DBConstants.CATEGORY_ID_FIELD, categoryId)
-            .whereArrayContains("tags", query)
-            .get().await()
-            .documents
-            .mapNotNull { it.toObject(LifehackDto::class.java) }
-
     override suspend fun create(dto: LifehackDto): String {
-        val docRef = db.collection(DBConstants.LIFEHACKS_COLLECTION).document()
+        val docRef = db.collection(DBConstants.Remote.LIFEHACKS_COLLECTION).document()
         docRef.set(dto.copy(id = docRef.id)).await()
         return docRef.id
     }
@@ -93,7 +69,7 @@ class LifehackRemoteDataSource @Inject constructor(
         id: String,
         dto: LifehackDto
     ) {
-        db.collection(DBConstants.LIFEHACKS_COLLECTION)
+        db.collection(DBConstants.Remote.LIFEHACKS_COLLECTION)
             .document(id)
             .set(dto).await()
     }
@@ -103,18 +79,18 @@ class LifehackRemoteDataSource @Inject constructor(
         mediaUrl: String,
         mediaType: String
     ) {
-        db.collection(DBConstants.LIFEHACKS_COLLECTION)
+        db.collection(DBConstants.Remote.LIFEHACKS_COLLECTION)
             .document(lifehackId)
             .update(
             mapOf(
-                DBConstants.MEDIA_URL_FIELD to mediaUrl,
-                DBConstants.MEDIA_TYPE_FIELD to mediaType
+                DBConstants.Remote.MEDIA_URL_FIELD to mediaUrl,
+                DBConstants.Remote.MEDIA_TYPE_FIELD to mediaType
             )
         ).await()
     }
 
     override suspend fun delete(id: String) {
-        db.collection(DBConstants.LIFEHACKS_COLLECTION)
+        db.collection(DBConstants.Remote.LIFEHACKS_COLLECTION)
             .document(id)
             .delete().await()
     }

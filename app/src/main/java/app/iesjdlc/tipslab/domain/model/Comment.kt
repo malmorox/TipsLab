@@ -7,6 +7,6 @@ data class Comment(
     val text: String,
     val author: User,
     val commentedAt: Instant,
-    val likesCount: Int = 0,
-    val replies: List<CommentReply> = emptyList()
+    val likesCount: Int,
+    val repliesCount: Int
 )
