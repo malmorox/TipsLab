@@ -4,6 +4,7 @@ import app.iesjdlc.tipslab.core.constants.DBConstants
 import app.iesjdlc.tipslab.data.datasource.CommentDataSource
 import app.iesjdlc.tipslab.data.model.CommentDto
 import app.iesjdlc.tipslab.data.model.CommentReplyDto
+import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
@@ -32,10 +33,14 @@ class CommentRemoteDataSource @Inject constructor(
         lifehackId: String,
         dto: CommentDto
     ) {
-        db.collection(DBConstants.Remote.LIFEHACKS_COLLECTION)
+        val lifehackRef = db.collection(DBConstants.Remote.LIFEHACKS_COLLECTION)
             .document(lifehackId)
-            .collection(DBConstants.Remote.COMMENTS_SUBCOLLECTION)
-            .add(dto).await()
+        val commentsRef = lifehackRef.collection(DBConstants.Remote.COMMENTS_SUBCOLLECTION)
+
+        db.runTransaction { transaction ->
+            transaction.update(lifehackRef, DBConstants.Remote.COMMENTS_COUNT_FIELD, FieldValue.increment(1))
+            transaction.set(commentsRef.document(), dto)
+        }.await()
     }
 
     override suspend fun addReply(
@@ -43,23 +48,32 @@ class CommentRemoteDataSource @Inject constructor(
         commentId: String,
         dto: CommentReplyDto
     ) {
-        db.collection(DBConstants.Remote.LIFEHACKS_COLLECTION)
+        val commentRef = db.collection(DBConstants.Remote.LIFEHACKS_COLLECTION)
             .document(lifehackId)
             .collection(DBConstants.Remote.COMMENTS_SUBCOLLECTION)
             .document(commentId)
-            .collection(DBConstants.Remote.REPLIES_SUBCOLLECTION)
-            .add(dto).await()
+        val repliesRef = commentRef.collection(DBConstants.Remote.REPLIES_SUBCOLLECTION)
+
+        db.runTransaction { transaction ->
+            transaction.update(commentRef, DBConstants.Remote.REPLIES_COUNT_FIELD, FieldValue.increment(1))
+            transaction.set(repliesRef.document(), dto)
+        }.await()
     }
 
     override suspend fun delete(
         lifehackId: String,
         commentId: String
     ) {
-        db.collection(DBConstants.Remote.LIFEHACKS_COLLECTION)
+        val lifehackRef = db.collection(DBConstants.Remote.LIFEHACKS_COLLECTION)
             .document(lifehackId)
+        val commentRef = lifehackRef
             .collection(DBConstants.Remote.COMMENTS_SUBCOLLECTION)
             .document(commentId)
-            .delete().await()
+
+        db.runTransaction { transaction ->
+            transaction.update(lifehackRef, DBConstants.Remote.COMMENTS_COUNT_FIELD, FieldValue.increment(-1))
+            transaction.delete(commentRef)
+        }.await()
     }
 
     override suspend fun deleteReply(
@@ -67,12 +81,17 @@ class CommentRemoteDataSource @Inject constructor(
         commentId: String,
         replyId: String
     ) {
-        db.collection(DBConstants.Remote.LIFEHACKS_COLLECTION)
+        val commentRef = db.collection(DBConstants.Remote.LIFEHACKS_COLLECTION)
             .document(lifehackId)
             .collection(DBConstants.Remote.COMMENTS_SUBCOLLECTION)
             .document(commentId)
+        val replyRef = commentRef
             .collection(DBConstants.Remote.REPLIES_SUBCOLLECTION)
             .document(replyId)
-            .delete().await()
+
+        db.runTransaction { transaction ->
+            transaction.update(commentRef, DBConstants.Remote.REPLIES_COUNT_FIELD, FieldValue.increment(-1))
+            transaction.delete(replyRef)
+        }.await()
     }
 }

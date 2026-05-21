@@ -42,9 +42,11 @@ object DBConstants {
         const val MEDIA_TYPE_FIELD = "media_type"
         const val CREATED_AT_FIELD = "created_at"
         const val UPDATED_AT_FIELD = "updated_at"
+        const val COMMENTS_COUNT_FIELD = "comments_count"
 
         // Campos comment
         const val COMMENTED_AT_FIELD = "commented_at"
+        const val REPLIES_COUNT_FIELD = "replies_count"
 
         // Campos reply
         const val REPLIED_AT_FIELD = "replied_at"
