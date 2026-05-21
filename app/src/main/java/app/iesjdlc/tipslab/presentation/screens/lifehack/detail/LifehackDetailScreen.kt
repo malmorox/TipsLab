@@ -12,7 +12,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.ArrowBack
@@ -220,11 +219,6 @@ private fun LifehackDetailScreenUI(
                             ),
                         verticalArrangement = Arrangement.spacedBy(16.dp)
                     ) {
-                        Text(
-                            text = lifehack.title,
-                            style = MaterialTheme.typography.headlineLarge,
-                            color = MaterialTheme.colorScheme.primary
-                        )
                         Row(
                             modifier = Modifier.fillMaxWidth(),
                             horizontalArrangement = Arrangement.spacedBy(16.dp),
@@ -237,18 +231,20 @@ private fun LifehackDetailScreenUI(
                                 modifier = Modifier.weight(1f)
                             )
 
-                            Row(
-                                horizontalArrangement = Arrangement.spacedBy(8.dp),
-                                verticalAlignment = Alignment.CenterVertically
-                            ) {
-                                LikeButton(
-                                    isLiked = state.isLiked,
-                                    onClick = onLike
-                                )
-                                SaveButton(
-                                    isSaved = state.isSaved,
-                                    onClick = onSave
-                                )
+                            if (!state.isAuthor) {
+                                Row(
+                                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                                    verticalAlignment = Alignment.CenterVertically
+                                ) {
+                                    LikeButton(
+                                        isLiked = state.isLiked,
+                                        onClick = onLike
+                                    )
+                                    SaveButton(
+                                        isSaved = state.isSaved,
+                                        onClick = onSave
+                                    )
+                                }
                             }
                         }
 
