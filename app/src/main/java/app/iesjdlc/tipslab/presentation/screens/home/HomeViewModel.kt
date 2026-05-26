@@ -2,6 +2,7 @@ package app.iesjdlc.tipslab.presentation.screens.home
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import app.iesjdlc.tipslab.domain.model.Lifehack
 import app.iesjdlc.tipslab.domain.repository.CategoryRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import jakarta.inject.Inject
@@ -25,5 +26,12 @@ class HomeViewModel @Inject constructor(
         viewModelScope.launch {
 
         }
+    }
+
+    fun onLifehackClick(
+        lifehack: Lifehack,
+        onNavigate: (String) -> Unit
+    ) {
+        onNavigate(lifehack.id)
     }
 }

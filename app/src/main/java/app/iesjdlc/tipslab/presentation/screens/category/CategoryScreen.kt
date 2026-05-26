@@ -96,7 +96,6 @@ private fun CategoryScreenUI(
                         title = stringResource(R.string.popular),
                         sectionState = state.sections.popular,
                         emptyMessage = stringResource(R.string.no_popular_category_lifehacks),
-                        skeletonItem = { LifehackSectionListItemSkeleton() },
                     ) { lifehack ->
                         LifehackSectionListItem(
                             lifehack = lifehack,
@@ -108,7 +107,6 @@ private fun CategoryScreenUI(
                         title = stringResource(R.string.recent),
                         sectionState = state.sections.recent,
                         emptyMessage = stringResource(R.string.no_recent_category_lifehacks),
-                        skeletonItem = { LifehackSectionListItemSkeleton() },
                     ) { lifehack ->
                         LifehackSectionListItem(
                             lifehack = lifehack,

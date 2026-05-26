@@ -9,6 +9,8 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -35,7 +37,7 @@ fun SearchScreen(
     SearchScreenUI(
         state = uiState,
         onQueryChange = { viewModel.onQueryChange(it) },
-        onSearch = { viewModel.onSearch(it) },
+        onSearch = { viewModel.onSearchClick(it) },
         onBack = onNavigateBack
     )
 }
@@ -90,6 +92,26 @@ private fun SearchScreenUI(
                 contentAlignment = Alignment.Center
             ) {
                 //TODO mostrar resultados de busqueda
+                if (state.searchHistory.isEmpty()) {
+                    Text(
+                        text = "Sin búsquedas recientes",
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                } else {
+                    LazyColumn(modifier = Modifier.fillMaxSize()) {
+                        items(state.searchHistory) { item ->
+                            Text(
+                                text = item,
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .clickable { onSearch(item) }
+                                    .padding(vertical = 12.dp),
+                                style = MaterialTheme.typography.bodyMedium
+                            )
+                        }
+                    }
+                }
             }
         }
     }

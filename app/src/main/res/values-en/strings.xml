@@ -60,6 +60,7 @@
     <string name="step_min_chars">Minimun %1$d characters</string>
     <string name="steps_validation_error">Fill in the steps correctly before saving</string>
     <string name="select_category">Select a category</string>
+    <string name="trending">here</string>
     <string name="published_by">Published by</string>
     <string name="no_saved_posts">You have no saved items</string>
     <string name="save_changes">Save changes</string>
@@ -74,4 +75,5 @@
     <string name="like">todo</string>
     <string name="unlike">todo</string>
     <string name="unsave">todo</string>
+    <string name="for_you">here</string>
 </resources>

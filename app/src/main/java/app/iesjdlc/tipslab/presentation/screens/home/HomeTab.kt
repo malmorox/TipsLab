@@ -7,28 +7,33 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import app.iesjdlc.tipslab.R
+import app.iesjdlc.tipslab.domain.model.Lifehack
+import app.iesjdlc.tipslab.presentation.components.ContentListSection
+import app.iesjdlc.tipslab.presentation.components.LifehackSectionListItem
 import app.iesjdlc.tipslab.presentation.components.SearchBar
 
 @Composable
 fun HomeTab(
     viewModel: HomeViewModel = hiltViewModel(),
     onOpenLifehack: (String) -> Unit,
-    onOpenCategory: (Int) -> Unit,
     onSearch: () -> Unit
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
     HomeTabUI(
         state = uiState,
-        onOpenLifehack = onOpenLifehack,
-        onOpenCategory = onOpenCategory,
+        onOpenLifehack = { lifehack -> viewModel.onLifehackClick(lifehack, onOpenLifehack) },
         onSearch = onSearch
     )
 }
@@ -36,8 +41,7 @@ fun HomeTab(
 @Composable
 private fun HomeTabUI(
     state: HomeUiState,
-    onOpenLifehack: (String) -> Unit,
-    onOpenCategory: (Int) -> Unit,
+    onOpenLifehack: (Lifehack) -> Unit,
     onSearch: () -> Unit
 ) {
     Box(
@@ -56,43 +60,43 @@ private fun HomeTabUI(
             )
 
             Column(
-
+                modifier = Modifier
+                    .fillMaxSize()
+                    .verticalScroll(rememberScrollState()),
+                verticalArrangement = Arrangement.spacedBy(16.dp)
             ) {
-                /*ContentListSection(
-                    title = stringResource(R.string.recent),
+                ContentListSection(
+                    title = stringResource(R.string.for_you),
                     sectionState = state.sections.forYou,
-                    emptyMessage = stringResource(R.string.no_recent_category_lifehacks),
-                    itemContent = { lifehack ->
-
-                    }
-                )
+                    emptyMessage = stringResource(R.string.no_popular_category_lifehacks),
+                ) { lifehack ->
+                    LifehackSectionListItem(
+                        lifehack = lifehack,
+                        onClick = { onOpenLifehack(lifehack) }
+                    )
+                }
 
                 ContentListSection(
-                    title = stringResource(R.string.recent),
+                    title = stringResource(R.string.trending),
                     sectionState = state.sections.trending,
-                    emptyMessage = stringResource(R.string.no_recent_category_lifehacks),
-                    itemContent = { lifehack ->
-
-                    }
-                )
-
-                ContentListSection(
-                    title = stringResource(R.string.recent),
-                    sectionState = state.sections.categories,
-                    emptyMessage = stringResource(R.string.no_recent_category_lifehacks),
-                    itemContent = { lifehack ->
-
-                    }
-                )
+                    emptyMessage = stringResource(R.string.no_popular_category_lifehacks),
+                ) { lifehack ->
+                    LifehackSectionListItem(
+                        lifehack = lifehack,
+                        onClick = { onOpenLifehack(lifehack) }
+                    )
+                }
 
                 ContentListSection(
                     title = stringResource(R.string.recent),
                     sectionState = state.sections.recent,
                     emptyMessage = stringResource(R.string.no_recent_category_lifehacks),
-                    itemContent = { lifehack ->
-
-                    }
-                )*/
+                ) { lifehack ->
+                    LifehackSectionListItem(
+                        lifehack = lifehack,
+                        onClick = { onOpenLifehack(lifehack) }
+                    )
+                }
             }
         }
     }

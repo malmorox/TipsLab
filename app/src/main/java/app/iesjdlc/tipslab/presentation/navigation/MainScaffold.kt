@@ -41,9 +41,6 @@ fun MainScaffold(
 					onOpenLifehack = { lifehackId ->
 						rootNavController.navigate(Route.LifehackDetail(lifehackId))
 					},
-					onOpenCategory = { categoryId ->
-						rootNavController.navigate(Route.Category(categoryId))
-					},
 					onSearch = {
 						rootNavController.navigate(Route.Search)
 					}

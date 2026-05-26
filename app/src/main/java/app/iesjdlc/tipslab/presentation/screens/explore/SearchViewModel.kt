@@ -58,7 +58,7 @@ class SearchViewModel @Inject constructor(
         }
     }
 
-    fun onSearch(query: String) {
+    fun onSearchClick(query: String) {
         _uiState.update { it.copy(query = query) }
         viewModelScope.launch {
             saveSearchUseCase(query)

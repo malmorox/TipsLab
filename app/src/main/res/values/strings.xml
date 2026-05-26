@@ -92,6 +92,8 @@
     <string name="delete_lifehack_message">¿Estás seguro de que quieres eliminar este lifehack?</string>
     <string name="recent">Recientes</string>
     <string name="popular">Populares</string>
+    <string name="for_you">Para ti</string>
+    <string name="trending">Tendencias</string>
     <string name="published_by">Publicado por</string>
     <string name="remove_media">Eliminar contenido</string>
     <string name="like">Me gusta</string>

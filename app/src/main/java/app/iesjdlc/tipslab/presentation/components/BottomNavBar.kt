@@ -5,9 +5,10 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.sharp.Add
-import androidx.compose.material.icons.sharp.Home
-import androidx.compose.material.icons.sharp.Search
+import androidx.compose.material.icons.rounded.Add
+import androidx.compose.material.icons.rounded.Home
+import androidx.compose.material.icons.rounded.Person
+import androidx.compose.material.icons.rounded.Search
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
@@ -26,11 +27,11 @@ private sealed class BottomNavItem(
     val icon: ImageVector
 ) {
     // Items normales que navegan por el innerNavController
-    data object Home : BottomNavItem("Home", Icons.Sharp.Home)
-    data object Explore : BottomNavItem("Explore", Icons.Sharp.Search)
-    data object Create : BottomNavItem("Create", Icons.Sharp.Add)
-    data object Saved : BottomNavItem("Saved", Icons.Sharp.Home)
-    data object Profile : BottomNavItem("Profile", Icons.Sharp.Home)
+    data object Home : BottomNavItem("Home", Icons.Rounded.Home)
+    data object Explore : BottomNavItem("Explore", Icons.Rounded.Search)
+    data object Create : BottomNavItem("Create", Icons.Rounded.Add)
+    data object Saved : BottomNavItem("Saved", Icons.Rounded.Search)
+    data object Profile : BottomNavItem("Profile", Icons.Rounded.Person)
 
     // La ruta asociada a cada item, menos el de crear
     val route: Route? get() = when (this) {
