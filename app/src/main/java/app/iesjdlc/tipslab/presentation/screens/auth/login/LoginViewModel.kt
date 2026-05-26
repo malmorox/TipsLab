@@ -66,4 +66,27 @@ class LoginViewModel @Inject constructor(
             }
         }
     }
+
+    fun onContinueWithGoogleClick(
+        idToken: String,
+        onSuccess: () -> Unit
+    ) {
+        viewModelScope.launch {
+            _uiState.update { it.copy(googleIsLoading = true) }
+
+            try {
+                signInWithGoogleUseCase(idToken)
+                    .onSuccess {
+                        onSuccess()
+                    }
+                    .onFailure { error ->
+                        _uiState.update { it.copy(errorMessage = error.message) }
+                    }
+            } catch (e: Exception) {
+                _uiState.update { it.copy(errorMessage = e.message) }
+            } finally {
+                _uiState.update { it.copy(isLoading = false) }
+            }
+        }
+    }
 }
