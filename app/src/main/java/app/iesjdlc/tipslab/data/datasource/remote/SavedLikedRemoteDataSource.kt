@@ -24,17 +24,31 @@ class SavedLikedRemoteDataSource @Inject constructor(
             .document(userId)
             .collection(DBConstants.Remote.LIKED_SUBCOLLECTION)
 
-    override suspend fun getSavedIds(userId: String): List<String> =
-        savedCollection(userId)
+    override fun observeSavedIds(userId: String): Flow<List<String>> = callbackFlow {
+        val listener = savedCollection(userId)
             .orderBy("saved_at", Query.Direction.DESCENDING)
-            .get().await()
-            .documents.map { it.id }
+            .addSnapshotListener { snapshot, error ->
+                if (error != null) {
+                    close(error)
+                    return@addSnapshotListener
+                }
+                trySend(snapshot?.documents?.map { it.id } ?: emptyList())
+            }
+        awaitClose { listener.remove() }
+    }
 
-    override suspend fun getLikedIds(userId: String): List<String> =
-        likedCollection(userId)
+    override fun observeLikedIds(userId: String): Flow<List<String>> = callbackFlow {
+        val listener = likedCollection(userId)
             .orderBy("liked_at", Query.Direction.DESCENDING)
-            .get().await()
-            .documents.map { it.id }
+            .addSnapshotListener { snapshot, error ->
+                if (error != null) {
+                    close(error)
+                    return@addSnapshotListener
+                }
+                trySend(snapshot?.documents?.map { it.id } ?: emptyList())
+            }
+        awaitClose { listener.remove() }
+    }
 
     override fun observeIsLiked(userId: String, lifehackId: String): Flow<Boolean> = callbackFlow {
         val listener = likedCollection(userId)

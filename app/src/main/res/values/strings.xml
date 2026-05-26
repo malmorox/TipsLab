@@ -58,8 +58,8 @@
     <string name="log_out">Cerrar sesión</string>
     <string name="edit_profile">Editar perfil</string>
     <string name="no_posts">Aún no hay publicaciones</string>
-    <string name="no_favorites">No tienes favoritos</string>
-    <string name="no_saved">No tienes guardados</string>
+    <string name="no_liked_posts">No tienes favoritos</string>
+    <string name="no_saved_posts">No tienes guardados</string>
     <string name="save_changes">Guardar cambios</string>
     <string name="my_favorites">Mis favoritos</string>
     <string name="my_saved">Mis guardados</string>

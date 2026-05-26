@@ -11,6 +11,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 import app.iesjdlc.tipslab.domain.repository.LifehackRepository
 import app.iesjdlc.tipslab.domain.repository.SavedLikedRepository
+import kotlinx.coroutines.flow.update
 
 @HiltViewModel
 class ProfileViewModel @Inject constructor(
@@ -21,54 +22,48 @@ class ProfileViewModel @Inject constructor(
     private val _uiState = MutableStateFlow(ProfileUiState())
     val uiState: StateFlow<ProfileUiState> = _uiState.asStateFlow()
 
-    fun refresh() {
+    init {
+        loadProfile()
+    }
 
+    private fun loadProfile() {
         viewModelScope.launch {
-
-            _uiState.value = _uiState.value.copy(
-                isLoading = true,
-                errorMessage = null
-            )
+            _uiState.update { it.copy(isLoading = true, errorMessage = null) }
 
             runCatching {
-
                 authRepository.getCurrentUser()
-
             }.onSuccess { user ->
-
                 val posts = lifehackRepository
                     .getUserLifehacks(user.id)
                     .getOrDefault(emptyList())
 
-                val favoritePosts = savedLikedRepository
-                    .getUserLikedLifehacks(user.id)
-                    .getOrDefault(emptyList())
+                _uiState.update {
+                    it.copy(
+                        user = user,
+                        posts = posts,
+                        isLoading = false
+                    )
+                }
 
-                val savedPosts = savedLikedRepository
-                    .getUserSavedLifehacks(user.id)
-                    .getOrDefault(emptyList())
+                launch {
+                    savedLikedRepository.observeUserLikedLifehacks(user.id).collect { liked ->
+                        _uiState.update { it.copy(favoritePosts = liked) }
+                    }
+                }
 
-                _uiState.value = _uiState.value.copy(
-                    username = user.username,
-                    email = user.email,
-                    photoUrl = user.photoUrl,
-
-                    posts = posts,
-                    favoritePosts = favoritePosts,
-                    savedPosts = savedPosts,
-
-                    isLoading = false
-                )
-
-            }.onFailure {
-
-                _uiState.value = _uiState.value.copy(
-                    isLoading = false,
-                    errorMessage = it.message
-                )
+                launch {
+                    savedLikedRepository.observeUserSavedLifehacks(user.id).collect { saved ->
+                        _uiState.update { it.copy(savedPosts = saved) }
+                    }
+                }
+            }.onFailure { error ->
+                _uiState.update {
+                    it.copy(isLoading = false, errorMessage = error.message)
+                }
             }
         }
     }
+
     fun onLogout(onSuccess: () -> Unit) {
         authRepository.logout()
         onSuccess()

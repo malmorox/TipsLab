@@ -61,7 +61,7 @@
     <string name="steps_validation_error">Fill in the steps correctly before saving</string>
     <string name="select_category">Select a category</string>
     <string name="published_by">Published by</string>
-    <string name="no_saved">You have no saved items</string>
+    <string name="no_saved_posts">You have no saved items</string>
     <string name="save_changes">Save changes</string>
     <string name="my_saved">My saved</string>
     <string name="my_posts">My posts</string>
@@ -69,7 +69,7 @@
     <string name="remove_media">Delete content</string>
     <string name="my_profile">My profile</string>
     <string name="no_posts">There are no posts yet</string>
-    <string name="no_favorites">You have no favorites</string>
+    <string name="no_liked_posts">You have no favorites</string>
     <string name="my_favorites">My favorites</string>
     <string name="like">todo</string>
     <string name="unlike">todo</string>

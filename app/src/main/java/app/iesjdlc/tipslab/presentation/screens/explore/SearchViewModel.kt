@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import app.iesjdlc.tipslab.domain.repository.LifehackRepository
 import app.iesjdlc.tipslab.domain.repository.SearchRepository
+import app.iesjdlc.tipslab.domain.usecase.search.ClearSearchHistoryUseCase
 import app.iesjdlc.tipslab.domain.usecase.search.GetSearchHistoryUseCase
 import app.iesjdlc.tipslab.domain.usecase.search.SaveSearchUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -18,7 +19,8 @@ import javax.inject.Inject
 class SearchViewModel @Inject constructor(
     private val searchRepository: SearchRepository,
     private val getSearchHistoryUseCase: GetSearchHistoryUseCase,
-    private val saveSearchUseCase: SaveSearchUseCase
+    private val saveSearchUseCase: SaveSearchUseCase,
+    private val clearSearchHistoryUseCase: ClearSearchHistoryUseCase
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(SearchUiState())
     val uiState: StateFlow<SearchUiState> = _uiState.asStateFlow()
@@ -31,7 +33,7 @@ class SearchViewModel @Inject constructor(
         viewModelScope.launch {
            getSearchHistoryUseCase()
                 .onSuccess { history ->
-                    _uiState.update { it.copy(suggestions = history) }
+                    _uiState.update { it.copy(searchHistory = history) }
                 }
                 .onFailure {
                     //TODO manejar error
@@ -41,20 +43,49 @@ class SearchViewModel @Inject constructor(
 
     fun onQueryChange(newValue: String) {
         _uiState.update { it.copy(query = newValue) }
-    }
 
-    fun onSuggestionClick(suggestion: String) {
-        viewModelScope.launch {
+        if (newValue.isBlank()) {
             _uiState.update {
                 it.copy(
-                    query = suggestion,
                     showSuggestions = false,
-                    suggestions = emptyList()
+                    showResults = false,
+                    suggestions = emptyList(),
+                    results = emptyList()
                 )
             }
-            saveSearchUseCase(suggestion)
-            search(suggestion)
+        } else {
+            viewModelScope.launch { loadSuggestions(newValue) }
         }
+    }
+
+    fun onSearch(query: String) {
+        _uiState.update { it.copy(query = query) }
+        viewModelScope.launch {
+            saveSearchUseCase(query)
+            loadSearchHistory()
+            _uiState.update { it.copy(showSuggestions = false, suggestions = emptyList()) }
+            search(query)
+        }
+    }
+
+    fun onClearHistory() {
+        viewModelScope.launch {
+            clearSearchHistoryUseCase()
+            _uiState.update { it.copy(suggestions = emptyList()) }
+        }
+    }
+
+    private suspend fun loadSuggestions(query: String) {
+        searchRepository.getSearchSuggestions(query)
+            .onSuccess { suggestions ->
+                _uiState.update {
+                    it.copy(
+                        suggestions = suggestions,
+                        showSuggestions = suggestions.isNotEmpty(),
+                        showResults = false
+                    )
+                }
+            }
     }
 
     private suspend fun search(query: String) {

@@ -35,7 +35,7 @@ fun SearchScreen(
     SearchScreenUI(
         state = uiState,
         onQueryChange = { viewModel.onQueryChange(it) },
-        onSearch = { /*viewModel.onSearch()*/ },
+        onSearch = { viewModel.onSearch(it) },
         onBack = onNavigateBack
     )
 }
