@@ -11,6 +11,7 @@ import app.iesjdlc.tipslab.domain.repository.LifehackRepository
 import app.iesjdlc.tipslab.domain.usecase.comment.AddCommentUseCase
 import app.iesjdlc.tipslab.domain.usecase.comment.AddCommentReplyUseCase
 import app.iesjdlc.tipslab.domain.usecase.lifehack.GetLifehackDetailUseCase
+import app.iesjdlc.tipslab.domain.usecase.lifehack.ObserveLikedAndSavedUseCase
 import app.iesjdlc.tipslab.domain.usecase.lifehack.ToggleLikeLifehackUseCase
 import app.iesjdlc.tipslab.domain.usecase.lifehack.ToggleSaveLifehackUseCase
 import app.iesjdlc.tipslab.presentation.common.CommentInputMode
@@ -30,6 +31,7 @@ class LifehackDetailViewModel @Inject constructor(
     private val getLifehackDetailUseCase: GetLifehackDetailUseCase,
     private val toggleLikeUseCase: ToggleLikeLifehackUseCase,
     private val toggleSaveUseCase: ToggleSaveLifehackUseCase,
+    private val observeLikedAndSavedUseCase: ObserveLikedAndSavedUseCase,
     private val addCommentUseCase: AddCommentUseCase,
     private val addReplyUseCase: AddCommentReplyUseCase,
     private val lifehackRepository: LifehackRepository,
@@ -57,10 +59,11 @@ class LifehackDetailViewModel @Inject constructor(
                         _uiState.update {
                             it.copy(
                                 lifehack = lifehackDetail.lifehack,
-                                isAuthor = lifehackDetail.isAuthor,
-                                isLiked = lifehackDetail.isLiked,
-                                isSaved = lifehackDetail.isSaved
+                                isAuthor = lifehackDetail.isAuthor
                             )
+                        }
+                        if (!lifehackDetail.isAuthor) {
+                            observeLikedAndSaved()
                         }
                     }
                     .onFailure { error ->
@@ -87,9 +90,9 @@ class LifehackDetailViewModel @Inject constructor(
     }
 
     fun onShowComments() {
-        if (uiState.value.showComments) return
-        _uiState.update { it.copy(showComments = true) }
-        observeComments()
+        val showing = uiState.value.showComments
+        _uiState.update { it.copy(showComments = !showing) }
+        if (!showing) observeComments()
     }
 
     private fun observeComments() {
@@ -118,22 +121,32 @@ class LifehackDetailViewModel @Inject constructor(
         }
     }
 
+    private fun observeLikedAndSaved() {
+        if (uiState.value.isAuthor) return
+        viewModelScope.launch {
+            observeLikedAndSavedUseCase(lifehackId)
+                .collect { (isLiked, isSaved) ->
+                    _uiState.update { it.copy(isLiked = isLiked, isSaved = isSaved) }
+                }
+        }
+    }
+
     fun onLikeClick() {
+        if (uiState.value.isAuthor) return
         viewModelScope.launch {
             val wasLiked = uiState.value.isLiked
             _uiState.update { it.copy(isLiked = !wasLiked) }
             toggleLikeUseCase(lifehackId)
-                .onSuccess { newIsLiked -> _uiState.update { it.copy(isLiked = newIsLiked) } }
                 .onFailure { _uiState.update { it.copy(isLiked = wasLiked) } }
         }
     }
 
     fun onSaveClick() {
+        if (uiState.value.isAuthor) return
         viewModelScope.launch {
             val wasSaved = uiState.value.isSaved
             _uiState.update { it.copy(isSaved = !wasSaved) }
             toggleSaveUseCase(lifehackId)
-                .onSuccess { newIsSaved -> _uiState.update { it.copy(isSaved = newIsSaved) } }
                 .onFailure { _uiState.update { it.copy(isSaved = wasSaved) } }
         }
     }

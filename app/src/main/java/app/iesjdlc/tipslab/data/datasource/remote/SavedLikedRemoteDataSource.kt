@@ -5,6 +5,9 @@ import app.iesjdlc.tipslab.data.datasource.SavedLikedDataSource
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
+import kotlinx.coroutines.channels.awaitClose
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 
@@ -33,11 +36,31 @@ class SavedLikedRemoteDataSource @Inject constructor(
             .get().await()
             .documents.map { it.id }
 
-    override suspend fun isLifehackSaved(userId: String, lifehackId: String): Boolean =
-        savedCollection(userId).document(lifehackId).get().await().exists()
+    override fun observeIsLiked(userId: String, lifehackId: String): Flow<Boolean> = callbackFlow {
+        val listener = likedCollection(userId)
+            .document(lifehackId)
+            .addSnapshotListener { snapshot, error ->
+                if (error != null) {
+                    close(error)
+                    return@addSnapshotListener
+                }
+                trySend(snapshot?.exists() ?: false)
+            }
+        awaitClose { listener.remove() }
+    }
 
-    override suspend fun isLifehackLiked(userId: String, lifehackId: String): Boolean =
-        likedCollection(userId).document(lifehackId).get().await().exists()
+    override fun observeIsSaved(userId: String, lifehackId: String): Flow<Boolean> = callbackFlow {
+        val listener = savedCollection(userId)
+            .document(lifehackId)
+            .addSnapshotListener { snapshot, error ->
+                if (error != null) {
+                    close(error)
+                    return@addSnapshotListener
+                }
+                trySend(snapshot?.exists() ?: false)
+            }
+        awaitClose { listener.remove() }
+    }
 
     override suspend fun toggleSaved(userId: String, lifehackId: String): Boolean {
         val savedRef = savedCollection(userId).document(lifehackId)
@@ -65,10 +88,10 @@ class SavedLikedRemoteDataSource @Inject constructor(
         db.runTransaction { transaction ->
             if (exists) {
                 transaction.delete(likedRef)
-                transaction.update(lifehackRef, "liked_count", FieldValue.increment(-1))
+                transaction.update(lifehackRef, "likes_count", FieldValue.increment(-1))
             } else {
                 transaction.set(likedRef, mapOf("liked_at" to System.currentTimeMillis()))
-                transaction.update(lifehackRef, "liked_count", FieldValue.increment(1))
+                transaction.update(lifehackRef, "likes_count", FieldValue.increment(1))
             }
         }.await()
 

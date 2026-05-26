@@ -4,6 +4,7 @@ import app.iesjdlc.tipslab.core.constants.DBConstants
 import app.iesjdlc.tipslab.data.datasource.CommentDataSource
 import app.iesjdlc.tipslab.data.model.CommentDto
 import app.iesjdlc.tipslab.data.model.CommentReplyDto
+import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
@@ -14,10 +15,23 @@ import javax.inject.Inject
 class CommentRemoteDataSource @Inject constructor(
     private val db: FirebaseFirestore
 ) : CommentDataSource {
+    private fun lifehackRef(lifehackId: String) =
+        db.collection(DBConstants.Remote.LIFEHACKS_COLLECTION).document(lifehackId)
+
+    private fun commentsRef(lifehackId: String) =
+        lifehackRef(lifehackId).collection(DBConstants.Remote.COMMENTS_SUBCOLLECTION)
+
+    private fun commentRef(lifehackId: String, commentId: String) =
+        commentsRef(lifehackId).document(commentId)
+
+    private fun repliesRef(lifehackId: String, commentId: String) =
+        commentRef(lifehackId, commentId).collection(DBConstants.Remote.REPLIES_SUBCOLLECTION)
+
+    private fun replyRef(lifehackId: String, commentId: String, replyId: String) =
+        repliesRef(lifehackId, commentId).document(replyId)
+
     override fun observeByLifehack(lifehackId: String): Flow<List<CommentDto>> = callbackFlow {
-        val subscription = db.collection(DBConstants.Remote.LIFEHACKS_COLLECTION)
-            .document(lifehackId)
-            .collection(DBConstants.Remote.COMMENTS_SUBCOLLECTION)
+        val subscription = commentsRef(lifehackId)
             .addSnapshotListener { snapshot, error ->
                 if (error != null) {
                     close(error)
@@ -32,10 +46,10 @@ class CommentRemoteDataSource @Inject constructor(
         lifehackId: String,
         dto: CommentDto
     ) {
-        db.collection(DBConstants.Remote.LIFEHACKS_COLLECTION)
-            .document(lifehackId)
-            .collection(DBConstants.Remote.COMMENTS_SUBCOLLECTION)
-            .add(dto).await()
+        db.runTransaction { transaction ->
+            transaction.update(lifehackRef(lifehackId), DBConstants.Remote.COMMENTS_COUNT_FIELD, FieldValue.increment(1))
+            transaction.set(commentsRef(lifehackId).document(), dto)
+        }.await()
     }
 
     override suspend fun addReply(
@@ -43,23 +57,20 @@ class CommentRemoteDataSource @Inject constructor(
         commentId: String,
         dto: CommentReplyDto
     ) {
-        db.collection(DBConstants.Remote.LIFEHACKS_COLLECTION)
-            .document(lifehackId)
-            .collection(DBConstants.Remote.COMMENTS_SUBCOLLECTION)
-            .document(commentId)
-            .collection(DBConstants.Remote.REPLIES_SUBCOLLECTION)
-            .add(dto).await()
+        db.runTransaction { transaction ->
+            transaction.update(commentRef(lifehackId, commentId), DBConstants.Remote.REPLIES_COUNT_FIELD, FieldValue.increment(1))
+            transaction.set(repliesRef(lifehackId, commentId).document(), dto)
+        }.await()
     }
 
     override suspend fun delete(
         lifehackId: String,
         commentId: String
     ) {
-        db.collection(DBConstants.Remote.LIFEHACKS_COLLECTION)
-            .document(lifehackId)
-            .collection(DBConstants.Remote.COMMENTS_SUBCOLLECTION)
-            .document(commentId)
-            .delete().await()
+        db.runTransaction { transaction ->
+            transaction.update(lifehackRef(lifehackId), DBConstants.Remote.COMMENTS_COUNT_FIELD, FieldValue.increment(-1))
+            transaction.delete(commentRef(lifehackId, commentId))
+        }.await()
     }
 
     override suspend fun deleteReply(
@@ -67,12 +78,9 @@ class CommentRemoteDataSource @Inject constructor(
         commentId: String,
         replyId: String
     ) {
-        db.collection(DBConstants.Remote.LIFEHACKS_COLLECTION)
-            .document(lifehackId)
-            .collection(DBConstants.Remote.COMMENTS_SUBCOLLECTION)
-            .document(commentId)
-            .collection(DBConstants.Remote.REPLIES_SUBCOLLECTION)
-            .document(replyId)
-            .delete().await()
+        db.runTransaction { transaction ->
+            transaction.update(commentRef(lifehackId, commentId), DBConstants.Remote.REPLIES_COUNT_FIELD, FieldValue.increment(-1))
+            transaction.delete(replyRef(lifehackId, commentId, replyId))
+        }.await()
     }
 }

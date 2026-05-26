@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">TipsLab</string>
-    <string name="sign_in">Log in</string>
+    <string name="default_web_client_id" translatable="false">177275042936-95u9er25hp4utb2dbohv0aluthi8esrp.apps.googleusercontent.com</string>    <string name="sign_in">Log in</string>
     <string name="email_or_username">Email or username</string>
     <string name="password">Password</string>
     <string name="toggle_password_visibility">Toggle password visibility</string>

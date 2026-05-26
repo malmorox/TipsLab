@@ -42,7 +42,7 @@ fun MainScaffold(
 						rootNavController.navigate(Route.LifehackDetail(lifehackId))
 					},
 					onOpenCategory = { categoryId ->
-						rootNavController.navigate(Route.LifehacksByCategory(categoryId))
+						rootNavController.navigate(Route.Category(categoryId))
 					},
 					onSearch = {
 						rootNavController.navigate(Route.Search)
@@ -53,7 +53,7 @@ fun MainScaffold(
 			composable<Route.Explore> {
 				ExploreTab(
 					onOpenCategory = { categoryId ->
-						rootNavController.navigate(Route.LifehacksByCategory(categoryId))
+						rootNavController.navigate(Route.Category(categoryId))
 					},
 					onSearch = {
 						rootNavController.navigate(Route.Search)
@@ -72,10 +72,10 @@ fun MainScaffold(
 					onEditProfile = {
 						rootNavController.navigate(Route.EditProfile)
 					},
-					onLogout = onLogout,
 					onOpenLifehack = { lifehackId ->
 						rootNavController.navigate(Route.LifehackDetail(lifehackId))
-					}
+					},
+					onLogout = onLogout
 				)
 			}
 		}

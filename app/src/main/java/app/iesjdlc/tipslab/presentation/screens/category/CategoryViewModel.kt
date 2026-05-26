@@ -26,7 +26,7 @@ class CategoryViewModel @Inject constructor(
     private val getLifehacksByCategoryUseCase: GetLifehacksByCategoryUseCase,
     private val searchLifehacksByCategoryUseCase: SearchLifehacksByCategoryUseCase
 ) : ViewModel() {
-    private val categoryId = savedStateHandle.toRoute<Route.LifehacksByCategory>().categoryId
+    private val categoryId = savedStateHandle.toRoute<Route.Category>().categoryId
 
     private val _uiState = MutableStateFlow(CategoryUiState())
     val uiState: StateFlow<CategoryUiState> = _uiState.asStateFlow()

@@ -43,7 +43,6 @@ fun CommentsSection(
     onDeleteReply: (String, String) -> Unit
 ) {
     Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
-
         // Header clickable
         Row(
             modifier = Modifier
@@ -65,7 +64,6 @@ fun CommentsSection(
         }
 
         if (showComments) {
-
             // Input mode label + cancelar
             when (inputMode) {
                 is CommentInputMode.Reply -> {
@@ -95,6 +93,19 @@ fun CommentsSection(
                             }
                         }
                     }
+                }
+            }
+
+            // Lista de comentarios
+            if (comments.isNotEmpty()) {
+                comments.forEach { comment ->
+                    CommentItem(
+                        comment = comment,
+                        isAuthor = isAuthor,
+                        onReplyTo = { onReplyTo(comment.id) },
+                        onDelete = { onDeleteComment(comment.id) },
+                        onDeleteReply = { replyId -> onDeleteReply(comment.id, replyId) }
+                    )
                 }
             }
 
@@ -129,32 +140,6 @@ fun CommentsSection(
                             MaterialTheme.colorScheme.primary
                         else
                             MaterialTheme.colorScheme.onSurfaceVariant
-                    )
-                }
-            }
-
-            // Lista de comentarios
-            if (comments.isEmpty()) {
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(vertical = 16.dp),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Text(
-                        text = "No hay comentarios aún",
-                        style = MaterialTheme.typography.bodyMedium,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
-                    )
-                }
-            } else {
-                comments.forEach { comment ->
-                    CommentItem(
-                        comment = comment,
-                        isAuthor = isAuthor,
-                        onReplyTo = { onReplyTo(comment.id) },
-                        onDelete = { onDeleteComment(comment.id) },
-                        onDeleteReply = { replyId -> onDeleteReply(comment.id, replyId) }
                     )
                 }
             }
