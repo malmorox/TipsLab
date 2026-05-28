@@ -9,6 +9,7 @@ import androidx.work.WorkManager
 import app.iesjdlc.tipslab.domain.repository.CommentRepository
 import app.iesjdlc.tipslab.domain.repository.LifehackRepository
 import app.iesjdlc.tipslab.domain.usecase.comment.AddCommentUseCase
+import app.iesjdlc.tipslab.domain.usecase.comment.ObserveLifehackCommentsUseCase
 import app.iesjdlc.tipslab.domain.usecase.lifehack.GetLifehackDetailUseCase
 import app.iesjdlc.tipslab.domain.usecase.lifehack.ObserveLikedAndSavedUseCase
 import app.iesjdlc.tipslab.domain.usecase.lifehack.ToggleLikeLifehackUseCase
@@ -27,6 +28,7 @@ import javax.inject.Inject
 class LifehackDetailViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
     private val getLifehackDetailUseCase: GetLifehackDetailUseCase,
+    private val observeCommentsUseCase: ObserveLifehackCommentsUseCase,
     private val toggleLikeUseCase: ToggleLikeLifehackUseCase,
     private val toggleSaveUseCase: ToggleSaveLifehackUseCase,
     private val observeLikedAndSavedUseCase: ObserveLikedAndSavedUseCase,
@@ -94,7 +96,7 @@ class LifehackDetailViewModel @Inject constructor(
 
     private fun observeComments() {
         viewModelScope.launch {
-            commentRepository.observeComments(lifehackId)
+            observeCommentsUseCase(lifehackId)
                 .collect { comments ->
                     _uiState.update { it.copy(comments = comments) }
                 }

@@ -30,16 +30,16 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import app.iesjdlc.tipslab.domain.model.Comment
+import app.iesjdlc.tipslab.domain.model.CommentWithOwnership
 
 @Composable
 fun CommentsSection(
     commentsCount: Int,
-    comments: List<Comment>,
+    comments: List<CommentWithOwnership>,
     showComments: Boolean,
     onShowComments: () -> Unit,
     commentText: String,
     onCommentTextChange: (String) -> Unit,
-    isAuthor: Boolean,
     onSendComment: () -> Unit,
     onDeleteComment: (String) -> Unit
 ) {
@@ -67,11 +67,11 @@ fun CommentsSection(
         if (showComments) {
             // Lista de comentarios
             if (comments.isNotEmpty()) {
-                comments.forEach { comment ->
+                comments.forEach { commentWithOwnership ->
                     CommentItem(
-                        comment = comment,
-                        isAuthor = isAuthor,
-                        onDelete = { onDeleteComment(comment.id) },
+                        comment = commentWithOwnership.comment,
+                        isOwn = commentWithOwnership.isOwn,
+                        onDelete = { onDeleteComment(commentWithOwnership.comment.id) },
                     )
                 }
             } else {
@@ -133,7 +133,7 @@ fun CommentsSection(
 @Composable
 private fun CommentItem(
     comment: Comment,
-    isAuthor: Boolean,
+    isOwn: Boolean,
     onDelete: () -> Unit
 ) {
     var expanded by remember { mutableStateOf(false) }
@@ -165,15 +165,19 @@ private fun CommentItem(
                     )
                 }
             }
-            if (isAuthor) {
+            if (isOwn) {
                 Box {
-                    IconButton(onClick = onDelete, modifier = Modifier.size(20.dp)) {
+                    IconButton(
+                        onClick = { expanded = true },
+                        modifier = Modifier.size(20.dp)
+                    ) {
                         Icon(
                             imageVector = Icons.Rounded.MoreHoriz,
                             contentDescription = "Eliminar",
                             tint = MaterialTheme.colorScheme.onSurfaceVariant
                         )
                     }
+
                     DropdownMenu(
                         expanded = expanded,
                         onDismissRequest = { expanded = false }

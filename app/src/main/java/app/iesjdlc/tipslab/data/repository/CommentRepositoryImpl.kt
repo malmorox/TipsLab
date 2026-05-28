@@ -26,13 +26,15 @@ class CommentRepositoryImpl @Inject constructor(
             lifehackId,
             commentMapper.toDto(comment)
         )
-
     }
 
     override suspend fun deleteComment(
         lifehackId: String,
         commentId: String
     ): Result<Unit> = runCatching {
-        dataSource.delete(lifehackId, commentId)
+        dataSource.delete(
+            lifehackId,
+            commentId
+        )
     }
 }

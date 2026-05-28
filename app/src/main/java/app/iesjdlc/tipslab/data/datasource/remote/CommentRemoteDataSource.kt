@@ -39,9 +39,12 @@ class CommentRemoteDataSource @Inject constructor(
         lifehackId: String,
         dto: CommentDto
     ) {
+        val docRef = commentsRef(lifehackId).document()
+        val dtoWithId = dto.copy(id = docRef.id)
+
         db.runTransaction { transaction ->
             transaction.update(lifehackRef(lifehackId), DBConstants.Remote.COMMENTS_COUNT_FIELD, FieldValue.increment(1))
-            transaction.set(commentsRef(lifehackId).document(), dto)
+            transaction.set(docRef, dtoWithId)
         }.await()
     }
 

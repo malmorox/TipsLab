@@ -275,7 +275,6 @@ private fun LifehackDetailScreenUI(
                             onShowComments = onShowComments,
                             commentText = state.commentText,
                             onCommentTextChange = onCommentTextChange,
-                            isAuthor = state.isAuthor,
                             onSendComment = onSendComment,
                             onDeleteComment = onDeleteComment
                         )
