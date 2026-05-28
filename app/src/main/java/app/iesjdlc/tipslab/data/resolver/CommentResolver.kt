@@ -2,7 +2,6 @@ package app.iesjdlc.tipslab.data.resolver
 
 import app.iesjdlc.tipslab.data.datasource.UserDataSource
 import app.iesjdlc.tipslab.data.mapper.CommentMapper
-import app.iesjdlc.tipslab.data.mapper.CommentReplyMapper
 import app.iesjdlc.tipslab.data.mapper.UserMapper
 import app.iesjdlc.tipslab.data.model.CommentDto
 import app.iesjdlc.tipslab.domain.model.Comment

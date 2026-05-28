@@ -17,9 +17,7 @@ class AddCommentUseCase @Inject constructor(
             id = "",
             text = text,
             author = currentUser,
-            commentedAt = Clock.System.now(),
-            likesCount = 0,
-            repliesCount = 0
+            commentedAt = Clock.System.now()
         )
         return commentRepository.addComment(lifehackId, comment)
     }

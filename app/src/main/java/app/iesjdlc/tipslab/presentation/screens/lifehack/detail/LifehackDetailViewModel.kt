@@ -9,12 +9,10 @@ import androidx.work.WorkManager
 import app.iesjdlc.tipslab.domain.repository.CommentRepository
 import app.iesjdlc.tipslab.domain.repository.LifehackRepository
 import app.iesjdlc.tipslab.domain.usecase.comment.AddCommentUseCase
-import app.iesjdlc.tipslab.domain.usecase.comment.AddCommentReplyUseCase
 import app.iesjdlc.tipslab.domain.usecase.lifehack.GetLifehackDetailUseCase
 import app.iesjdlc.tipslab.domain.usecase.lifehack.ObserveLikedAndSavedUseCase
 import app.iesjdlc.tipslab.domain.usecase.lifehack.ToggleLikeLifehackUseCase
 import app.iesjdlc.tipslab.domain.usecase.lifehack.ToggleSaveLifehackUseCase
-import app.iesjdlc.tipslab.presentation.common.CommentInputMode
 import app.iesjdlc.tipslab.presentation.common.UploadState
 import app.iesjdlc.tipslab.presentation.navigation.Route
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -33,7 +31,6 @@ class LifehackDetailViewModel @Inject constructor(
     private val toggleSaveUseCase: ToggleSaveLifehackUseCase,
     private val observeLikedAndSavedUseCase: ObserveLikedAndSavedUseCase,
     private val addCommentUseCase: AddCommentUseCase,
-    private val addReplyUseCase: AddCommentReplyUseCase,
     private val lifehackRepository: LifehackRepository,
     private val commentRepository: CommentRepository,
     private val workManager: WorkManager
@@ -205,27 +202,18 @@ class LifehackDetailViewModel @Inject constructor(
         _uiState.update { it.copy(commentText = text) }
     }
 
-    fun onSendComment(inputMode: CommentInputMode) {
+    fun onSendComment() {
         viewModelScope.launch {
             val text = uiState.value.commentText.trim()
             if (text.isBlank()) return@launch
             _uiState.update { it.copy(commentText = "") }
-            when (inputMode) {
-                is CommentInputMode.NewComment -> addCommentUseCase(lifehackId, text)
-                is CommentInputMode.Reply -> addReplyUseCase(lifehackId, inputMode.commentId, text)
-            }
+            addCommentUseCase(lifehackId, text)
         }
     }
 
     fun onDeleteComment(commentId: String) {
         viewModelScope.launch {
             commentRepository.deleteComment(lifehackId, commentId)
-        }
-    }
-
-    fun onDeleteReply(commentId: String, replyId: String) {
-        viewModelScope.launch {
-            commentRepository.deleteReply(lifehackId, commentId, replyId)
         }
     }
 }

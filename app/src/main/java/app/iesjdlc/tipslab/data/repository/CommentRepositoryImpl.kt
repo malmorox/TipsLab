@@ -2,10 +2,8 @@ package app.iesjdlc.tipslab.data.repository
 
 import app.iesjdlc.tipslab.data.datasource.CommentDataSource
 import app.iesjdlc.tipslab.data.mapper.CommentMapper
-import app.iesjdlc.tipslab.data.mapper.CommentReplyMapper
 import app.iesjdlc.tipslab.data.resolver.CommentResolver
 import app.iesjdlc.tipslab.domain.model.Comment
-import app.iesjdlc.tipslab.domain.model.CommentReply
 import app.iesjdlc.tipslab.domain.repository.CommentRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
@@ -14,7 +12,6 @@ import javax.inject.Inject
 class CommentRepositoryImpl @Inject constructor(
     private val dataSource: CommentDataSource,
     private val commentMapper: CommentMapper,
-    private val replyMapper: CommentReplyMapper,
     private val resolver: CommentResolver
 ) : CommentRepository {
     override fun observeComments(lifehackId: String): Flow<List<Comment>> =
@@ -32,30 +29,10 @@ class CommentRepositoryImpl @Inject constructor(
 
     }
 
-    override suspend fun addReply(
-        lifehackId: String,
-        commentId: String,
-        reply: CommentReply
-    ): Result<Unit> = runCatching {
-        dataSource.addReply(
-            lifehackId,
-            commentId,
-            replyMapper.toDto(reply)
-        )
-    }
-
     override suspend fun deleteComment(
         lifehackId: String,
         commentId: String
     ): Result<Unit> = runCatching {
         dataSource.delete(lifehackId, commentId)
-    }
-
-    override suspend fun deleteReply(
-        lifehackId: String,
-        commentId: String,
-        replyId: String
-    ): Result<Unit> = runCatching {
-        dataSource.deleteReply(lifehackId, commentId, replyId)
     }
 }
