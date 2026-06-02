@@ -23,6 +23,7 @@
         android:theme="@style/Theme.TipsLab">
         <activity
             android:name=".MainActivity"
+            android:windowSoftInputMode="adjustNothing"
             android:exported="true"
             android:label="@string/app_name"
             android:theme="@style/Theme.TipsLab">

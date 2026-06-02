@@ -25,6 +25,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -45,7 +46,7 @@ fun SearchScreen(
     SearchScreenUI(
         state = uiState,
         onQueryChange = { viewModel.onQueryChange(it) },
-        onSearchSubmit = { viewModel.onSearchSubmit() },
+        onSearchSubmit = { viewModel.onSearchSubmit(it) },
         onSuggestionClick = { suggestion -> viewModel.onSuggestionClick(suggestion) },
         onHistoryItemClick = { historyItem -> viewModel.onHistoryItemClick(historyItem) },
         onClearHistory = { viewModel.onClearHistory() },
@@ -66,6 +67,11 @@ private fun SearchScreenUI(
     onBack: () -> Unit
 ) {
     val focusRequester = remember { FocusRequester() }
+    val focusManager = LocalFocusManager.current
+
+    fun clearSearchBarFocus() {
+        focusManager.clearFocus()
+    }
 
     LaunchedEffect(Unit) {
         focusRequester.requestFocus()
@@ -90,7 +96,10 @@ private fun SearchScreenUI(
                     modifier = Modifier.weight(1f),
                     query = state.query,
                     onQueryChange = onQueryChange,
-                    onSearch = onSearchSubmit,
+                    onSearch = {
+                        clearSearchBarFocus()
+                        onSearchSubmit(it)
+                    },
                     readOnly = false,
                     focusRequester = focusRequester
                 )
@@ -115,13 +124,19 @@ private fun SearchScreenUI(
                     when (state.phase) {
                         SearchPhase.IDLE -> HistoryContent(
                             history = state.searchHistory,
-                            onItemClick = onHistoryItemClick,
+                            onItemClick = {
+                                clearSearchBarFocus()
+                                onHistoryItemClick(it)
+                            },
                             onClearHistory = onClearHistory
                         )
                         SearchPhase.SUGGESTING -> SuggestionsContent(
                             suggestions = state.suggestions,
                             history = state.searchHistory,
-                            onSuggestionClick = onSuggestionClick,
+                            onSuggestionClick = {
+                                clearSearchBarFocus()
+                                onSuggestionClick(it)
+                            },
                             onHistoryItemClick = onHistoryItemClick
                         )
                         SearchPhase.RESULTS -> ResultsContent(

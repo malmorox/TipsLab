@@ -13,13 +13,16 @@ class SearchRemoteDataSource @Inject constructor(
     override suspend fun getSearchSuggestions(
         query: String,
         limit: Int
-    ): List<String> =
-        db.collection(DBConstants.Remote.LIFEHACKS_COLLECTION)
-            .whereArrayContains("tags", query)
-            .limit(limit.toLong())
+    ): List<String> {
+        val queryLower = query.lowercase().trim()
+
+        return db.collection(DBConstants.Remote.LIFEHACKS_COLLECTION)
             .get().await()
             .documents
             .mapNotNull { it.getString(DBConstants.Remote.TITLE_FIELD) }
+            .filter { it.lowercase().contains(queryLower) }
+            .take(limit)
+    }
 
     override suspend fun getSearchSuggestionsByCategory(
         categoryId: Int,
@@ -40,16 +43,14 @@ class SearchRemoteDataSource @Inject constructor(
         offset: Int
     ): List<LifehackDto> {
         val queryLower = query.lowercase().trim()
-        val end = queryLower.dropLast(1) + (queryLower.last() + 1)
 
         return db.collection(DBConstants.Remote.LIFEHACKS_COLLECTION)
-            .orderBy(DBConstants.Remote.TITLE_FIELD)
-            .whereGreaterThanOrEqualTo(DBConstants.Remote.TITLE_FIELD, queryLower)
-            .whereLessThan(DBConstants.Remote.TITLE_FIELD, end)
-            .limit(limit.toLong())
             .get().await()
             .documents
             .mapNotNull { it.toObject(LifehackDto::class.java) }
+            .filter { dto ->
+                dto.title.lowercase().contains(queryLower)
+            }
     }
 
     override suspend fun searchLifehacksByCategory(
