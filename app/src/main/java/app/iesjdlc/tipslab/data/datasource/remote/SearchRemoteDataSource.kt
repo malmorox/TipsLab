@@ -38,12 +38,19 @@ class SearchRemoteDataSource @Inject constructor(
         query: String,
         limit: Int,
         offset: Int
-    ): List<LifehackDto> =
-        db.collection(DBConstants.Remote.LIFEHACKS_COLLECTION)
-            .whereArrayContains("tags", query)
+    ): List<LifehackDto> {
+        val queryLower = query.lowercase().trim()
+        val end = queryLower.dropLast(1) + (queryLower.last() + 1)
+
+        return db.collection(DBConstants.Remote.LIFEHACKS_COLLECTION)
+            .orderBy(DBConstants.Remote.TITLE_FIELD)
+            .whereGreaterThanOrEqualTo(DBConstants.Remote.TITLE_FIELD, queryLower)
+            .whereLessThan(DBConstants.Remote.TITLE_FIELD, end)
+            .limit(limit.toLong())
             .get().await()
             .documents
             .mapNotNull { it.toObject(LifehackDto::class.java) }
+    }
 
     override suspend fun searchLifehacksByCategory(
         categoryId: Int,

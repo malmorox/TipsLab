@@ -29,7 +29,7 @@
     <string name="create_lifehack">Crear Lifehack</string>
     <string name="media">Multimedia</string>
     <string name="title">Título</string>
-    <string name="title_placeholder">Indica claramente qué quieres compartir</string>
+    <string name="title_placeholder">Indica qué quieres compartir</string>
     <string name="description">Descripción</string>
     <string name="description_placeholder">Añade información detallada</string>
     <string name="steps">Pasos</string>

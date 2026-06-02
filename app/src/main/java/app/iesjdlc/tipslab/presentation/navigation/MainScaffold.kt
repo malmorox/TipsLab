@@ -12,7 +12,6 @@ import app.iesjdlc.tipslab.presentation.components.BottomNavBar
 import app.iesjdlc.tipslab.presentation.screens.explore.ExploreTab
 import app.iesjdlc.tipslab.presentation.screens.home.HomeTab
 import app.iesjdlc.tipslab.presentation.screens.profile.ProfileTab
-import app.iesjdlc.tipslab.presentation.screens.saved.SavedTab
 
 @Composable
 fun MainScaffold(
@@ -55,12 +54,6 @@ fun MainScaffold(
 					onSearch = {
 						rootNavController.navigate(Route.Search)
 					}
-				)
-			}
-
-			composable<Route.Saved> {
-				SavedTab(
-
 				)
 			}
 

@@ -30,7 +30,6 @@ private sealed class BottomNavItem(
     data object Home : BottomNavItem("Home", Icons.Rounded.Home)
     data object Explore : BottomNavItem("Explore", Icons.Rounded.Search)
     data object Create : BottomNavItem("Create", Icons.Rounded.Add)
-    data object Saved : BottomNavItem("Saved", Icons.Rounded.Search)
     data object Profile : BottomNavItem("Profile", Icons.Rounded.Person)
 
     // La ruta asociada a cada item, menos el de crear
@@ -38,7 +37,6 @@ private sealed class BottomNavItem(
         Home -> Route.Home
         Explore -> Route.Explore
         Create -> null
-        Saved -> Route.Saved
         Profile -> Route.Profile
     }
 }
@@ -55,7 +53,6 @@ fun BottomNavBar(
         BottomNavItem.Home,
         BottomNavItem.Explore,
         BottomNavItem.Create,
-        BottomNavItem.Saved,
         BottomNavItem.Profile
     )
 

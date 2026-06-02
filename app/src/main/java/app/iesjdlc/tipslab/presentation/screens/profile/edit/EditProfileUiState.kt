@@ -4,6 +4,7 @@ import android.net.Uri
 
 data class EditProfileUiState(
     val email: String = "",
+    val isEmailEditable: Boolean = true,
     val username: String = "",
     val profilePhoto: Any? = null,
 
