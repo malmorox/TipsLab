@@ -273,7 +273,10 @@ private fun ResultsContent(
         return
     }
 
-    LazyColumn(modifier = Modifier.fillMaxSize()) {
+    LazyColumn(
+        modifier = Modifier.fillMaxSize(),
+        verticalArrangement = Arrangement.spacedBy(8.dp)
+    ) {
         items(results) { lifehack ->
             LifehackCard(
                 lifehack = lifehack,

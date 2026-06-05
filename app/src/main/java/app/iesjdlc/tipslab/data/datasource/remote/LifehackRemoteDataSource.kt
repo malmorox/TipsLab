@@ -5,6 +5,7 @@ import app.iesjdlc.tipslab.data.datasource.LifehackDataSource
 import app.iesjdlc.tipslab.data.model.LifehackDto
 import app.iesjdlc.tipslab.domain.repository.OrderBy
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.Query
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
@@ -34,16 +35,39 @@ class LifehackRemoteDataSource @Inject constructor(
             .documents
             .mapNotNull { it.toObject(LifehackDto::class.java) }
 
+    override suspend fun get(
+        orderBy: OrderBy,
+        limit: Int
+    ): List<LifehackDto> {
+        val field = when (orderBy) {
+            OrderBy.RECENT -> DBConstants.Remote.CREATED_AT_FIELD
+            OrderBy.POPULAR -> DBConstants.Remote.LIKES_COUNT_FIELD
+        }
+        return db.collection(DBConstants.Remote.LIFEHACKS_COLLECTION)
+            .orderBy(field, Query.Direction.DESCENDING)
+            .limit(limit.toLong())
+            .get().await()
+            .documents
+            .mapNotNull { it.toObject(LifehackDto::class.java) }
+    }
+
     override suspend fun getByCategory(
         categoryId: Int,
         orderBy: OrderBy,
         limit: Int
-    ): List<LifehackDto> =
-        db.collection(DBConstants.Remote.LIFEHACKS_COLLECTION)
+    ): List<LifehackDto> {
+        val field = when (orderBy) {
+            OrderBy.RECENT -> DBConstants.Remote.CREATED_AT_FIELD
+            OrderBy.POPULAR -> DBConstants.Remote.LIKES_COUNT_FIELD
+        }
+        return db.collection(DBConstants.Remote.LIFEHACKS_COLLECTION)
             .whereEqualTo(DBConstants.Remote.CATEGORY_ID_FIELD, categoryId)
+            .orderBy(field, Query.Direction.DESCENDING)
+            .limit(limit.toLong())
             .get().await()
             .documents
             .mapNotNull { it.toObject(LifehackDto::class.java) }
+    }
 
     override fun observeById(id: String): Flow<LifehackDto> = callbackFlow {
         val subscription = db.collection(DBConstants.Remote.LIFEHACKS_COLLECTION)
