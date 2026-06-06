@@ -4,6 +4,7 @@ import android.net.Uri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import app.iesjdlc.tipslab.data.repository.AuthRepositoryImpl
+import app.iesjdlc.tipslab.domain.model.ProviderType
 import app.iesjdlc.tipslab.domain.model.User
 import app.iesjdlc.tipslab.domain.repository.AuthRepository
 import app.iesjdlc.tipslab.domain.repository.MediaRepository
@@ -43,6 +44,7 @@ class EditProfileViewModel @Inject constructor(
 
                 _uiState.value = _uiState.value.copy(
                     email = user.email,
+                    isEmailEditable = user.provider != ProviderType.GOOGLE,
                     username = user.username,
                     profilePhoto = user.photoUrl
                 )

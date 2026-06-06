@@ -1,12 +1,9 @@
 package app.iesjdlc.tipslab.presentation.screens.profile.edit
 
-import android.net.Uri
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -14,16 +11,15 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Edit
-import androidx.compose.material.icons.filled.Visibility
-import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material.icons.rounded.ArrowBack
+import androidx.compose.material.icons.rounded.Lock
 import androidx.compose.material3.Button
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.CircularProgressIndicator
@@ -34,29 +30,22 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.SnackbarHost
-import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.input.PasswordVisualTransformation
-import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import app.iesjdlc.tipslab.R
-import app.iesjdlc.tipslab.core.model.CameraMediaResult
 import app.iesjdlc.tipslab.presentation.components.ConfirmOrDismissDialog
 import app.iesjdlc.tipslab.presentation.components.ProfilePhotoPicker
-import coil3.compose.AsyncImage
+
 
 @Composable
 fun EditProfileScreen(
@@ -77,7 +66,6 @@ fun EditProfileScreen(
         state = uiState,
         onUsernameChange = { viewModel.onUsernameChange(it) },
         onEmailChange = { viewModel.onEmailChange(it) },
-        onPasswordChangeClick = {},
         onOpenCamera = onOpenCamera,
         onOpenGallery = {
             galleryLauncher.launch(
@@ -98,7 +86,6 @@ private fun EditProfileScreenUI(
     state: EditProfileUiState,
     onEmailChange: (String) -> Unit,
     onUsernameChange: (String) -> Unit,
-    onPasswordChangeClick: () -> Unit,
     onOpenCamera: () -> Unit,
     onOpenGallery: () -> Unit,
     onPhotoRemove: () -> Unit,
@@ -140,8 +127,15 @@ private fun EditProfileScreenUI(
                     .verticalScroll(rememberScrollState()),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
+                val profilePhotoModel = remember(state.profilePhoto) {
+                    when (val photo = state.profilePhoto) {
+                        is String -> "${photo}?t=${System.currentTimeMillis()}"
+                        else -> photo
+                    }
+                }
+
                 ProfilePhotoPicker(
-                    photo = state.profilePhoto,
+                    photo = profilePhotoModel,
                     onCameraClick = onOpenCamera,
                     onGalleryClick = onOpenGallery,
                     onRemoveClick = onPhotoRemove
@@ -150,15 +144,36 @@ private fun EditProfileScreenUI(
                 Spacer(modifier = Modifier.height(32.dp))
 
                 FieldSection(label = stringResource(R.string.email)) {
+                    Box(modifier = Modifier.fillMaxWidth()) {
+                        OutlinedTextField(
+                            value = state.email,
+                            onValueChange = onEmailChange,
+                            readOnly = !state.isEmailEditable,
+                            singleLine = true,
+                            enabled = state.isEmailEditable && !state.isLoading,
+                            modifier = Modifier.fillMaxWidth(),
+                            shape = MaterialTheme.shapes.medium
+                        )
 
-                    OutlinedTextField(
-                        value = state.email,
-                        onValueChange = onEmailChange,
-                        readOnly = true,
-                        singleLine = true,
-                        modifier = Modifier.fillMaxWidth(),
-                        shape = MaterialTheme.shapes.medium
-                    )
+                        if (!state.isEmailEditable) {
+                            Box(
+                                modifier = Modifier
+                                    .align(Alignment.TopEnd)
+                                    .offset(x = 8.dp, y = (-8).dp)
+                                    .size(22.dp)
+                                    .clip(CircleShape)
+                                    .background(MaterialTheme.colorScheme.primary),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Rounded.Lock,
+                                    contentDescription = "Email gestionado por Google",
+                                    tint = Color.White,
+                                    modifier = Modifier.size(12.dp)
+                                )
+                            }
+                        }
+                    }
                 }
 
                 Spacer(modifier = Modifier.height(16.dp))

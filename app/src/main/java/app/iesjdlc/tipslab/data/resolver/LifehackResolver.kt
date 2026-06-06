@@ -1,7 +1,7 @@
 package app.iesjdlc.tipslab.data.resolver
 
-import app.iesjdlc.tipslab.data.datasource.local.CategoryDataSource
-import app.iesjdlc.tipslab.data.datasource.remote.UserDataSource
+import app.iesjdlc.tipslab.data.datasource.CategoryDataSource
+import app.iesjdlc.tipslab.data.datasource.UserDataSource
 import app.iesjdlc.tipslab.data.mapper.CategoryMapper
 import app.iesjdlc.tipslab.data.mapper.LifehackMapper
 import app.iesjdlc.tipslab.data.mapper.UserMapper

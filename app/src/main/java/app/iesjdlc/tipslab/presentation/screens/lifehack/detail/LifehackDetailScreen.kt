@@ -15,6 +15,10 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.ArrowBack
+import androidx.compose.material.icons.rounded.Bookmark
+import androidx.compose.material.icons.rounded.BookmarkBorder
+import androidx.compose.material.icons.rounded.Favorite
+import androidx.compose.material.icons.rounded.FavoriteBorder
 import androidx.compose.material.icons.rounded.MoreVert
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -36,6 +40,8 @@ import app.iesjdlc.tipslab.R
 import app.iesjdlc.tipslab.domain.model.Category
 import app.iesjdlc.tipslab.domain.model.User
 import app.iesjdlc.tipslab.presentation.common.UploadState
+import app.iesjdlc.tipslab.presentation.components.AnimatedCircleButton
+import app.iesjdlc.tipslab.presentation.components.CommentsSection
 import app.iesjdlc.tipslab.presentation.components.ConfirmOrDismissDialog
 import app.iesjdlc.tipslab.presentation.components.LifehackStepsList
 import app.iesjdlc.tipslab.presentation.components.MediaViewer
@@ -61,6 +67,12 @@ fun LifehackDetailScreen(
         onConfirmDelete = { viewModel.onConfirmDelete(onDeleteLifehack) },
         onDismissDelete = { viewModel.onDismissDelete() },
         onOpenCategory = { viewModel.onCategoryClick(onOpenCategory) },
+        onLike = { viewModel.onLikeClick() },
+        onSave = { viewModel.onSaveClick() },
+        onShowComments = { viewModel.onShowComments() },
+        onCommentTextChange = { viewModel.onCommentTextChange(it) },
+        onSendComment = { viewModel.onSendComment() },
+        onDeleteComment = { viewModel.onDeleteComment(it) },
         onBack = onNavigateBack
     )
 }
@@ -76,6 +88,12 @@ private fun LifehackDetailScreenUI(
     onConfirmDelete: () -> Unit,
     onDismissDelete: () -> Unit,
     onOpenCategory: (Category) -> Unit,
+    onLike: () -> Unit,
+    onSave: () -> Unit,
+    onShowComments: () -> Unit,
+    onCommentTextChange: (String) -> Unit,
+    onSendComment: () -> Unit,
+    onDeleteComment: (String) -> Unit,
     onBack: () -> Unit,
 ) {
     Scaffold(
@@ -192,11 +210,34 @@ private fun LifehackDetailScreenUI(
                             ),
                         verticalArrangement = Arrangement.spacedBy(16.dp)
                     ) {
-                        Text(
-                            text = lifehack.title,
-                            style = MaterialTheme.typography.headlineLarge,
-                            color = MaterialTheme.colorScheme.primary
-                        )
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.spacedBy(16.dp),
+                            verticalAlignment = Alignment.Top
+                        ) {
+                            Text(
+                                text = lifehack.title,
+                                style = MaterialTheme.typography.headlineLarge,
+                                color = MaterialTheme.colorScheme.primary,
+                                modifier = Modifier.weight(1f)
+                            )
+
+                            if (!state.isAuthor) {
+                                Row(
+                                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                                    verticalAlignment = Alignment.CenterVertically
+                                ) {
+                                    LikeButton(
+                                        isLiked = state.isLiked,
+                                        onClick = onLike
+                                    )
+                                    SaveButton(
+                                        isSaved = state.isSaved,
+                                        onClick = onSave
+                                    )
+                                }
+                            }
+                        }
 
                         SectionWithHeading(heading = stringResource(R.string.description)) {
                             Text(
@@ -226,6 +267,17 @@ private fun LifehackDetailScreenUI(
                         if (!state.isAuthor) {
                             AuthorSection(author = lifehack.author)
                         }
+
+                        CommentsSection(
+                            commentsCount = lifehack.commentsCount,
+                            comments = state.comments,
+                            showComments = state.showComments,
+                            onShowComments = onShowComments,
+                            commentText = state.commentText,
+                            onCommentTextChange = onCommentTextChange,
+                            onSendComment = onSendComment,
+                            onDeleteComment = onDeleteComment
+                        )
                     }
                 }
             }
@@ -296,4 +348,32 @@ private fun AuthorSection(author: User) {
             )
         }
     }
+}
+
+@Composable
+private fun LikeButton(
+    isLiked: Boolean,
+    onClick: () -> Unit
+) {
+    AnimatedCircleButton(
+        isActive = isLiked,
+        onClick = onClick,
+        activeIcon = Icons.Rounded.Favorite,
+        inactiveIcon = Icons.Rounded.FavoriteBorder,
+        contentDescription = if (isLiked) stringResource(R.string.unlike) else stringResource(R.string.like)
+    )
+}
+
+@Composable
+private fun SaveButton(
+    isSaved: Boolean,
+    onClick: () -> Unit
+) {
+    AnimatedCircleButton(
+        isActive = isSaved,
+        onClick = onClick,
+        activeIcon = Icons.Rounded.Bookmark,
+        inactiveIcon = Icons.Rounded.BookmarkBorder,
+        contentDescription = if (isSaved) stringResource(R.string.unsave) else stringResource(R.string.save)
+    )
 }

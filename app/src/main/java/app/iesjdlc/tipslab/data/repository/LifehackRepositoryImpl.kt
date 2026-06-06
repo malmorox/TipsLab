@@ -1,6 +1,6 @@
 package app.iesjdlc.tipslab.data.repository
 
-import app.iesjdlc.tipslab.data.datasource.remote.LifehackDataSource
+import app.iesjdlc.tipslab.data.datasource.LifehackDataSource
 import app.iesjdlc.tipslab.data.mapper.LifehackMapper
 import app.iesjdlc.tipslab.domain.model.Lifehack
 import app.iesjdlc.tipslab.data.resolver.LifehackResolver
@@ -23,6 +23,13 @@ class LifehackRepositoryImpl @Inject constructor(
     override suspend fun getLifehackById(id: String): Result<Lifehack> = runCatching {
         val dto = dataSource.getById(id) ?: error("Lifehack no encontrado")
         resolver.resolveOne(dto) ?: error("Lifehack no encontrado")
+    }
+
+    override suspend fun getLifehacks(
+        orderBy: OrderBy,
+        limit: Int
+    ): Result<List<Lifehack>> = runCatching {
+        resolver.resolve(dataSource.get(orderBy, limit))
     }
 
     override suspend fun getLifehacksByCategory(

@@ -1,4 +1,4 @@
-package app.iesjdlc.tipslab.data.datasource.local
+package app.iesjdlc.tipslab.data.datasource
 
 import app.iesjdlc.tipslab.data.model.CategoryDto
 

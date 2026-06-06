@@ -1,12 +1,17 @@
 package app.iesjdlc.tipslab.di
 
-import app.iesjdlc.tipslab.data.datasource.local.CategoryDataSource
+import app.iesjdlc.tipslab.data.datasource.CategoryDataSource
 import app.iesjdlc.tipslab.data.datasource.local.CategoryLocalDataSource
-import app.iesjdlc.tipslab.data.datasource.remote.LifehackDataSource
+import app.iesjdlc.tipslab.data.datasource.CommentDataSource
+import app.iesjdlc.tipslab.data.datasource.remote.CommentRemoteDataSource
+import app.iesjdlc.tipslab.data.datasource.LifehackDataSource
 import app.iesjdlc.tipslab.data.datasource.remote.LifehackRemoteDataSource
-import app.iesjdlc.tipslab.data.datasource.remote.SavedLikedDataSource
+import app.iesjdlc.tipslab.data.datasource.SavedLikedDataSource
+import app.iesjdlc.tipslab.data.datasource.SearchDataSource
 import app.iesjdlc.tipslab.data.datasource.remote.SavedLikedRemoteDataSource
-import app.iesjdlc.tipslab.data.datasource.remote.UserDataSource
+import app.iesjdlc.tipslab.data.datasource.UserDataSource
+import app.iesjdlc.tipslab.data.datasource.local.SearchLocalRoomDataSource
+import app.iesjdlc.tipslab.data.datasource.remote.SearchRemoteDataSource
 import app.iesjdlc.tipslab.data.datasource.remote.UserRemoteDataSource
 import dagger.Binds
 import dagger.Module
@@ -19,17 +24,29 @@ import javax.inject.Singleton
 abstract class DatasourceBinder {
     @Binds
     @Singleton
-    abstract fun bindLifehackDataSource(impl: LifehackRemoteDataSource): LifehackDataSource
-
-    @Binds
-    @Singleton
     abstract fun bindCategoryDataSource(impl: CategoryLocalDataSource): CategoryDataSource
 
     @Binds
     @Singleton
-    abstract fun bindUserDataSource(impl: UserRemoteDataSource): UserDataSource
+    abstract fun bindCommentDataSource(impl: CommentRemoteDataSource): CommentDataSource
+
+    @Binds
+    @Singleton
+    abstract fun bindLifehackDataSource(impl: LifehackRemoteDataSource): LifehackDataSource
 
     @Binds
     @Singleton
     abstract fun bindSavedLikedDataSource(impl: SavedLikedRemoteDataSource): SavedLikedDataSource
+
+    @Binds
+    @Singleton
+    abstract fun bindSearchLocalDataSource(impl: SearchLocalRoomDataSource): SearchDataSource.Local
+
+    @Binds
+    @Singleton
+    abstract fun bindSearchRemoteDataSource(impl: SearchRemoteDataSource): SearchDataSource.Remote
+
+    @Binds
+    @Singleton
+    abstract fun bindUserDataSource(impl: UserRemoteDataSource): UserDataSource
 }

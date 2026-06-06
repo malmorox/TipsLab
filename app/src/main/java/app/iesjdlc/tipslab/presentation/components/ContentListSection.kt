@@ -15,7 +15,7 @@ fun <T> ContentListSection(
     title: String,
     sectionState: SectionState<List<T>>,
     emptyMessage: String,
-    skeletonItem: @Composable () -> Unit,
+    skeletonItem: @Composable () -> Unit = { LifehackSectionListItemSkeleton() },
     itemContent: @Composable (T) -> Unit,
 ) {
     Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {

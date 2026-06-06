@@ -6,8 +6,14 @@ import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
 import androidx.work.WorkInfo
 import androidx.work.WorkManager
+import app.iesjdlc.tipslab.domain.repository.CommentRepository
 import app.iesjdlc.tipslab.domain.repository.LifehackRepository
+import app.iesjdlc.tipslab.domain.usecase.comment.AddCommentUseCase
+import app.iesjdlc.tipslab.domain.usecase.comment.ObserveLifehackCommentsUseCase
 import app.iesjdlc.tipslab.domain.usecase.lifehack.GetLifehackDetailUseCase
+import app.iesjdlc.tipslab.domain.usecase.lifehack.ObserveLikedAndSavedUseCase
+import app.iesjdlc.tipslab.domain.usecase.lifehack.ToggleLikeLifehackUseCase
+import app.iesjdlc.tipslab.domain.usecase.lifehack.ToggleSaveLifehackUseCase
 import app.iesjdlc.tipslab.presentation.common.UploadState
 import app.iesjdlc.tipslab.presentation.navigation.Route
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -22,7 +28,13 @@ import javax.inject.Inject
 class LifehackDetailViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
     private val getLifehackDetailUseCase: GetLifehackDetailUseCase,
+    private val observeCommentsUseCase: ObserveLifehackCommentsUseCase,
+    private val toggleLikeUseCase: ToggleLikeLifehackUseCase,
+    private val toggleSaveUseCase: ToggleSaveLifehackUseCase,
+    private val observeLikedAndSavedUseCase: ObserveLikedAndSavedUseCase,
+    private val addCommentUseCase: AddCommentUseCase,
     private val lifehackRepository: LifehackRepository,
+    private val commentRepository: CommentRepository,
     private val workManager: WorkManager
 ) : ViewModel() {
     private val lifehackId = savedStateHandle.toRoute<Route.LifehackDetail>().lifehackId
@@ -46,10 +58,11 @@ class LifehackDetailViewModel @Inject constructor(
                         _uiState.update {
                             it.copy(
                                 lifehack = lifehackDetail.lifehack,
-                                isAuthor = lifehackDetail.isAuthor,
-                                isLiked = lifehackDetail.isLiked,
-                                isSaved = lifehackDetail.isSaved
+                                isAuthor = lifehackDetail.isAuthor
                             )
+                        }
+                        if (!lifehackDetail.isAuthor) {
+                            observeLikedAndSaved()
                         }
                     }
                     .onFailure { error ->
@@ -75,6 +88,21 @@ class LifehackDetailViewModel @Inject constructor(
         }
     }
 
+    fun onShowComments() {
+        val showing = uiState.value.showComments
+        _uiState.update { it.copy(showComments = !showing) }
+        if (!showing) observeComments()
+    }
+
+    private fun observeComments() {
+        viewModelScope.launch {
+            observeCommentsUseCase(lifehackId)
+                .collect { comments ->
+                    _uiState.update { it.copy(comments = comments) }
+                }
+        }
+    }
+
     private fun observeMediaUploadState() {
         viewModelScope.launch {
             workManager.getWorkInfosByTagFlow(lifehackId)
@@ -89,6 +117,36 @@ class LifehackDetailViewModel @Inject constructor(
                     }
                     _uiState.update { it.copy(uploadState = uploadState) }
                 }
+        }
+    }
+
+    private fun observeLikedAndSaved() {
+        if (uiState.value.isAuthor) return
+        viewModelScope.launch {
+            observeLikedAndSavedUseCase(lifehackId)
+                .collect { (isLiked, isSaved) ->
+                    _uiState.update { it.copy(isLiked = isLiked, isSaved = isSaved) }
+                }
+        }
+    }
+
+    fun onLikeClick() {
+        if (uiState.value.isAuthor) return
+        viewModelScope.launch {
+            val wasLiked = uiState.value.isLiked
+            _uiState.update { it.copy(isLiked = !wasLiked) }
+            toggleLikeUseCase(lifehackId)
+                .onFailure { _uiState.update { it.copy(isLiked = wasLiked) } }
+        }
+    }
+
+    fun onSaveClick() {
+        if (uiState.value.isAuthor) return
+        viewModelScope.launch {
+            val wasSaved = uiState.value.isSaved
+            _uiState.update { it.copy(isSaved = !wasSaved) }
+            toggleSaveUseCase(lifehackId)
+                .onFailure { _uiState.update { it.copy(isSaved = wasSaved) } }
         }
     }
 
@@ -139,6 +197,25 @@ class LifehackDetailViewModel @Inject constructor(
     ) {
         uiState.value.lifehack?.category?.let { category ->
             onNavigate(category.id)
+        }
+    }
+
+    fun onCommentTextChange(text: String) {
+        _uiState.update { it.copy(commentText = text) }
+    }
+
+    fun onSendComment() {
+        viewModelScope.launch {
+            val text = uiState.value.commentText.trim()
+            if (text.isBlank()) return@launch
+            _uiState.update { it.copy(commentText = "") }
+            addCommentUseCase(lifehackId, text)
+        }
+    }
+
+    fun onDeleteComment(commentId: String) {
+        viewModelScope.launch {
+            commentRepository.deleteComment(lifehackId, commentId)
         }
     }
 }

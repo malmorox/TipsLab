@@ -12,7 +12,20 @@
           "package_name": "app.iesjdlc.tipslab"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "177275042936-mjisqe4fi05qjcujqd5vdfsqac7b4vqu.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "app.iesjdlc.tipslab",
+            "certificate_hash": "5d397a0f545d20bbd9450933db5928826b4df44e"
+          }
+        },
+        {
+          "client_id": "177275042936-95u9er25hp4utb2dbohv0aluthi8esrp.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyDoXUmG-ErZPAhhZx3wQ209g4Ev08VNHhc"
@@ -20,7 +33,12 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "177275042936-95u9er25hp4utb2dbohv0aluthi8esrp.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         }
       }
     }

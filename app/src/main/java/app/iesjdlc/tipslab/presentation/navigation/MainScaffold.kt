@@ -12,7 +12,6 @@ import app.iesjdlc.tipslab.presentation.components.BottomNavBar
 import app.iesjdlc.tipslab.presentation.screens.explore.ExploreTab
 import app.iesjdlc.tipslab.presentation.screens.home.HomeTab
 import app.iesjdlc.tipslab.presentation.screens.profile.ProfileTab
-import app.iesjdlc.tipslab.presentation.screens.saved.SavedTab
 
 @Composable
 fun MainScaffold(
@@ -41,9 +40,6 @@ fun MainScaffold(
 					onOpenLifehack = { lifehackId ->
 						rootNavController.navigate(Route.LifehackDetail(lifehackId))
 					},
-					onOpenCategory = { categoryId ->
-						rootNavController.navigate(Route.LifehacksByCategory(categoryId))
-					},
 					onSearch = {
 						rootNavController.navigate(Route.Search)
 					}
@@ -53,7 +49,7 @@ fun MainScaffold(
 			composable<Route.Explore> {
 				ExploreTab(
 					onOpenCategory = { categoryId ->
-						rootNavController.navigate(Route.LifehacksByCategory(categoryId))
+						rootNavController.navigate(Route.Category(categoryId))
 					},
 					onSearch = {
 						rootNavController.navigate(Route.Search)
@@ -61,16 +57,13 @@ fun MainScaffold(
 				)
 			}
 
-			composable<Route.Saved> {
-				SavedTab(
-
-				)
-			}
-
 			composable<Route.Profile> {
 				ProfileTab(
 					onEditProfile = {
 						rootNavController.navigate(Route.EditProfile)
+					},
+					onOpenLifehack = { lifehackId ->
+						rootNavController.navigate(Route.LifehackDetail(lifehackId))
 					},
 					onLogout = onLogout
 				)

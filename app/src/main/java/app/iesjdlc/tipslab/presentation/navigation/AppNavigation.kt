@@ -140,7 +140,12 @@ fun AppNavigation() {
         // Pantallas de destino
         composable<Route.Search> {
             SearchScreen(
-                onNavigateBack = { rootNavController.popBackStack() }
+                onNavigateBack = { rootNavController.popBackStack() },
+                onOpenLifehack = { lifehackId ->
+                    rootNavController.navigate(Route.LifehackDetail(lifehackId)) {
+                        launchSingleTop = true
+                    }
+                },
             )
         }
 
@@ -152,16 +157,20 @@ fun AppNavigation() {
                 },
                 onDeleteLifehack = { rootNavController.popBackStack() },
                 onOpenCategory = { categoryId ->
-                    rootNavController.navigate(Route.LifehacksByCategory(categoryId))
+                    rootNavController.navigate(Route.Category(categoryId)) {
+                        launchSingleTop = true
+                    }
                 }
             )
         }
 
-        composable<Route.LifehacksByCategory> {
+        composable<Route.Category> {
             CategoryScreen(
                 onNavigateBack = { rootNavController.popBackStack() },
                 onOpenLifehack = { lifehackId ->
-                    rootNavController.navigate(Route.LifehackDetail(lifehackId))
+                    rootNavController.navigate(Route.LifehackDetail(lifehackId)) {
+                        launchSingleTop = true
+                    }
                 }
             )
         }
