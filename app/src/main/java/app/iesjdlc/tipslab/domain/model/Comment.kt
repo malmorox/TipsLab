@@ -6,7 +6,5 @@ data class Comment(
     val id: String,
     val text: String,
     val author: User,
-    val commentedAt: Instant,
-    val likesCount: Int,
-    val repliesCount: Int
+    val commentedAt: Instant
 )

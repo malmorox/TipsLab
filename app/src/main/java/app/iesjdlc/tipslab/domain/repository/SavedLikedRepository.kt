@@ -4,8 +4,8 @@ import app.iesjdlc.tipslab.domain.model.Lifehack
 import kotlinx.coroutines.flow.Flow
 
 interface SavedLikedRepository {
-    suspend fun getUserSavedLifehacks(uid: String): Result<List<Lifehack>>
-    suspend fun getUserLikedLifehacks(uid: String): Result<List<Lifehack>>
+    fun observeUserSavedLifehacks(uid: String): Flow<List<Lifehack>>
+    fun observeUserLikedLifehacks(uid: String): Flow<List<Lifehack>>
     fun observeIsLiked(
         userId: String,
         lifehackId: String

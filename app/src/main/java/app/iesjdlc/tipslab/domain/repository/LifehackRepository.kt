@@ -7,6 +7,10 @@ import kotlinx.coroutines.flow.Flow
 interface LifehackRepository {
     suspend fun getUserLifehacks(uid: String): Result<List<Lifehack>>
     suspend fun getLifehackById(id: String): Result<Lifehack>
+    suspend fun getLifehacks(
+        orderBy: OrderBy,
+        limit: Int
+    ): Result<List<Lifehack>>
     suspend fun getLifehacksByCategory(
         categoryId: Int,
         orderBy: OrderBy,

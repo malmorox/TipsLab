@@ -130,9 +130,8 @@ private fun LoginScreenUI(
             modifier = Modifier.padding(horizontal = 48.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-
             Image(
-                painter = painterResource(R.drawable.logo),
+                painter = painterResource(R.drawable.tipslab_logo),
                 contentDescription = null,
                 modifier = Modifier.size(80.dp)
             )
@@ -143,7 +142,7 @@ private fun LoginScreenUI(
                 text = stringResource(R.string.sign_in),
                 fontSize = 26.sp,
                 fontWeight = FontWeight.SemiBold,
-                color = MaterialTheme.colorScheme.primary
+                color = MaterialTheme.colorScheme.secondary
             )
 
             Spacer(modifier = Modifier.height(24.dp))
@@ -250,7 +249,7 @@ private fun LoginScreenUI(
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
                 Text(
-                    text = stringResource(R.string.here),
+                    text = stringResource(R.string.create_one_here),
                     fontSize = 14.sp,
                     color = MaterialTheme.colorScheme.primary,
                     modifier = Modifier.clickable {

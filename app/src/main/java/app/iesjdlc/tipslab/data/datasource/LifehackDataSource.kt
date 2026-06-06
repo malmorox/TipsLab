@@ -8,6 +8,10 @@ interface LifehackDataSource {
     suspend fun getByAuthor(authorId: String): List<LifehackDto>
     suspend fun getById(id: String): LifehackDto?
     suspend fun getByIds(ids: List<String>): List<LifehackDto>
+    suspend fun get(
+        orderBy: OrderBy,
+        limit: Int
+    ) : List<LifehackDto>
     suspend fun getByCategory(
         categoryId: Int,
         orderBy: OrderBy,

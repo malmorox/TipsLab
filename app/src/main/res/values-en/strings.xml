@@ -5,8 +5,8 @@
     <string name="email_or_username">Email or username</string>
     <string name="password">Password</string>
     <string name="toggle_password_visibility">Toggle password visibility</string>
-    <string name="dont_have_account">If yo don\'t have an account, create one &#160;</string>
-    <string name="here">here</string>
+    <string name="dont_have_account">If you don\'t have an account,&#160;</string>
+    <string name="create_one_here">create one here</string>
     <string name="continue_with_google">Continue with Google</string>
     <string name="login_button">Sing in</string>
     <string name="createAccount">Create an account</string>
@@ -14,7 +14,8 @@
     <string name="email">Email address</string>
     <string name="repeat_password">Repeat password</string>
     <string name="signup">Sing up</string>
-    <string name="back_to_login">Already have an account? Log in</string>
+    <string name="do_you_have_account">Already have an account?&#160;</string>
+    <string name="back_to_login">Log in</string>
     <string name="categories">Categories</string>
     <string name="create_lifehack">Create Lifehack</string>
     <string name="media">Media</string>
@@ -60,8 +61,9 @@
     <string name="step_min_chars">Minimun %1$d characters</string>
     <string name="steps_validation_error">Fill in the steps correctly before saving</string>
     <string name="select_category">Select a category</string>
+    <string name="trending">here</string>
     <string name="published_by">Published by</string>
-    <string name="no_saved">You have no saved items</string>
+    <string name="no_saved_posts">You have no saved items</string>
     <string name="save_changes">Save changes</string>
     <string name="my_saved">My saved</string>
     <string name="my_posts">My posts</string>
@@ -69,9 +71,10 @@
     <string name="remove_media">Delete content</string>
     <string name="my_profile">My profile</string>
     <string name="no_posts">There are no posts yet</string>
-    <string name="no_favorites">You have no favorites</string>
+    <string name="no_liked_posts">You have no favorites</string>
     <string name="my_favorites">My favorites</string>
     <string name="like">todo</string>
     <string name="unlike">todo</string>
     <string name="unsave">todo</string>
+    <string name="for_you">here</string>
 </resources>

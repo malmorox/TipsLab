@@ -140,7 +140,12 @@ fun AppNavigation() {
         // Pantallas de destino
         composable<Route.Search> {
             SearchScreen(
-                onNavigateBack = { rootNavController.popBackStack() }
+                onNavigateBack = { rootNavController.popBackStack() },
+                onOpenLifehack = { lifehackId ->
+                    rootNavController.navigate(Route.LifehackDetail(lifehackId)) {
+                        launchSingleTop = true
+                    }
+                },
             )
         }
 

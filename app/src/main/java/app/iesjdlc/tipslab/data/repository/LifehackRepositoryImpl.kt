@@ -25,6 +25,13 @@ class LifehackRepositoryImpl @Inject constructor(
         resolver.resolveOne(dto) ?: error("Lifehack no encontrado")
     }
 
+    override suspend fun getLifehacks(
+        orderBy: OrderBy,
+        limit: Int
+    ): Result<List<Lifehack>> = runCatching {
+        resolver.resolve(dataSource.get(orderBy, limit))
+    }
+
     override suspend fun getLifehacksByCategory(
         categoryId: Int,
         orderBy: OrderBy,
