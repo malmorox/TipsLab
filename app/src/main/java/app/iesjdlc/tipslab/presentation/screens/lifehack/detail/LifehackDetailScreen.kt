@@ -6,9 +6,12 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
@@ -104,7 +107,7 @@ private fun LifehackDetailScreenUI(
                         Text(
                             text = state.lifehack.title,
                             style = MaterialTheme.typography.titleLarge,
-                            color = MaterialTheme.colorScheme.primary,
+                            color = MaterialTheme.colorScheme.onSurface,
                             maxLines = 1,
                             overflow = TextOverflow.Ellipsis
                         )
@@ -217,9 +220,11 @@ private fun LifehackDetailScreenUI(
                         ) {
                             Text(
                                 text = lifehack.title,
-                                style = MaterialTheme.typography.headlineLarge,
+                                style = MaterialTheme.typography.headlineMedium,
                                 color = MaterialTheme.colorScheme.primary,
-                                modifier = Modifier.weight(1f)
+                                modifier = Modifier.weight(1f),
+                                maxLines = 2,
+                                overflow = TextOverflow.Ellipsis
                             )
 
                             if (!state.isAuthor) {
@@ -243,7 +248,7 @@ private fun LifehackDetailScreenUI(
                             Text(
                                 text = lifehack.description,
                                 style = MaterialTheme.typography.bodyMedium,
-                                color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.5f)
+                                color = MaterialTheme.colorScheme.onSurface
                             )
                         }
 
@@ -256,8 +261,8 @@ private fun LifehackDetailScreenUI(
                         SectionWithHeading(heading = stringResource(R.string.category)) {
                             Text(
                                 text = lifehack.category.name,
-                                style = MaterialTheme.typography.bodyMedium,
-                                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                style = MaterialTheme.typography.bodyLarge,
+                                color = MaterialTheme.colorScheme.onSurface,
                                 modifier = Modifier.clickable {
                                     onOpenCategory(lifehack.category)
                                 }
@@ -267,6 +272,8 @@ private fun LifehackDetailScreenUI(
                         if (!state.isAuthor) {
                             AuthorSection(author = lifehack.author)
                         }
+
+                        Spacer(modifier = Modifier.height(16.dp))
 
                         CommentsSection(
                             commentsCount = lifehack.commentsCount,
@@ -313,7 +320,7 @@ private fun SectionWithHeading(
         Text(
             text = heading,
             style = MaterialTheme.typography.labelMedium,
-            color = MaterialTheme.colorScheme.onSurfaceVariant
+            color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f)
         )
 
         content()
@@ -329,7 +336,7 @@ private fun AuthorSection(author: User) {
         Text(
             text = stringResource(R.string.published_by),
             style = MaterialTheme.typography.labelMedium,
-            color = MaterialTheme.colorScheme.onSurfaceVariant
+            color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f)
         )
 
         Row(
@@ -344,7 +351,7 @@ private fun AuthorSection(author: User) {
             Text(
                 text = "@${author.username}",
                 style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
+                color = MaterialTheme.colorScheme.onSurface
             )
         }
     }

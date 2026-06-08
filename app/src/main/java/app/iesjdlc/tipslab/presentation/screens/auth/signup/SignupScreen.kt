@@ -237,7 +237,7 @@ private fun SignUpScreenUI(
                     contentAlignment = Alignment.Center
                 ) {
                     Text(
-                        text = stringResource(R.string.signup),
+                        text = stringResource(R.string.signup).uppercase(),
                         color = Color.White,
                         fontWeight = FontWeight.Bold
                     )

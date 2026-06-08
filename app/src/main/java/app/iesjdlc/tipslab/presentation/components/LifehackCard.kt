@@ -125,7 +125,7 @@ fun LifehackCard(
                             contentDescription = null,
                             tint = Color.White.copy(alpha = 0.65f),
                             modifier = Modifier
-                                .size(32.dp)
+                                .size(40.dp)
                                 .align(Alignment.Center)
                         )
                     }

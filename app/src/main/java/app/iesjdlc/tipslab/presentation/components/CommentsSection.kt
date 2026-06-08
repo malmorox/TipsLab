@@ -55,7 +55,7 @@ fun CommentsSection(
             Text(
                 text = "Comentarios ($commentsCount)",
                 style = MaterialTheme.typography.titleSmall,
-                color = MaterialTheme.colorScheme.onSurface
+                color = MaterialTheme.colorScheme.onSurfaceVariant
             )
             Icon(
                 imageVector = if (showComments) Icons.Rounded.KeyboardArrowUp else Icons.Rounded.KeyboardArrowDown,
@@ -151,20 +151,26 @@ private fun CommentItem(
                 horizontalArrangement = Arrangement.spacedBy(8.dp),
                 verticalAlignment = Alignment.Top
             ) {
-                UserAvatarImage(user = comment.author, size = 28.dp)
+                UserAvatarImage(
+                    user = comment.author,
+                    size = 28.dp
+                )
+
                 Column {
                     Text(
                         text = "@${comment.author.username}",
-                        style = MaterialTheme.typography.labelMedium,
-                        color = MaterialTheme.colorScheme.onSurface
+                        style = MaterialTheme.typography.labelSmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f)
                     )
+
                     Text(
                         text = comment.text,
-                        style = MaterialTheme.typography.bodyMedium,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.8f)
                     )
                 }
             }
+
             if (isOwn) {
                 Box {
                     IconButton(

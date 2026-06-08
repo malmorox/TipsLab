@@ -35,7 +35,7 @@ fun SplashScreen(
         Image(
             painter = painterResource(R.drawable.tipslab_logo),
             contentDescription = null,
-            modifier = Modifier.size(140.dp)
+            modifier = Modifier.size(180.dp)
         )
     }
 }

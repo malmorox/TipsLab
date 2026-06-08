@@ -69,6 +69,8 @@
     <string name="my_posts">My posts</string>
     <string name="no_recent_category_lifehacks">There are no recent lifehacks in this category</string>
     <string name="remove_media">Delete content</string>
+    <string name="edit_lifehack">todo</string>
+    <string name="comments">Comments</string>
     <string name="my_profile">My profile</string>
     <string name="no_posts">There are no posts yet</string>
     <string name="no_liked_posts">You have no favorites</string>

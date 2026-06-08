@@ -169,7 +169,25 @@ class EditLifehackViewModel @Inject constructor(
             _uiState.update { it.copy(isLoading = true) }
 
             try {
+                val (mediaUri, mediaType) = when (val source = currentState.mediaSource) {
+                    is MediaSource.Local -> source.uri to source.type
+                    is MediaSource.Remote -> null to null
+                    null -> null to null
+                }
 
+                editLifehackUseCase(
+                    id = lifehackId,
+                    title = currentState.title,
+                    description = currentState.description,
+                    steps = currentState.steps.filter { step -> step.isNotBlank() },
+                    category = currentState.category!!,
+                    mediaUri = mediaUri,
+                    mediaType = mediaType
+                ).onSuccess { id ->
+                    onSuccess(id)
+                }.onFailure { error ->
+                    // TODO mostrar error
+                }
             } finally {
                 _uiState.update { it.copy(isLoading = false) }
             }
