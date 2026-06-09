@@ -28,7 +28,9 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import app.iesjdlc.tipslab.R
 import app.iesjdlc.tipslab.domain.model.Comment
 import app.iesjdlc.tipslab.domain.model.CommentWithOwnership
 
@@ -53,7 +55,7 @@ fun CommentsSection(
             verticalAlignment = Alignment.CenterVertically
         ) {
             Text(
-                text = "Comentarios ($commentsCount)",
+                text = stringResource(R.string.comments) +"($commentsCount)",
                 style = MaterialTheme.typography.titleSmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
@@ -76,7 +78,7 @@ fun CommentsSection(
                 }
             } else {
                 Text(
-                    text = "Sé el primero en comentar este lifehack",
+                    text = stringResource(R.string.first_comment),
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
@@ -92,7 +94,7 @@ fun CommentsSection(
                     onValueChange = onCommentTextChange,
                     placeholder = {
                         Text(
-                            text = "Escribe una respuesta...",
+                            text = stringResource(R.string.write_response),
                             style = MaterialTheme.typography.bodyMedium,
                             color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
@@ -189,7 +191,7 @@ private fun CommentItem(
                         onDismissRequest = { expanded = false }
                     ) {
                         DropdownMenuItem(
-                            text = { Text("Eliminar") },
+                            text = { stringResource(R.string.delete) },
                             leadingIcon = {
                                 Icon(
                                     imageVector = Icons.Rounded.Delete,

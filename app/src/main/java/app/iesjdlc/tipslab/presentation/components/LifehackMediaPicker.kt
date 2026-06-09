@@ -118,7 +118,7 @@ private fun MediaEmpty(
                     modifier = Modifier.size(20.dp)
                 )
                 Text(
-                    text = "Subir foto o vídeo",
+                    text = stringResource(R.string.upload_media),
                     style = MaterialTheme.typography.bodyLarge,
                     color = MaterialTheme.colorScheme.primary
                 )

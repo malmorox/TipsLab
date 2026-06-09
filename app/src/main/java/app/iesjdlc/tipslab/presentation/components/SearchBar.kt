@@ -18,7 +18,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
+import app.iesjdlc.tipslab.R
 
 @Composable
 fun SearchBar(
@@ -55,7 +57,7 @@ fun SearchBar(
         readOnly = readOnly,
         placeholder = {
             Text(
-                text = "Busca lifehacks"
+                text = stringResource(R.string.search_lifehack)
             )
         },
         leadingIcon = {

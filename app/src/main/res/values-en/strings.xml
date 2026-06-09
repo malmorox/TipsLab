@@ -81,4 +81,11 @@
     <string name="unsave">Don\'t save</string>
     <string name="for_you">For you</string>
     <string name="error_occurred">An error has occurred</string>
+    <string name="search_lifehack">Search for lifehacks</string>
+    <string name="first_comment">Be the first to comment on this lifehack</string>
+    <string name="write_response">Write a response…</string>
+    <string name="upload_media">Upload photo or video</string>
+    <string name="upload_content">Add content</string>
+    <string name="open_camera">Open camera</string>
+    <string name="select_fromGalery">Select from gallery</string>
 </resources>

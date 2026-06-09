@@ -22,7 +22,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import app.iesjdlc.tipslab.R
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -45,7 +47,7 @@ fun MediaPickerSheet(
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             Text(
-                text = "Añadir contenido",
+                text = stringResource(R.string.upload_content),
                 style = MaterialTheme.typography.titleMedium,
                 modifier = Modifier.padding(bottom = 12.dp)
             )
@@ -56,13 +58,13 @@ fun MediaPickerSheet(
             ) {
                 SheetOption(
                     icon = Icons.Rounded.CameraAlt,
-                    label = "Abrir cámara",
+                    label = stringResource(R.string.open_camera),
                     onClick = onOpenCamera
                 )
 
                 SheetOption(
                     icon = Icons.Rounded.Image,
-                    label = "Seleccionar de galería",
+                    label = stringResource(R.string.select_fromGalery),
                     onClick = onPickFromGallery
                 )
             }

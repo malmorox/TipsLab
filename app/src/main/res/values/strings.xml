@@ -105,4 +105,11 @@
     <string name="unlike">No me gusta</string>
     <string name="unsave">No guardar</string>
     <string name="error_occurred">Ha ocurrido un error</string>
+    <string name="search_lifehack">Busca lifehacks</string>
+    <string name="first_comment">Sé el primero en comentar este lifehack</string>
+    <string name="write_response">Escribe una respuesta…</string>
+    <string name="upload_media">Subir foto o video</string>
+    <string name="upload_content">Añadir contenido</string>
+    <string name="open_camera">Abrir cámara</string>
+    <string name="select_fromGalery">Seleccionar de galería</string>
 </resources>
