@@ -112,10 +112,7 @@ private fun CategoryScreenUI(
                             verticalArrangement = Arrangement.spacedBy(16.dp)
                         ) {
 
-                            if (
-                                !state.isLoading &&
-                                state.globalContentNoData
-                            ) {
+                            if (state.globalContentNoData) {
                                 Box(
                                     modifier = Modifier.fillMaxSize(),
                                     contentAlignment = Alignment.Center

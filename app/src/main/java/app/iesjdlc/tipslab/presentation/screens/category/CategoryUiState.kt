@@ -16,7 +16,8 @@ data class CategoryUiState(
         get() = sections.recent.error != null && sections.popular.error != null
 
     val globalContentNoData: Boolean
-        get() = sections.recent.data.isNullOrEmpty() && sections.popular.data.isNullOrEmpty()
+        get() = !sections.popular.isLoading && !sections.recent.isLoading
+                && sections.popular.data.isNullOrEmpty() && sections.recent.data.isNullOrEmpty()
 }
 
 data class ContentSections(
