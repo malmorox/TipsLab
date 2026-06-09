@@ -17,6 +17,7 @@ import app.iesjdlc.tipslab.domain.repository.LifehackRepository
 import app.iesjdlc.tipslab.domain.usecase.lifehack.EditLifehackUseCase
 import app.iesjdlc.tipslab.presentation.navigation.Route
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -232,8 +233,11 @@ class EditLifehackViewModel @Inject constructor(
     fun onDiscardChangesConfirm(
         onNavigateBack: () -> Unit
     ) {
-        _uiState.update { it.copy(showDiscardChangesDialog = false) }
-        onNavigateBack()
+        viewModelScope.launch {
+            _uiState.update { it.copy(showDiscardChangesDialog = false) }
+            delay(150)
+            onNavigateBack()
+        }
     }
 
     fun onDiscardChangesDismiss() {

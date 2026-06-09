@@ -1,5 +1,6 @@
 package app.iesjdlc.tipslab.domain.usecase.lifehack
 
+import android.util.Log
 import app.iesjdlc.tipslab.domain.model.Lifehack
 import app.iesjdlc.tipslab.domain.repository.AuthRepository
 import app.iesjdlc.tipslab.domain.repository.LifehackRepository
@@ -8,64 +9,68 @@ import app.iesjdlc.tipslab.domain.repository.SearchRepository
 import app.iesjdlc.tipslab.domain.repository.OrderBy
 import javax.inject.Inject
 
-/*class GetForYouLifehacksUseCase @Inject constructor(
+class GetForYouLifehacksUseCase @Inject constructor(
     private val savedLikedRepository: SavedLikedRepository,
     private val lifehackRepository: LifehackRepository,
     private val searchRepository: SearchRepository,
     private val authRepository: AuthRepository,
 ) {
     suspend operator fun invoke(limit: Int = 10): Result<List<Lifehack>> = runCatching {
-        val userId = authRepository.getCurrentUser().id
+        val user = authRepository.getCurrentUser()
 
-        // 1. Coge liked y saved en paralelo
-        val likedLifehacks = savedLikedRepository.getUserLikedLifehacks(userId).getOrElse { emptyList() }
-        val savedLifehacks = savedLikedRepository.getUserSavedLifehacks(userId).getOrElse { emptyList() }
+        val likedIds = savedLikedRepository.getLikedIds(user.id)
+        val savedIds = savedLikedRepository.getSavedIds(user.id)
+        val interactedIds = (likedIds + savedIds).distinct().take(20)
+        Log.d("ForYou", "likedIds: $likedIds")
+        Log.d("ForYou", "savedIds: $savedIds")
+        Log.d("ForYou", "interactedIds: $interactedIds")
 
-        // 2. Extrae categorías de liked y saved
-        val categoryIds = (likedLifehacks + savedLifehacks)
-            .map { it.categoryId }
-            .distinct()
+        // Obtener las categorías de esos lifehacks
+        val interactedLifehacks = if (interactedIds.isNotEmpty())
+            lifehackRepository.getLifehacksByIds(interactedIds).getOrDefault(emptyList())
+        else emptyList()
+        Log.d("ForYou", "interactedLifehacks: ${interactedLifehacks.size}")
+        // Contar cuántas veces aparece cada categoría (más interacciones = más peso)
+        val categoryCounts = interactedLifehacks
+            .groupBy { it.category.id }
+            .mapValues { it.value.size }
+            .toMutableMap()
+        Log.d("ForYou", "categoryCounts: $categoryCounts")
 
-        // 3. Coge historial de búsqueda
-        val searchHistory = searchRepository.getSearchHistory(userId).getOrElse { emptyList() }
+        // Añadir peso por historial de búsqueda (menos peso que interacciones)
+        val searchHistory = searchRepository.getSearchHistory(user.id).getOrDefault(emptyList())
 
-        // 4. Si no hay nada → randoms
-        if (categoryIds.isEmpty() && searchHistory.isEmpty()) {
-            return@runCatching lifehackRepository.getLifehacks(OrderBy.RECENT, limit)
-                .getOrElse { emptyList() }
-                .shuffled()
-                .take(limit)
+        // Si no hay datos suficientes, devolver trending como fallback
+        if (categoryCounts.isEmpty()) {
+            return@runCatching lifehackRepository.getLifehacks(
+                orderBy = OrderBy.POPULAR,
+                limit = limit
+            ).getOrDefault(emptyList())
         }
+
+        // Obtener lifehacks de las categorías con más peso
+        val topCategories = categoryCounts
+            .entries
+            .sortedByDescending { it.value }
+            .take(3)
+            .map { it.key }
 
         val results = mutableListOf<Lifehack>()
+        val perCategory = (limit / topCategories.size).coerceAtLeast(1)
 
-        // 5. Lifehacks por categorías de liked/saved
-        categoryIds.forEach { categoryId ->
-            lifehackRepository.getLifehacksByCategory(categoryId, OrderBy.POPULAR, limit = 5)
-                .getOrElse { emptyList() }
-                .let { results.addAll(it) }
+        for (categoryId in topCategories) {
+            val lifehacks = lifehackRepository.getLifehacksByCategory(
+                categoryId = categoryId,
+                orderBy = OrderBy.POPULAR,
+                limit = perCategory
+            ).getOrDefault(emptyList())
+            results.addAll(lifehacks)
         }
 
-        // 6. Lifehacks por historial de búsqueda
-        searchHistory.take(3).forEach { query ->
-            lifehackRepository.searchLifehacks(query, limit = 5)
-                .getOrElse { emptyList() }
-                .let { results.addAll(it) }
-        }
-
-        // 7. Elimina duplicados, quita los ya likeados/guardados, mezcla y limita
-        val likedSavedIds = (likedLifehacks + savedLifehacks).map { it.id }.toSet()
+        // Excluir los que ya ha interactuado y mezclar un poco
         results
-            .distinctBy { it.id }
-            .filter { it.id !in likedSavedIds }
+            .filter { it.id !in interactedIds && it.author.id != user.id }
             .shuffled()
             .take(limit)
-            .ifEmpty {
-                // Si después de filtrar no queda nada, randoms
-                lifehackRepository.getLifehacks(OrderBy.RECENT, limit)
-                    .getOrElse { emptyList() }
-                    .shuffled()
-                    .take(limit)
-            }
     }
-}*/
+}

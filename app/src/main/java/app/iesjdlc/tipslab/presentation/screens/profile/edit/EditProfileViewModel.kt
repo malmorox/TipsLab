@@ -10,6 +10,7 @@ import app.iesjdlc.tipslab.domain.repository.AuthRepository
 import app.iesjdlc.tipslab.domain.repository.MediaRepository
 import app.iesjdlc.tipslab.domain.repository.UserRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -126,8 +127,11 @@ class EditProfileViewModel @Inject constructor(
     }
 
     fun onDiscardChangesConfirm(onNavigateBack: () -> Unit) {
-        _uiState.update { it.copy(showDiscardChangesDialog = false) }
-        onNavigateBack()
+        viewModelScope.launch {
+            _uiState.update { it.copy(showDiscardChangesDialog = false) }
+            delay(150)
+            onNavigateBack()
+        }
     }
 
     fun onDiscardChangesDismiss() {

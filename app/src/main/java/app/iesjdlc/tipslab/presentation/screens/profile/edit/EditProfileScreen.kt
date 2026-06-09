@@ -34,6 +34,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -45,6 +46,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import app.iesjdlc.tipslab.R
+import app.iesjdlc.tipslab.core.model.CameraMediaResult
 import app.iesjdlc.tipslab.presentation.components.ConfirmOrDismissDialog
 import app.iesjdlc.tipslab.presentation.components.ProfilePhotoPicker
 
@@ -54,7 +56,9 @@ fun EditProfileScreen(
     viewModel: EditProfileViewModel = hiltViewModel(),
     onNavigateBack: () -> Unit,
     onProfileEdited: () -> Unit,
-    onOpenCamera: () -> Unit
+    onOpenCamera: () -> Unit,
+    cameraResult: CameraMediaResult? = null,
+    onCameraResultConsumed: () -> Unit
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
@@ -62,6 +66,13 @@ fun EditProfileScreen(
         ActivityResultContracts.PickVisualMedia()
     ) { uri ->
         uri?.let { viewModel.onProfilePhotoPicked(it) }
+    }
+
+    LaunchedEffect(cameraResult) {
+        cameraResult?.let {
+            viewModel.onProfilePhotoPicked(it.uri)
+            onCameraResultConsumed()
+        }
     }
 
     EditProfileScreenUI(
@@ -128,7 +139,7 @@ private fun EditProfileScreenUI(
                 .fillMaxSize()
                 .background(MaterialTheme.colorScheme.background)
                 .padding(padding)
-                .padding(horizontal = 24.dp, vertical = 20.dp),
+                .padding(24.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Column(

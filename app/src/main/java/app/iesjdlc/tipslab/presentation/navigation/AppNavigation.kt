@@ -198,12 +198,20 @@ fun AppNavigation() {
             )
         }
 
-        composable<Route.EditProfile> {
+        composable<Route.EditProfile> { backStackEntry ->
+            val cameraResult by backStackEntry.savedStateHandle
+                .getStateFlow<CameraMediaResult?>(NavConstants.CAMERA_MEDIA_RESULT_KEY, null)
+                .collectAsStateWithLifecycle()
+
             EditProfileScreen(
                 onNavigateBack = { rootNavController.popBackStack() },
                 onProfileEdited = { rootNavController.popBackStack() },
                 onOpenCamera = {
                     rootNavController.navigate(Route.Camera(allowVideo = false))
+                },
+                cameraResult = cameraResult,
+                onCameraResultConsumed = {
+                    backStackEntry.savedStateHandle.remove<CameraMediaResult>(NavConstants.CAMERA_MEDIA_RESULT_KEY)
                 }
             )
         }

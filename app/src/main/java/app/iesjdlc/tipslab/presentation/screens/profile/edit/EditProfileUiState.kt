@@ -1,7 +1,5 @@
 package app.iesjdlc.tipslab.presentation.screens.profile.edit
 
-import android.net.Uri
-
 data class EditProfileUiState(
     val email: String = "",
     val isEmailEditable: Boolean = true,
