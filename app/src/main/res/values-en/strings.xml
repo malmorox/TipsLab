@@ -45,6 +45,7 @@
     <string name="log_out">Log out</string>
     <string name="edit_profile">Edit profile</string>
     <string name="no_popular_category_lifehacks">There are no popular lifehacks in this category</string>
+    <string name="no_category_lifehacks">There are no lifehacks available in this category</string>
     <string name="flip_camera">Rotate camera</string>
     <string name="close">Close</string>
     <string name="go_back">Back</string>
@@ -61,7 +62,7 @@
     <string name="step_min_chars">Minimun %1$d characters</string>
     <string name="steps_validation_error">Fill in the steps correctly before saving</string>
     <string name="select_category">Select a category</string>
-    <string name="trending">here</string>
+    <string name="trending">Tendencies</string>
     <string name="published_by">Published by</string>
     <string name="no_saved_posts">You have no saved items</string>
     <string name="save_changes">Save changes</string>
@@ -69,14 +70,15 @@
     <string name="my_posts">My posts</string>
     <string name="no_recent_category_lifehacks">There are no recent lifehacks in this category</string>
     <string name="remove_media">Delete content</string>
-    <string name="edit_lifehack">todo</string>
+    <string name="edit_lifehack">Edit Lifehack</string>
     <string name="comments">Comments</string>
     <string name="my_profile">My profile</string>
     <string name="no_posts">There are no posts yet</string>
     <string name="no_liked_posts">You have no favorites</string>
     <string name="my_favorites">My favorites</string>
-    <string name="like">todo</string>
-    <string name="unlike">todo</string>
-    <string name="unsave">todo</string>
-    <string name="for_you">here</string>
+    <string name="like">Like</string>
+    <string name="unlike">Dislike</string>
+    <string name="unsave">Don\'t save</string>
+    <string name="for_you">For you</string>
+    <string name="error_occurred">An error has occurred</string>
 </resources>

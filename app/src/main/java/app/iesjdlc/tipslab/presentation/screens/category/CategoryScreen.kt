@@ -22,8 +22,10 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -32,7 +34,6 @@ import app.iesjdlc.tipslab.R
 import app.iesjdlc.tipslab.domain.model.Lifehack
 import app.iesjdlc.tipslab.presentation.components.ContentListSection
 import app.iesjdlc.tipslab.presentation.components.LifehackSectionListItem
-import app.iesjdlc.tipslab.presentation.components.LifehackSectionListItemSkeleton
 
 @Composable
 fun CategoryScreen(
@@ -110,26 +111,44 @@ private fun CategoryScreenUI(
                                 .verticalScroll(rememberScrollState()),
                             verticalArrangement = Arrangement.spacedBy(16.dp)
                         ) {
-                            ContentListSection(
-                                title = stringResource(R.string.popular),
-                                sectionState = state.sections.popular,
-                                emptyMessage = stringResource(R.string.no_popular_category_lifehacks),
-                            ) { lifehack ->
-                                LifehackSectionListItem(
-                                    lifehack = lifehack,
-                                    onClick = { onOpenLifehack(lifehack) }
-                                )
-                            }
 
-                            ContentListSection(
-                                title = stringResource(R.string.recent),
-                                sectionState = state.sections.recent,
-                                emptyMessage = stringResource(R.string.no_recent_category_lifehacks),
-                            ) { lifehack ->
-                                LifehackSectionListItem(
-                                    lifehack = lifehack,
-                                    onClick = { onOpenLifehack(lifehack) }
-                                )
+                            if (
+                                !state.isLoading &&
+                                state.globalContentNoData
+                            ) {
+                                Box(
+                                    modifier = Modifier.fillMaxSize(),
+                                    contentAlignment = Alignment.Center
+                                ) {
+                                    Text(
+                                        text = stringResource(R.string.no_category_lifehacks),
+                                        style = MaterialTheme.typography.bodyLarge,
+                                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                        textAlign = TextAlign.Center
+                                    )
+                                }
+                            } else {
+                                ContentListSection(
+                                    title = stringResource(R.string.popular),
+                                    sectionState = state.sections.popular,
+                                    emptyMessage = stringResource(R.string.no_popular_category_lifehacks),
+                                ) { lifehack ->
+                                    LifehackSectionListItem(
+                                        lifehack = lifehack,
+                                        onClick = { onOpenLifehack(lifehack) }
+                                    )
+                                }
+
+                                ContentListSection(
+                                    title = stringResource(R.string.recent),
+                                    sectionState = state.sections.recent,
+                                    emptyMessage = stringResource(R.string.no_recent_category_lifehacks),
+                                ) { lifehack ->
+                                    LifehackSectionListItem(
+                                        lifehack = lifehack,
+                                        onClick = { onOpenLifehack(lifehack) }
+                                    )
+                                }
                             }
                         }
                     }
