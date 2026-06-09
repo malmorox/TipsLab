@@ -15,13 +15,6 @@ import javax.inject.Inject
 class LifehackRemoteDataSource @Inject constructor(
     private val db: FirebaseFirestore
 ) : LifehackDataSource {
-    override suspend fun getByAuthor(authorId: String): List<LifehackDto> =
-        db.collection(DBConstants.Remote.LIFEHACKS_COLLECTION)
-            .whereEqualTo(DBConstants.Remote.AUTHOR_ID_FIELD, authorId)
-            .get().await()
-            .documents
-            .mapNotNull { it.toObject(LifehackDto::class.java) }
-
     override suspend fun getById(id: String): LifehackDto? =
         db.collection(DBConstants.Remote.LIFEHACKS_COLLECTION)
             .document(id)
@@ -79,6 +72,22 @@ class LifehackRemoteDataSource @Inject constructor(
                 }
 
                 snapshot?.toObject(LifehackDto::class.java)?.let { trySend(it) }
+            }
+        awaitClose { subscription.remove() }
+    }
+
+    override fun observeByAuthor(authorId: String): Flow<List<LifehackDto>> = callbackFlow {
+        val subscription = db.collection(DBConstants.Remote.LIFEHACKS_COLLECTION)
+            .whereEqualTo(DBConstants.Remote.AUTHOR_ID_FIELD, authorId)
+            .addSnapshotListener { snapshot, error ->
+                if (error != null) {
+                    close(error)
+                    return@addSnapshotListener
+                }
+                val lifehacks = snapshot?.documents
+                    ?.mapNotNull { it.toObject(LifehackDto::class.java) }
+                    ?: emptyList()
+                trySend(lifehacks)
             }
         awaitClose { subscription.remove() }
     }

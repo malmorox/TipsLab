@@ -102,6 +102,9 @@ dependencies {
     // +Iconos de material
     implementation(libs.material.icons.extended)
 
+    // Lottie
+    implementation(libs.lottie.compose)
+
     // Hilt (DI)
     implementation(libs.hilt.android)
     implementation(libs.hilt.navigation.compose)
