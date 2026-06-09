@@ -7,9 +7,11 @@ import androidx.compose.animation.core.infiniteRepeatable
 import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
@@ -26,31 +28,49 @@ import androidx.compose.ui.unit.dp
 fun LifehackSectionListItemSkeleton() {
     val alpha = shimmerAlpha()
 
-    Card(
-        modifier = Modifier.width(160.dp),
-        shape = MaterialTheme.shapes.medium
+    Column(
+        modifier = Modifier.width(120.dp),
+        verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
-        Row(
+        Box(
+            modifier = Modifier
+                .aspectRatio(1f)
+                .clip(MaterialTheme.shapes.small)
+                .background(MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = alpha))
+        )
 
-        ) {
+        Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
             Box(
                 modifier = Modifier
-                    .size(64.dp)
-                    .clip(MaterialTheme.shapes.medium)
+                    .fillMaxWidth()
+                    .height(12.dp)
+                    .clip(MaterialTheme.shapes.extraSmall)
                     .background(MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = alpha))
             )
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth(0.7f)
+                    .height(12.dp)
+                    .clip(MaterialTheme.shapes.extraSmall)
+                    .background(MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = alpha))
+            )
+        }
 
-            Column(
-
-            ) {
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(16.dp)
-                        .clip(MaterialTheme.shapes.extraSmall)
-                        .background(MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = alpha))
-                )
-            }
+        Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+            Box(
+                modifier = Modifier
+                    .width(32.dp)
+                    .height(10.dp)
+                    .clip(MaterialTheme.shapes.extraSmall)
+                    .background(MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = alpha))
+            )
+            Box(
+                modifier = Modifier
+                    .width(32.dp)
+                    .height(10.dp)
+                    .clip(MaterialTheme.shapes.extraSmall)
+                    .background(MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = alpha))
+            )
         }
     }
 }

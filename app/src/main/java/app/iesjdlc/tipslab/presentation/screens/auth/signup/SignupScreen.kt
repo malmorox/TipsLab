@@ -5,6 +5,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -82,10 +83,10 @@ private fun SignUpScreenUI(
         ) {
 
             Icon(
-                painter = painterResource(R.drawable.logo),
+                painter = painterResource(R.drawable.tipslab_logo),
                 contentDescription = null,
                 tint = MaterialTheme.colorScheme.primary,
-                modifier = Modifier.size(120.dp)
+                modifier = Modifier.size(80.dp)
             )
 
             Spacer(modifier = Modifier.height(16.dp))
@@ -94,7 +95,7 @@ private fun SignUpScreenUI(
                 text = stringResource(R.string.createAccount),
                 fontSize = 26.sp,
                 fontWeight = FontWeight.SemiBold,
-                color = MaterialTheme.colorScheme.primary
+                color = MaterialTheme.colorScheme.secondary
             )
 
             Spacer(modifier = Modifier.height(24.dp))
@@ -236,7 +237,7 @@ private fun SignUpScreenUI(
                     contentAlignment = Alignment.Center
                 ) {
                     Text(
-                        text = stringResource(R.string.signup),
+                        text = stringResource(R.string.signup).uppercase(),
                         color = Color.White,
                         fontWeight = FontWeight.Bold
                     )
@@ -245,14 +246,21 @@ private fun SignUpScreenUI(
 
             Spacer(modifier = Modifier.height(14.dp))
 
-            Text(
-                text = stringResource(R.string.back_to_login),
-                fontSize = 14.sp,
-                color = MaterialTheme.colorScheme.primary,
-                modifier = Modifier.clickable {
-                    onBackToLogin()
-                }
-            )
+            Row {
+                Text(
+                    text = stringResource(R.string.do_you_have_account),
+                    fontSize = 14.sp,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+                Text(
+                    text = stringResource(R.string.back_to_login),
+                    fontSize = 14.sp,
+                    color = MaterialTheme.colorScheme.primary,
+                    modifier = Modifier.clickable {
+                        onBackToLogin()
+                    }
+                )
+            }
         }
     }
 }

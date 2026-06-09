@@ -4,18 +4,15 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.Logout
 import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material.icons.filled.GridOn
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -35,20 +32,22 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.material.icons.filled.BookmarkBorder
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.clickable
+import androidx.compose.material.icons.rounded.BookmarkBorder
+import androidx.compose.material.icons.rounded.FavoriteBorder
+import androidx.compose.material.icons.rounded.GridOn
+import androidx.compose.ui.graphics.vector.ImageVector
 import app.iesjdlc.tipslab.domain.model.Lifehack
+import app.iesjdlc.tipslab.presentation.components.ProfilePostsList
+import app.iesjdlc.tipslab.presentation.components.UserAvatarImage
 
 @Composable
 fun ProfileTab(
     viewModel: ProfileViewModel = hiltViewModel(),
     onEditProfile: () -> Unit,
-    onLogout: () -> Unit,
-    onOpenLifehack: (String) -> Unit
-){
+    onOpenLifehack: (String) -> Unit,
+    onLogout: () -> Unit
+) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
-
-    LaunchedEffect(Unit) {
-        viewModel.refresh()
-    }
 
     ProfileTabUI(
         state = uiState,
@@ -58,15 +57,24 @@ fun ProfileTab(
     )
 }
 
+private data class ProfilePage(
+    val icon: ImageVector,
+    val label: Int,
+    val emptyText: Int
+)
+
 @Composable
 private fun ProfileTabUI(
     state: ProfileUiState,
     onEditProfile: () -> Unit,
-    onLogout: () -> Unit,
-    onOpenLifehack: (String) -> Unit
+    onOpenLifehack: (String) -> Unit,
+    onLogout: () -> Unit
 ) {
-
-    val pages = listOf(0, 1, 2)
+    val pages = listOf(
+        ProfilePage(Icons.Rounded.GridOn, R.string.my_posts, R.string.no_posts),
+        ProfilePage(Icons.Rounded.FavoriteBorder, R.string.my_favorites, R.string.no_liked_posts),
+        ProfilePage(Icons.Rounded.BookmarkBorder, R.string.my_saved, R.string.no_saved_posts)
+    )
 
     val pagerState = rememberPagerState(
         initialPage = 0,
@@ -104,169 +112,88 @@ private fun ProfileTabUI(
             }
         }
 
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(vertical = 20.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-
-            AsyncImage(
-                model = "${state.photoUrl}?t=${System.currentTimeMillis()}",
-                contentDescription = null,
-                contentScale = ContentScale.Crop,
+        state.user?.let { user ->
+            Column(
                 modifier = Modifier
-                    .size(108.dp)
-                    .clip(CircleShape)
-            )
-
-            Spacer(modifier = Modifier.height(14.dp))
-
-            Text(
-                text = "@${state.username}",
-                style = MaterialTheme.typography.titleLarge,
-                fontWeight = FontWeight.Bold
-            )
-
-            Spacer(modifier = Modifier.height(18.dp))
-
-            Button(
-                onClick = onEditProfile,
-                shape = MaterialTheme.shapes.medium,
-                modifier = Modifier.height(46.dp)
+                    .fillMaxWidth()
+                    .padding(vertical = 20.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
             ) {
+                UserAvatarImage(
+                    user = user,
+                    size = 108.dp
+                )
+
+                Spacer(modifier = Modifier.height(14.dp))
+
                 Text(
-                    text = stringResource(R.string.edit_profile),
-                    style = MaterialTheme.typography.bodyLarge
+                    text = "@${user.username}",
+                    style = MaterialTheme.typography.titleLarge,
+                    fontWeight = FontWeight.Bold
                 )
+
+                Spacer(modifier = Modifier.height(18.dp))
+
+                Button(
+                    onClick = onEditProfile,
+                    shape = MaterialTheme.shapes.medium,
+                    modifier = Modifier.height(46.dp)
+                ) {
+                    Text(
+                        text = stringResource(R.string.edit_profile),
+                        style = MaterialTheme.typography.bodyLarge
+                    )
+                }
             }
-        }
 
-        HorizontalDivider()
+            HorizontalDivider()
 
-        TabRow(
-            selectedTabIndex = pagerState.currentPage,
-            containerColor = MaterialTheme.colorScheme.background,
-            indicator = { tabPositions ->
-                TabRowDefaults.Indicator(
-                    modifier = Modifier.tabIndicatorOffset(
-                        tabPositions[pagerState.currentPage]
-                    ),
-                    color = MaterialTheme.colorScheme.primary
-                )
-            }
-        ) {
-
-            pages.forEachIndexed { index, title ->
-
-                Tab(
-                    selected = pagerState.currentPage == index,
-                    onClick = {
-                        scope.launch {
-                            pagerState.animateScrollToPage(index)
+            TabRow(
+                selectedTabIndex = pagerState.currentPage,
+                containerColor = MaterialTheme.colorScheme.background,
+                indicator = { tabPositions ->
+                    TabRowDefaults.Indicator(
+                        modifier = Modifier.tabIndicatorOffset(
+                            tabPositions[pagerState.currentPage]
+                        ),
+                        color = MaterialTheme.colorScheme.primary
+                    )
+                }
+            ) {
+                pages.forEachIndexed { index, page ->
+                    Tab(
+                        selected = pagerState.currentPage == index,
+                        onClick = {
+                            scope.launch {
+                                pagerState.animateScrollToPage(index)
+                            }
+                        },
+                        selectedContentColor = MaterialTheme.colorScheme.primary,
+                        unselectedContentColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                        icon = {
+                            Icon(
+                                imageVector = page.icon,
+                                contentDescription = stringResource(page.label)
+                            )
                         }
+                    )
+                }
+            }
+
+            HorizontalPager(
+                state = pagerState,
+                modifier = Modifier.fillMaxSize()
+            ) { page ->
+                val currentPage = pages[page]
+
+                ProfilePostsList(
+                    posts = when (page) {
+                        0 -> state.posts
+                        1 -> state.favoritePosts
+                        else -> state.savedPosts
                     },
-                    selectedContentColor = MaterialTheme.colorScheme.primary,
-                    unselectedContentColor = MaterialTheme.colorScheme.onSurfaceVariant,
-                    icon = {
-                        when (index) {
-                            0 -> Icon(
-                                imageVector = Icons.Default.GridOn,
-                                contentDescription = stringResource(R.string.my_posts)
-                            )
-
-                            1 -> Icon(
-                                imageVector = Icons.Default.FavoriteBorder,
-                                contentDescription = stringResource(R.string.my_favorites)
-                            )
-
-                            2 -> Icon(
-                                imageVector = Icons.Default.BookmarkBorder,
-                                contentDescription = stringResource(R.string.my_saved)
-                            )
-                        }
-                    }
-                )
-            }
-        }
-
-        HorizontalPager(
-            state = pagerState,
-            modifier = Modifier.fillMaxSize()
-        ) { page ->
-            when (page) {
-
-                //PUBLICACIONES
-                0 -> {
-                    ProfilePostsGrid(
-                        posts = state.posts,
-                        emptyText = stringResource(R.string.no_posts),
-                        onOpenLifehack = onOpenLifehack
-                    )
-                }
-
-                //FAVORITOS
-                1 -> {
-                    ProfilePostsGrid(
-                        posts = state.favoritePosts,
-                        emptyText = stringResource(R.string.no_favorites),
-                        onOpenLifehack = onOpenLifehack
-                    )
-                }
-
-                //GUARDADOS
-                2 -> {
-                    ProfilePostsGrid(
-                        posts = state.savedPosts,
-                        emptyText = stringResource(R.string.no_saved),
-                        onOpenLifehack = onOpenLifehack
-                    )
-                }
-            }
-        }
-    }
-}
-
-@Composable
-private fun ProfilePostsGrid(
-    posts: List<Lifehack>,
-    emptyText: String,
-    onOpenLifehack: (String) -> Unit
-) {
-
-    if (posts.isEmpty()) {
-
-        Box(
-            modifier = Modifier.fillMaxSize(),
-            contentAlignment = Alignment.Center
-        ) {
-            Text(text = emptyText)
-        }
-
-    } else {
-
-        LazyVerticalGrid(
-            columns = GridCells.Fixed(3),
-            modifier = Modifier.fillMaxSize(),
-            contentPadding = PaddingValues(2.dp),
-            horizontalArrangement = Arrangement.spacedBy(2.dp),
-            verticalArrangement = Arrangement.spacedBy(2.dp)
-        ) {
-
-            items(posts.size) { index ->
-
-                val post = posts[index]
-
-                AsyncImage(
-                    model = post.media?.url,
-                    contentDescription = post.title,
-                    contentScale = ContentScale.Crop,
-                    modifier = Modifier
-                        .aspectRatio(1f)
-                        .fillMaxWidth()
-                        .clickable {
-                            onOpenLifehack(post.id)
-                        }
+                    emptyText = stringResource(currentPage.emptyText),
+                    onOpenLifehack = onOpenLifehack
                 )
             }
         }

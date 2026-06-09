@@ -1,5 +1,7 @@
 package app.iesjdlc.tipslab.presentation.navigation
 
+import androidx.compose.animation.EnterTransition
+import androidx.compose.animation.ExitTransition
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
@@ -12,7 +14,6 @@ import app.iesjdlc.tipslab.presentation.components.BottomNavBar
 import app.iesjdlc.tipslab.presentation.screens.explore.ExploreTab
 import app.iesjdlc.tipslab.presentation.screens.home.HomeTab
 import app.iesjdlc.tipslab.presentation.screens.profile.ProfileTab
-import app.iesjdlc.tipslab.presentation.screens.saved.SavedTab
 
 @Composable
 fun MainScaffold(
@@ -36,24 +37,31 @@ fun MainScaffold(
 			startDestination = Route.Home,
 			modifier = Modifier.padding(innerPadding)
 		) {
-			composable<Route.Home> {
+			composable<Route.Home>(
+				enterTransition = { EnterTransition.None },
+				exitTransition = { ExitTransition.None },
+				popEnterTransition = { EnterTransition.None },
+				popExitTransition = { ExitTransition.None }
+			) {
 				HomeTab(
 					onOpenLifehack = { lifehackId ->
 						rootNavController.navigate(Route.LifehackDetail(lifehackId))
 					},
-					onOpenCategory = { categoryId ->
-						rootNavController.navigate(Route.LifehacksByCategory(categoryId))
-					},
 					onSearch = {
 						rootNavController.navigate(Route.Search)
 					}
 				)
 			}
 
-			composable<Route.Explore> {
+			composable<Route.Explore>(
+				enterTransition = { EnterTransition.None },
+				exitTransition = { ExitTransition.None },
+				popEnterTransition = { EnterTransition.None },
+				popExitTransition = { ExitTransition.None }
+			) {
 				ExploreTab(
 					onOpenCategory = { categoryId ->
-						rootNavController.navigate(Route.LifehacksByCategory(categoryId))
+						rootNavController.navigate(Route.Category(categoryId))
 					},
 					onSearch = {
 						rootNavController.navigate(Route.Search)
@@ -61,21 +69,20 @@ fun MainScaffold(
 				)
 			}
 
-			composable<Route.Saved> {
-				SavedTab(
-
-				)
-			}
-
-			composable<Route.Profile> {
+			composable<Route.Profile>(
+				enterTransition = { EnterTransition.None },
+				exitTransition = { ExitTransition.None },
+				popEnterTransition = { EnterTransition.None },
+				popExitTransition = { ExitTransition.None }
+			) {
 				ProfileTab(
 					onEditProfile = {
 						rootNavController.navigate(Route.EditProfile)
 					},
-					onLogout = onLogout,
 					onOpenLifehack = { lifehackId ->
 						rootNavController.navigate(Route.LifehackDetail(lifehackId))
-					}
+					},
+					onLogout = onLogout
 				)
 			}
 		}

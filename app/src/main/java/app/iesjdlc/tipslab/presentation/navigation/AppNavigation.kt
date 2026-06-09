@@ -140,7 +140,12 @@ fun AppNavigation() {
         // Pantallas de destino
         composable<Route.Search> {
             SearchScreen(
-                onNavigateBack = { rootNavController.popBackStack() }
+                onNavigateBack = { rootNavController.popBackStack() },
+                onOpenLifehack = { lifehackId ->
+                    rootNavController.navigate(Route.LifehackDetail(lifehackId)) {
+                        launchSingleTop = true
+                    }
+                },
             )
         }
 
@@ -152,16 +157,20 @@ fun AppNavigation() {
                 },
                 onDeleteLifehack = { rootNavController.popBackStack() },
                 onOpenCategory = { categoryId ->
-                    rootNavController.navigate(Route.LifehacksByCategory(categoryId))
+                    rootNavController.navigate(Route.Category(categoryId)) {
+                        launchSingleTop = true
+                    }
                 }
             )
         }
 
-        composable<Route.LifehacksByCategory> {
+        composable<Route.Category> {
             CategoryScreen(
                 onNavigateBack = { rootNavController.popBackStack() },
                 onOpenLifehack = { lifehackId ->
-                    rootNavController.navigate(Route.LifehackDetail(lifehackId))
+                    rootNavController.navigate(Route.LifehackDetail(lifehackId)) {
+                        launchSingleTop = true
+                    }
                 }
             )
         }
@@ -189,12 +198,20 @@ fun AppNavigation() {
             )
         }
 
-        composable<Route.EditProfile> {
+        composable<Route.EditProfile> { backStackEntry ->
+            val cameraResult by backStackEntry.savedStateHandle
+                .getStateFlow<CameraMediaResult?>(NavConstants.CAMERA_MEDIA_RESULT_KEY, null)
+                .collectAsStateWithLifecycle()
+
             EditProfileScreen(
                 onNavigateBack = { rootNavController.popBackStack() },
                 onProfileEdited = { rootNavController.popBackStack() },
                 onOpenCamera = {
                     rootNavController.navigate(Route.Camera(allowVideo = false))
+                },
+                cameraResult = cameraResult,
+                onCameraResultConsumed = {
+                    backStackEntry.savedStateHandle.remove<CameraMediaResult>(NavConstants.CAMERA_MEDIA_RESULT_KEY)
                 }
             )
         }

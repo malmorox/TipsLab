@@ -46,7 +46,6 @@ class CameraViewModel @Inject constructor(
     val hasPermission: StateFlow<Boolean> = _hasPermission.asStateFlow()
 
     private val _hasAudioPermission = MutableStateFlow(false)
-    val hasAudioPermission: StateFlow<Boolean> = _hasAudioPermission.asStateFlow()
 
     fun onPermissionResult(granted: Boolean) {
         _hasPermission.value = granted

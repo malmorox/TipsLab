@@ -12,13 +12,5 @@ data class CommentDto(
 
     @get:PropertyName("commented_at")
     @set:PropertyName("commented_at")
-    var commentedAt: Long = System.currentTimeMillis(),
-
-    @get:PropertyName("likes_count")
-    @set:PropertyName("likes_count")
-    var likesCount: Int = 0,
-
-    @get:PropertyName("replies_count")
-    @set:PropertyName("replies_count")
-    var repliesCount: Int = 0
+    var commentedAt: Long = System.currentTimeMillis()
 )

@@ -17,6 +17,7 @@ import app.iesjdlc.tipslab.domain.repository.LifehackRepository
 import app.iesjdlc.tipslab.domain.usecase.lifehack.EditLifehackUseCase
 import app.iesjdlc.tipslab.presentation.navigation.Route
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -169,7 +170,25 @@ class EditLifehackViewModel @Inject constructor(
             _uiState.update { it.copy(isLoading = true) }
 
             try {
+                val (mediaUri, mediaType) = when (val source = currentState.mediaSource) {
+                    is MediaSource.Local -> source.uri to source.type
+                    is MediaSource.Remote -> null to null
+                    null -> null to null
+                }
 
+                editLifehackUseCase(
+                    id = lifehackId,
+                    title = currentState.title,
+                    description = currentState.description,
+                    steps = currentState.steps.filter { step -> step.isNotBlank() },
+                    category = currentState.category!!,
+                    mediaUri = mediaUri,
+                    mediaType = mediaType
+                ).onSuccess { id ->
+                    onSuccess(id)
+                }.onFailure { error ->
+                    // TODO mostrar error
+                }
             } finally {
                 _uiState.update { it.copy(isLoading = false) }
             }
@@ -214,8 +233,11 @@ class EditLifehackViewModel @Inject constructor(
     fun onDiscardChangesConfirm(
         onNavigateBack: () -> Unit
     ) {
-        _uiState.update { it.copy(showDiscardChangesDialog = false) }
-        onNavigateBack()
+        viewModelScope.launch {
+            _uiState.update { it.copy(showDiscardChangesDialog = false) }
+            delay(150)
+            onNavigateBack()
+        }
     }
 
     fun onDiscardChangesDismiss() {

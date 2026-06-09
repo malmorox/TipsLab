@@ -16,6 +16,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.joinAll
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -26,15 +27,17 @@ class CategoryViewModel @Inject constructor(
     private val getLifehacksByCategoryUseCase: GetLifehacksByCategoryUseCase,
     private val searchLifehacksByCategoryUseCase: SearchLifehacksByCategoryUseCase
 ) : ViewModel() {
-    private val categoryId = savedStateHandle.toRoute<Route.LifehacksByCategory>().categoryId
+    private val categoryId = savedStateHandle.toRoute<Route.Category>().categoryId
 
     private val _uiState = MutableStateFlow(CategoryUiState())
     val uiState: StateFlow<CategoryUiState> = _uiState.asStateFlow()
 
     init {
         loadCategory()
-        loadCategoryLifehacks()
+        loadData()
     }
+
+    fun refresh() = loadData(isRefresh = true)
 
     private fun loadCategory() {
         viewModelScope.launch {
@@ -54,23 +57,29 @@ class CategoryViewModel @Inject constructor(
         }
     }
 
-    private fun loadCategoryLifehacks() {
-        loadSection(CategorySection.RECENT)
-        loadSection(CategorySection.POPULAR)
+    private fun loadData(isRefresh: Boolean = false) {
+        viewModelScope.launch {
+            if (isRefresh) _uiState.update { it.copy(isRefreshing = true) }
+
+            listOf(
+                launch { loadSection(CategorySection.RECENT) },
+                launch { loadSection(CategorySection.POPULAR) }
+            ).joinAll()
+
+            if (isRefresh) _uiState.update { it.copy(isRefreshing = false) }
+        }
     }
 
-    private fun loadSection(section: CategorySection, limit: Int = 10) {
-        viewModelScope.launch {
-            updateSection(section, SectionState(isLoading = true))
+    private suspend fun loadSection(section: CategorySection, limit: Int = 10) {
+        updateSection(section, SectionState(isLoading = true))
 
-            getLifehacksByCategoryUseCase(categoryId, section, limit = limit)
-                .onSuccess { result ->
-                    updateSection(section, SectionState(data = result))
-                }
-                .onFailure { error ->
-                    updateSection(section, SectionState(error = error.message))
-                }
-        }
+        getLifehacksByCategoryUseCase(categoryId, section, limit = limit)
+            .onSuccess { result ->
+                updateSection(section, SectionState(data = result))
+            }
+            .onFailure { error ->
+                updateSection(section, SectionState(error = error.message))
+            }
     }
 
     private fun updateSection(section: CategorySection, newState: SectionState<List<Lifehack>>) {

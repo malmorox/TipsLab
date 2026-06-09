@@ -4,11 +4,13 @@ import android.net.Uri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import app.iesjdlc.tipslab.data.repository.AuthRepositoryImpl
+import app.iesjdlc.tipslab.domain.model.ProviderType
 import app.iesjdlc.tipslab.domain.model.User
 import app.iesjdlc.tipslab.domain.repository.AuthRepository
 import app.iesjdlc.tipslab.domain.repository.MediaRepository
 import app.iesjdlc.tipslab.domain.repository.UserRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -43,6 +45,7 @@ class EditProfileViewModel @Inject constructor(
 
                 _uiState.value = _uiState.value.copy(
                     email = user.email,
+                    isEmailEditable = user.provider != ProviderType.GOOGLE,
                     username = user.username,
                     profilePhoto = user.photoUrl
                 )
@@ -124,8 +127,11 @@ class EditProfileViewModel @Inject constructor(
     }
 
     fun onDiscardChangesConfirm(onNavigateBack: () -> Unit) {
-        _uiState.update { it.copy(showDiscardChangesDialog = false) }
-        onNavigateBack()
+        viewModelScope.launch {
+            _uiState.update { it.copy(showDiscardChangesDialog = false) }
+            delay(150)
+            onNavigateBack()
+        }
     }
 
     fun onDiscardChangesDismiss() {

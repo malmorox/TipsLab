@@ -6,9 +6,12 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
@@ -29,10 +32,6 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -43,8 +42,8 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import app.iesjdlc.tipslab.R
 import app.iesjdlc.tipslab.domain.model.Category
 import app.iesjdlc.tipslab.domain.model.User
-import app.iesjdlc.tipslab.presentation.common.CommentInputMode
 import app.iesjdlc.tipslab.presentation.common.UploadState
+import app.iesjdlc.tipslab.presentation.components.AnimatedCircleButton
 import app.iesjdlc.tipslab.presentation.components.CommentsSection
 import app.iesjdlc.tipslab.presentation.components.ConfirmOrDismissDialog
 import app.iesjdlc.tipslab.presentation.components.LifehackStepsList
@@ -75,9 +74,8 @@ fun LifehackDetailScreen(
         onSave = { viewModel.onSaveClick() },
         onShowComments = { viewModel.onShowComments() },
         onCommentTextChange = { viewModel.onCommentTextChange(it) },
-        onSendComment = { viewModel.onSendComment(it) },
+        onSendComment = { viewModel.onSendComment() },
         onDeleteComment = { viewModel.onDeleteComment(it) },
-        onDeleteReply = { commentId, replyId -> viewModel.onDeleteReply(commentId, replyId) },
         onBack = onNavigateBack
     )
 }
@@ -97,13 +95,10 @@ private fun LifehackDetailScreenUI(
     onSave: () -> Unit,
     onShowComments: () -> Unit,
     onCommentTextChange: (String) -> Unit,
-    onSendComment: (CommentInputMode) -> Unit,
+    onSendComment: () -> Unit,
     onDeleteComment: (String) -> Unit,
-    onDeleteReply: (String, String) -> Unit,
     onBack: () -> Unit,
 ) {
-    var inputMode by remember { mutableStateOf<CommentInputMode>(CommentInputMode.NewComment) }
-
     Scaffold(
         topBar = {
             TopAppBar(
@@ -112,7 +107,7 @@ private fun LifehackDetailScreenUI(
                         Text(
                             text = state.lifehack.title,
                             style = MaterialTheme.typography.titleLarge,
-                            color = MaterialTheme.colorScheme.primary,
+                            color = MaterialTheme.colorScheme.onSurface,
                             maxLines = 1,
                             overflow = TextOverflow.Ellipsis
                         )
@@ -218,17 +213,42 @@ private fun LifehackDetailScreenUI(
                             ),
                         verticalArrangement = Arrangement.spacedBy(16.dp)
                     ) {
-                        Text(
-                            text = lifehack.title,
-                            style = MaterialTheme.typography.headlineLarge,
-                            color = MaterialTheme.colorScheme.primary
-                        )
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.spacedBy(16.dp),
+                            verticalAlignment = Alignment.Top
+                        ) {
+                            Text(
+                                text = lifehack.title,
+                                style = MaterialTheme.typography.headlineMedium,
+                                color = MaterialTheme.colorScheme.primary,
+                                modifier = Modifier.weight(1f),
+                                maxLines = 2,
+                                overflow = TextOverflow.Ellipsis
+                            )
+
+                            if (!state.isAuthor) {
+                                Row(
+                                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                                    verticalAlignment = Alignment.CenterVertically
+                                ) {
+                                    LikeButton(
+                                        isLiked = state.isLiked,
+                                        onClick = onLike
+                                    )
+                                    SaveButton(
+                                        isSaved = state.isSaved,
+                                        onClick = onSave
+                                    )
+                                }
+                            }
+                        }
 
                         SectionWithHeading(heading = stringResource(R.string.description)) {
                             Text(
                                 text = lifehack.description,
                                 style = MaterialTheme.typography.bodyMedium,
-                                color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.5f)
+                                color = MaterialTheme.colorScheme.onSurface
                             )
                         }
 
@@ -241,8 +261,8 @@ private fun LifehackDetailScreenUI(
                         SectionWithHeading(heading = stringResource(R.string.category)) {
                             Text(
                                 text = lifehack.category.name,
-                                style = MaterialTheme.typography.bodyMedium,
-                                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                style = MaterialTheme.typography.bodyLarge,
+                                color = MaterialTheme.colorScheme.onSurface,
                                 modifier = Modifier.clickable {
                                     onOpenCategory(lifehack.category)
                                 }
@@ -253,6 +273,8 @@ private fun LifehackDetailScreenUI(
                             AuthorSection(author = lifehack.author)
                         }
 
+                        Spacer(modifier = Modifier.height(16.dp))
+
                         CommentsSection(
                             commentsCount = lifehack.commentsCount,
                             comments = state.comments,
@@ -260,21 +282,8 @@ private fun LifehackDetailScreenUI(
                             onShowComments = onShowComments,
                             commentText = state.commentText,
                             onCommentTextChange = onCommentTextChange,
-                            inputMode = inputMode,
-                            isAuthor = state.isAuthor,
-                            onSendComment = {
-                                onSendComment(inputMode)
-                                inputMode = CommentInputMode.NewComment
-                            },
-                            onReplyTo = { commentId ->
-                                inputMode = CommentInputMode.Reply(commentId)
-                            },
-                            onCancelReply = {
-                                inputMode = CommentInputMode.NewComment
-                                onCommentTextChange("")
-                            },
-                            onDeleteComment = onDeleteComment,
-                            onDeleteReply = onDeleteReply
+                            onSendComment = onSendComment,
+                            onDeleteComment = onDeleteComment
                         )
                     }
                 }
@@ -311,7 +320,7 @@ private fun SectionWithHeading(
         Text(
             text = heading,
             style = MaterialTheme.typography.labelMedium,
-            color = MaterialTheme.colorScheme.onSurfaceVariant
+            color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f)
         )
 
         content()
@@ -327,7 +336,7 @@ private fun AuthorSection(author: User) {
         Text(
             text = stringResource(R.string.published_by),
             style = MaterialTheme.typography.labelMedium,
-            color = MaterialTheme.colorScheme.onSurfaceVariant
+            color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f)
         )
 
         Row(
@@ -342,7 +351,7 @@ private fun AuthorSection(author: User) {
             Text(
                 text = "@${author.username}",
                 style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
+                color = MaterialTheme.colorScheme.onSurface
             )
         }
     }
@@ -353,13 +362,13 @@ private fun LikeButton(
     isLiked: Boolean,
     onClick: () -> Unit
 ) {
-    IconButton(onClick = onClick) {
-        Icon(
-            imageVector = if (isLiked) Icons.Rounded.Favorite else Icons.Rounded.FavoriteBorder,
-            contentDescription = if (isLiked) stringResource(R.string.unlike) else stringResource(R.string.like),
-            tint = if (isLiked) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant
-        )
-    }
+    AnimatedCircleButton(
+        isActive = isLiked,
+        onClick = onClick,
+        activeIcon = Icons.Rounded.Favorite,
+        inactiveIcon = Icons.Rounded.FavoriteBorder,
+        contentDescription = if (isLiked) stringResource(R.string.unlike) else stringResource(R.string.like)
+    )
 }
 
 @Composable
@@ -367,11 +376,11 @@ private fun SaveButton(
     isSaved: Boolean,
     onClick: () -> Unit
 ) {
-    IconButton(onClick = onClick) {
-        Icon(
-            imageVector = if (isSaved) Icons.Rounded.Bookmark else Icons.Rounded.BookmarkBorder,
-            contentDescription = if (isSaved) stringResource(R.string.unsave) else stringResource(R.string.save),
-            tint = if (isSaved) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant
-        )
-    }
+    AnimatedCircleButton(
+        isActive = isSaved,
+        onClick = onClick,
+        activeIcon = Icons.Rounded.Bookmark,
+        inactiveIcon = Icons.Rounded.BookmarkBorder,
+        contentDescription = if (isSaved) stringResource(R.string.unsave) else stringResource(R.string.save)
+    )
 }
