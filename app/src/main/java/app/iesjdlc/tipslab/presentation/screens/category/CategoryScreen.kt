@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
@@ -18,6 +19,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
@@ -43,6 +45,7 @@ fun CategoryScreen(
     CategoryScreenUI(
         state = uiState,
         onOpenLifehack = { lifehack -> viewModel.onLifehackClick(lifehack, onOpenLifehack) },
+        onRefresh = { viewModel.refresh() },
         onBack = onNavigateBack,
     )
 }
@@ -52,6 +55,7 @@ fun CategoryScreen(
 private fun CategoryScreenUI(
     state: CategoryUiState,
     onOpenLifehack: (Lifehack) -> Unit,
+    onRefresh: () -> Unit,
     onBack: () -> Unit
 ) {
     Scaffold(
@@ -88,35 +92,46 @@ private fun CategoryScreenUI(
                 .fillMaxSize()
                 .padding(paddingValues)
                 .background(MaterialTheme.colorScheme.background)
+                .padding(24.dp)
         ) {
-            state.category?.let { category ->
+            state.category?.let {
                 Column(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .verticalScroll(rememberScrollState())
-                        .padding(24.dp),
+                    modifier = Modifier.fillMaxWidth(),
                     verticalArrangement = Arrangement.spacedBy(16.dp)
                 ) {
-                    ContentListSection(
-                        title = stringResource(R.string.popular),
-                        sectionState = state.sections.popular,
-                        emptyMessage = stringResource(R.string.no_popular_category_lifehacks),
-                    ) { lifehack ->
-                        LifehackSectionListItem(
-                            lifehack = lifehack,
-                            onClick = { onOpenLifehack(lifehack) }
-                        )
-                    }
+                    PullToRefreshBox(
+                        isRefreshing = state.isRefreshing,
+                        onRefresh = onRefresh,
+                        modifier = Modifier.fillMaxSize()
+                    ) {
+                        Column(
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .verticalScroll(rememberScrollState()),
+                            verticalArrangement = Arrangement.spacedBy(16.dp)
+                        ) {
+                            ContentListSection(
+                                title = stringResource(R.string.popular),
+                                sectionState = state.sections.popular,
+                                emptyMessage = stringResource(R.string.no_popular_category_lifehacks),
+                            ) { lifehack ->
+                                LifehackSectionListItem(
+                                    lifehack = lifehack,
+                                    onClick = { onOpenLifehack(lifehack) }
+                                )
+                            }
 
-                    ContentListSection(
-                        title = stringResource(R.string.recent),
-                        sectionState = state.sections.recent,
-                        emptyMessage = stringResource(R.string.no_recent_category_lifehacks),
-                    ) { lifehack ->
-                        LifehackSectionListItem(
-                            lifehack = lifehack,
-                            onClick = { onOpenLifehack(lifehack) }
-                        )
+                            ContentListSection(
+                                title = stringResource(R.string.recent),
+                                sectionState = state.sections.recent,
+                                emptyMessage = stringResource(R.string.no_recent_category_lifehacks),
+                            ) { lifehack ->
+                                LifehackSectionListItem(
+                                    lifehack = lifehack,
+                                    onClick = { onOpenLifehack(lifehack) }
+                                )
+                            }
+                        }
                     }
                 }
             }

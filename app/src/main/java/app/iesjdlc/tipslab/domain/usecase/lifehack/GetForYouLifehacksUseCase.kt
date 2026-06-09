@@ -8,7 +8,7 @@ import app.iesjdlc.tipslab.domain.repository.SearchRepository
 import app.iesjdlc.tipslab.domain.repository.OrderBy
 import javax.inject.Inject
 
-class GetForYouLifehacksUseCase @Inject constructor(
+/*class GetForYouLifehacksUseCase @Inject constructor(
     private val savedLikedRepository: SavedLikedRepository,
     private val lifehackRepository: LifehackRepository,
     private val searchRepository: SearchRepository,
@@ -68,4 +68,4 @@ class GetForYouLifehacksUseCase @Inject constructor(
                     .take(limit)
             }
     }
-}
+}*/

@@ -4,6 +4,8 @@ import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.IconButton
@@ -20,6 +22,8 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
 import androidx.compose.material3.Icon
 import androidx.compose.material3.minimumInteractiveComponentSize
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.draw.clip
 
 @Composable
 fun AnimatedCircleButton(
@@ -53,16 +57,17 @@ fun AnimatedCircleButton(
         }
     )
 
-    IconButton(
-        onClick = onClick,
+    Box(
         modifier = Modifier
-            .minimumInteractiveComponentSize()
             .size(32.dp)
+            .clip(CircleShape)
             .background(color = backgroundColor, shape = CircleShape)
             .then(
                 if (showBorderModifier) Modifier.border(1.dp, borderColor, CircleShape)
                 else Modifier
             )
+            .clickable { onClick() },
+        contentAlignment = Alignment.Center
     ) {
         Icon(
             imageVector = if (isActive) activeIcon else inactiveIcon,

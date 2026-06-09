@@ -121,7 +121,7 @@ private fun EditLifehackScreenUI(
             TopAppBar(
                 title = {
                     Text(
-                        text = stringResource(R.string.edit),
+                        text = stringResource(R.string.edit_lifehack),
                         style = MaterialTheme.typography.titleSmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                         maxLines = 1

@@ -5,7 +5,6 @@ import app.iesjdlc.tipslab.domain.model.MediaType
 import kotlinx.coroutines.flow.Flow
 
 interface LifehackRepository {
-    suspend fun getUserLifehacks(uid: String): Result<List<Lifehack>>
     suspend fun getLifehackById(id: String): Result<Lifehack>
     suspend fun getLifehacks(
         orderBy: OrderBy,
@@ -18,6 +17,7 @@ interface LifehackRepository {
     ): Result<List<Lifehack>>
     suspend fun getRandomLifehacks(limit: Int = 10): Result<List<Lifehack>>
     fun observeLifehack(id: String): Flow<Lifehack>
+    fun observeUserLifehacks(uid: String): Flow<List<Lifehack>>
     suspend fun createLifehack(lifehack: Lifehack): Result<String>
     suspend fun updateLifehack(
         id: String,

@@ -1,5 +1,7 @@
 package app.iesjdlc.tipslab.presentation.navigation
 
+import androidx.compose.animation.EnterTransition
+import androidx.compose.animation.ExitTransition
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
@@ -35,7 +37,12 @@ fun MainScaffold(
 			startDestination = Route.Home,
 			modifier = Modifier.padding(innerPadding)
 		) {
-			composable<Route.Home> {
+			composable<Route.Home>(
+				enterTransition = { EnterTransition.None },
+				exitTransition = { ExitTransition.None },
+				popEnterTransition = { EnterTransition.None },
+				popExitTransition = { ExitTransition.None }
+			) {
 				HomeTab(
 					onOpenLifehack = { lifehackId ->
 						rootNavController.navigate(Route.LifehackDetail(lifehackId))
@@ -46,7 +53,12 @@ fun MainScaffold(
 				)
 			}
 
-			composable<Route.Explore> {
+			composable<Route.Explore>(
+				enterTransition = { EnterTransition.None },
+				exitTransition = { ExitTransition.None },
+				popEnterTransition = { EnterTransition.None },
+				popExitTransition = { ExitTransition.None }
+			) {
 				ExploreTab(
 					onOpenCategory = { categoryId ->
 						rootNavController.navigate(Route.Category(categoryId))
@@ -57,7 +69,12 @@ fun MainScaffold(
 				)
 			}
 
-			composable<Route.Profile> {
+			composable<Route.Profile>(
+				enterTransition = { EnterTransition.None },
+				exitTransition = { ExitTransition.None },
+				popEnterTransition = { EnterTransition.None },
+				popExitTransition = { ExitTransition.None }
+			) {
 				ProfileTab(
 					onEditProfile = {
 						rootNavController.navigate(Route.EditProfile)

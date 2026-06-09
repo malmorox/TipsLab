@@ -46,6 +46,7 @@ import androidx.credentials.GetCredentialRequest
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import app.iesjdlc.tipslab.R
+import app.iesjdlc.tipslab.presentation.components.LoaderLottie
 import com.google.android.libraries.identity.googleid.GetGoogleIdOption
 import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential
 import kotlinx.coroutines.launch
@@ -207,7 +208,7 @@ private fun LoginScreenUI(
 
             Button(
                 onClick = onLogin,
-                enabled = !state.isLoading,
+                enabled = !state.isLoading && !state.googleIsLoading,
                 shape = MaterialTheme.shapes.medium,
                 modifier = Modifier
                     .fillMaxWidth()
@@ -232,11 +233,15 @@ private fun LoginScreenUI(
                         ),
                     contentAlignment = Alignment.Center
                 ) {
-                    Text(
-                        text = stringResource(R.string.login_button).uppercase(),
-                        color = Color.White,
-                        fontWeight = FontWeight.Bold
-                    )
+                    if (state.isLoading) {
+                        LoaderLottie(size = 150.dp)
+                    } else {
+                        Text(
+                            text = stringResource(R.string.login_button).uppercase(),
+                            color = Color.White,
+                            fontWeight = FontWeight.Bold
+                        )
+                    }
                 }
             }
 
@@ -270,6 +275,7 @@ private fun LoginScreenUI(
 
             Button(
                 onClick = onContinueWithGoogle,
+                enabled = !state.googleIsLoading && !state.isLoading,
                 shape = MaterialTheme.shapes.medium,
                 modifier = Modifier
                     .fillMaxWidth()

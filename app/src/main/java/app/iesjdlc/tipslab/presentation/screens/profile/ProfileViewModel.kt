@@ -11,6 +11,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 import app.iesjdlc.tipslab.domain.repository.LifehackRepository
 import app.iesjdlc.tipslab.domain.repository.SavedLikedRepository
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.update
 
 @HiltViewModel
@@ -21,6 +22,10 @@ class ProfileViewModel @Inject constructor(
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(ProfileUiState())
     val uiState: StateFlow<ProfileUiState> = _uiState.asStateFlow()
+
+    private var postsListenerJob: Job? = null
+    private var likedListenerJob: Job? = null
+    private var savedListenerJob: Job? = null
 
     init {
         loadProfile()
@@ -33,25 +38,30 @@ class ProfileViewModel @Inject constructor(
             runCatching {
                 authRepository.getCurrentUser()
             }.onSuccess { user ->
-                val posts = lifehackRepository
-                    .getUserLifehacks(user.id)
-                    .getOrDefault(emptyList())
-
                 _uiState.update {
                     it.copy(
                         user = user,
-                        posts = posts,
                         isLoading = false
                     )
                 }
 
-                launch {
+                postsListenerJob?.cancel()
+                likedListenerJob?.cancel()
+                savedListenerJob?.cancel()
+
+                postsListenerJob = launch {
+                    lifehackRepository.observeUserLifehacks(user.id).collect { posts ->
+                        _uiState.update { it.copy(posts = posts) }
+                    }
+                }
+
+                likedListenerJob = launch {
                     savedLikedRepository.observeUserLikedLifehacks(user.id).collect { liked ->
                         _uiState.update { it.copy(favoritePosts = liked) }
                     }
                 }
 
-                launch {
+                savedListenerJob = launch {
                     savedLikedRepository.observeUserSavedLifehacks(user.id).collect { saved ->
                         _uiState.update { it.copy(savedPosts = saved) }
                     }
@@ -65,6 +75,13 @@ class ProfileViewModel @Inject constructor(
     }
 
     fun onLogout(onSuccess: () -> Unit) {
+        postsListenerJob?.cancel()
+        likedListenerJob?.cancel()
+        savedListenerJob?.cancel()
+        postsListenerJob = null
+        likedListenerJob = null
+        savedListenerJob = null
+
         authRepository.logout()
         onSuccess()
     }

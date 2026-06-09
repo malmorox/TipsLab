@@ -53,6 +53,10 @@
     <string name="description_min_length_required">La descripción debe tener al menos %1$d caracteres</string>
 
     <!-- Edit lifehack -->
+    <string name="edit_lifehack">Editar Lifehack</string>
+
+    <!-- Detail Lifehack -->
+    <string name="comments">Comentarios</string>
 
     <!-- Profile y EditProfile -->
     <string name="my_profile">Mi perfil</string>
@@ -100,5 +104,4 @@
     <string name="like">Me gusta</string>
     <string name="unlike">No me gusta</string>
     <string name="unsave">No guardar</string>
-
 </resources>

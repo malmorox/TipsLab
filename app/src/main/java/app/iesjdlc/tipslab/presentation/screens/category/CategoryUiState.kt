@@ -7,6 +7,7 @@ import app.iesjdlc.tipslab.presentation.common.SectionState
 data class CategoryUiState(
     val category: Category? = null,
     val isLoading: Boolean = true,
+    val isRefreshing: Boolean = false,
     val errorMessage: String? = null,
     val sections: ContentSections = ContentSections(),
     val search: SearchState = SearchState()

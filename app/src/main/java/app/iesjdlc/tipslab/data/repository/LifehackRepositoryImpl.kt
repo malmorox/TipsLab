@@ -16,10 +16,6 @@ class LifehackRepositoryImpl @Inject constructor(
     private val mapper: LifehackMapper,
     private val resolver: LifehackResolver
 ) : LifehackRepository {
-    override suspend fun getUserLifehacks(uid: String): Result<List<Lifehack>> = runCatching {
-        resolver.resolve(dataSource.getByAuthor(uid))
-    }
-
     override suspend fun getLifehackById(id: String): Result<Lifehack> = runCatching {
         val dto = dataSource.getById(id) ?: error("Lifehack no encontrado")
         resolver.resolveOne(dto) ?: error("Lifehack no encontrado")
@@ -46,6 +42,13 @@ class LifehackRepositoryImpl @Inject constructor(
     override fun observeLifehack(id: String): Flow<Lifehack> =
         dataSource.observeById(id)
             .map { dto -> resolver.resolveOne(dto) ?: error("Lifehack no encontrado") }
+
+    override fun observeUserLifehacks(uid: String): Flow<List<Lifehack>> =
+        dataSource.observeByAuthor(uid)
+            .map { dtos ->
+                resolver.resolve(dtos)
+                    .sortedByDescending { it.updatedAt }
+            }
 
     override suspend fun createLifehack(lifehack: Lifehack): Result<String> = runCatching {
         dataSource.create(mapper.toDto(lifehack))

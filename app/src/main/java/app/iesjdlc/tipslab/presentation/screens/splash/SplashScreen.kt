@@ -1,9 +1,11 @@
 package app.iesjdlc.tipslab.presentation.screens.splash
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.size
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -29,13 +31,15 @@ fun SplashScreen(
     }
 
     Box(
-        Modifier.fillMaxSize(),
+        Modifier
+            .fillMaxSize()
+            .background(MaterialTheme.colorScheme.background),
         contentAlignment = Alignment.Center
     ) {
         Image(
             painter = painterResource(R.drawable.tipslab_logo),
             contentDescription = null,
-            modifier = Modifier.size(140.dp)
+            modifier = Modifier.size(180.dp)
         )
     }
 }

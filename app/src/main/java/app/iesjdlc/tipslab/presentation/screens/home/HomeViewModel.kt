@@ -42,18 +42,16 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-    private fun loadSection(section: HomeSection, limit: Int = 10) {
-        viewModelScope.launch {
-            updateSection(section, SectionState(isLoading = true))
+    private suspend fun loadSection(section: HomeSection, limit: Int = 10) {
+        updateSection(section, SectionState(isLoading = true))
 
-            getHomeLifehacksUseCase(section, limit)
-                .onSuccess { result ->
-                    updateSection(section, SectionState(data = result))
-                }
-                .onFailure { error ->
-                    updateSection(section, SectionState(error = error.message))
-                }
-        }
+        getHomeLifehacksUseCase(section, limit)
+            .onSuccess { result ->
+                updateSection(section, SectionState(data = result))
+            }
+            .onFailure { error ->
+                updateSection(section, SectionState(error = error.message))
+            }
     }
 
     private fun updateSection(section: HomeSection, newState: SectionState<List<Lifehack>>) {

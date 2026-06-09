@@ -21,7 +21,7 @@ class SplashViewModel @Inject constructor(
     init {
         viewModelScope.launch {
             val result = authRepository.checkUserSession()
-            delay(2000)
+            delay(3000)
             isLoggedIn = result
         }
     }
