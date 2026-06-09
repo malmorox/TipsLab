@@ -10,6 +10,9 @@ import app.iesjdlc.tipslab.domain.repository.AuthRepository
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.GoogleAuthProvider
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 
@@ -19,7 +22,8 @@ class AuthRepositoryImpl @Inject constructor(
     private val mapper: UserMapper
 ) : AuthRepository {
     // Para guardar los datos del usuario en memoria
-    var userProfile by mutableStateOf<User?>(null)
+    private val _userProfile = MutableStateFlow<User?>(null)
+    override val userProfile: StateFlow<User?> = _userProfile.asStateFlow()
 
     // Verificamos si hay ya un usuario al iniciar la aplicación
     override suspend fun checkUserSession(): Boolean {
@@ -34,7 +38,7 @@ class AuthRepositoryImpl @Inject constructor(
 
     // Cargamos los datos de Firestore y los convertimos a nuestro modelo de dominio (el que usamos en el UI)
     private suspend fun fetchUserData(uid: String) {
-        userProfile = runCatching {
+        _userProfile.value = runCatching {
             userDataSource.getById(uid)?.let { mapper.toDomain(it) }
                 ?: error("Usuario no encontrado")
         }.getOrNull()
@@ -46,11 +50,11 @@ class AuthRepositoryImpl @Inject constructor(
     }
 
     override suspend fun getCurrentUser(): User {
-        if (userProfile == null) {
+        if (_userProfile.value == null) {
             val uid = auth.currentUser?.uid ?: error("No hay sesión activa")
             fetchUserData(uid)
         }
-        return userProfile ?: error("No se pudo cargar el usuario")
+        return _userProfile.value ?: error("No se pudo cargar el usuario")
     }
 
     override suspend fun login(
@@ -107,7 +111,7 @@ class AuthRepositoryImpl @Inject constructor(
 
     override fun logout() {
         auth.signOut()
-        userProfile = null
+        _userProfile.value = null
     }
 }
 

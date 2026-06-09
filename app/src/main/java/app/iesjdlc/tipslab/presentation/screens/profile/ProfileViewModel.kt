@@ -29,6 +29,7 @@ class ProfileViewModel @Inject constructor(
 
     init {
         loadProfile()
+        observeUserProfile()
     }
 
     private fun loadProfile() {
@@ -70,6 +71,15 @@ class ProfileViewModel @Inject constructor(
                 _uiState.update {
                     it.copy(isLoading = false, errorMessage = error.message)
                 }
+            }
+        }
+    }
+
+    private fun observeUserProfile() {
+        viewModelScope.launch {
+            authRepository.userProfile.collect { user ->
+                user ?: return@collect
+                _uiState.update { it.copy(user = user) }
             }
         }
     }
