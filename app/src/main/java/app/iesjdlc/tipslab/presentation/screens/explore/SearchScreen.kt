@@ -22,10 +22,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -34,6 +36,8 @@ import app.iesjdlc.tipslab.R
 import app.iesjdlc.tipslab.domain.model.Lifehack
 import app.iesjdlc.tipslab.presentation.components.LifehackCard
 import app.iesjdlc.tipslab.presentation.components.SearchBar
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 @Composable
 fun SearchScreen(
@@ -68,6 +72,8 @@ private fun SearchScreenUI(
 ) {
     val focusRequester = remember { FocusRequester() }
     val focusManager = LocalFocusManager.current
+    val scope = rememberCoroutineScope()
+    val keyboardController = LocalSoftwareKeyboardController.current
 
     fun clearSearchBarFocus() {
         focusManager.clearFocus()
@@ -106,7 +112,13 @@ private fun SearchScreenUI(
 
                 Text(
                     text = stringResource(R.string.close),
-                    modifier = Modifier.clickable { onBack() },
+                    modifier = Modifier.clickable {
+                        scope.launch {
+                            keyboardController?.hide()
+                            delay(150)
+                            onBack()
+                        }
+                    },
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )

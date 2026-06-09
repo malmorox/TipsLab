@@ -24,6 +24,20 @@ class SavedLikedRemoteDataSource @Inject constructor(
             .document(userId)
             .collection(DBConstants.Remote.LIKED_SUBCOLLECTION)
 
+    override suspend fun getSavedIds(userId: String): List<String> =
+        savedCollection(userId)
+            .orderBy("saved_at", Query.Direction.DESCENDING)
+            .limit(20)
+            .get().await()
+            .documents.map { it.id }
+
+    override suspend fun getLikedIds(userId: String): List<String> =
+        likedCollection(userId)
+            .orderBy("liked_at", Query.Direction.DESCENDING)
+            .limit(20)
+            .get().await()
+            .documents.map { it.id }
+
     override fun observeSavedIds(userId: String): Flow<List<String>> = callbackFlow {
         val listener = savedCollection(userId)
             .orderBy("saved_at", Query.Direction.DESCENDING)

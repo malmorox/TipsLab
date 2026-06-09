@@ -3,6 +3,8 @@ package app.iesjdlc.tipslab.data.datasource
 import kotlinx.coroutines.flow.Flow
 
 interface SavedLikedDataSource {
+    suspend fun getSavedIds(userId: String): List<String>
+    suspend fun getLikedIds(userId: String): List<String>
     fun observeSavedIds(userId: String): Flow<List<String>>
     fun observeLikedIds(userId: String): Flow<List<String>>
     fun observeIsLiked(userId: String, lifehackId: String): Flow<Boolean>

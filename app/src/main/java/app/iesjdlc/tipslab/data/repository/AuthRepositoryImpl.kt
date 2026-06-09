@@ -105,10 +105,6 @@ class AuthRepositoryImpl @Inject constructor(
         }
     }
 
-    fun updateCachedUser(user: User) {
-        userProfile = user
-    }
-
     override fun logout() {
         auth.signOut()
         userProfile = null

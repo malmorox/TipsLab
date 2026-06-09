@@ -19,6 +19,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 import app.iesjdlc.tipslab.core.model.CameraMediaResult
+import kotlinx.coroutines.delay
 
 @HiltViewModel
 class CreateLifehackViewModel @Inject constructor(
@@ -175,8 +176,11 @@ class CreateLifehackViewModel @Inject constructor(
     fun onDiscardChangesConfirm(
         onNavigateBack: () -> Unit
     ) {
-        _uiState.update { it.copy(showDiscardChangesDialog = false) }
-        onNavigateBack()
+        viewModelScope.launch {
+            _uiState.update { it.copy(showDiscardChangesDialog = false) }
+            delay(150)
+            onNavigateBack()
+        }
     }
 
     fun onDiscardChangesDismiss() {

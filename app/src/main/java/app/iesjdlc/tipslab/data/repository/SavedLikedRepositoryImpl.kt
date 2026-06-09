@@ -17,6 +17,12 @@ class SavedLikedRepositoryImpl @Inject constructor(
     private val lifehackDataSource: LifehackDataSource,
     private val resolver: LifehackResolver
 ) : SavedLikedRepository {
+    override suspend fun getSavedIds(userId: String): List<String> =
+        savedLikedDataSource.getSavedIds(userId)
+
+    override suspend fun getLikedIds(userId: String): List<String> =
+        savedLikedDataSource.getLikedIds(userId)
+
     override fun observeUserSavedLifehacks(uid: String): Flow<List<Lifehack>> =
         savedLikedDataSource.observeSavedIds(uid)
             .transformLatest { ids ->

@@ -6,6 +6,7 @@ import app.iesjdlc.tipslab.domain.model.Lifehack
 import app.iesjdlc.tipslab.domain.model.screen_sections.CategorySection
 import app.iesjdlc.tipslab.domain.model.screen_sections.HomeSection
 import app.iesjdlc.tipslab.domain.repository.CategoryRepository
+import app.iesjdlc.tipslab.domain.usecase.lifehack.GetForYouLifehacksUseCase
 import app.iesjdlc.tipslab.domain.usecase.lifehack.GetHomeLifehacksUseCase
 import app.iesjdlc.tipslab.presentation.common.SectionState
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -19,7 +20,8 @@ import kotlinx.coroutines.launch
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(
-    private val getHomeLifehacksUseCase: GetHomeLifehacksUseCase
+    private val getHomeLifehacksUseCase: GetHomeLifehacksUseCase,
+    private val getForYouLifehacksUseCase: GetForYouLifehacksUseCase
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(HomeUiState())
     val uiState: StateFlow<HomeUiState> = _uiState.asStateFlow()
@@ -42,16 +44,17 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-    private suspend fun loadSection(section: HomeSection, limit: Int = 10) {
+    private suspend fun loadSection(section: HomeSection) {
         updateSection(section, SectionState(isLoading = true))
 
-        getHomeLifehacksUseCase(section, limit)
-            .onSuccess { result ->
-                updateSection(section, SectionState(data = result))
-            }
-            .onFailure { error ->
-                updateSection(section, SectionState(error = error.message))
-            }
+        val result = when (section) {
+            HomeSection.FOR_YOU -> getForYouLifehacksUseCase()
+            else -> getHomeLifehacksUseCase(section)
+        }
+
+        result
+            .onSuccess { updateSection(section, SectionState(data = it)) }
+            .onFailure { updateSection(section, SectionState(error = it.message)) }
     }
 
     private fun updateSection(section: HomeSection, newState: SectionState<List<Lifehack>>) {
