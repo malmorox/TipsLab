@@ -20,6 +20,7 @@ import androidx.compose.material.icons.rounded.Visibility
 import androidx.compose.material.icons.rounded.VisibilityOff
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -46,7 +47,6 @@ import androidx.credentials.GetCredentialRequest
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import app.iesjdlc.tipslab.R
-import app.iesjdlc.tipslab.presentation.components.LoaderLottie
 import com.google.android.libraries.identity.googleid.GetGoogleIdOption
 import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential
 import kotlinx.coroutines.launch
@@ -234,7 +234,10 @@ private fun LoginScreenUI(
                     contentAlignment = Alignment.Center
                 ) {
                     if (state.isLoading) {
-                        LoaderLottie(size = 150.dp)
+                        CircularProgressIndicator(
+                            color = Color.White,
+                            modifier = Modifier.size(22.dp)
+                        )
                     } else {
                         Text(
                             text = stringResource(R.string.login_button).uppercase(),

@@ -17,6 +17,7 @@ import androidx.compose.material.icons.rounded.Visibility
 import androidx.compose.material.icons.rounded.VisibilityOff
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -212,6 +213,7 @@ private fun SignUpScreenUI(
 
             Button(
                 onClick = onSignup,
+                enabled = !state.isLoading,
                 shape = MaterialTheme.shapes.medium,
                 modifier = Modifier
                     .fillMaxWidth()
@@ -236,11 +238,18 @@ private fun SignUpScreenUI(
                         ),
                     contentAlignment = Alignment.Center
                 ) {
-                    Text(
-                        text = stringResource(R.string.signup).uppercase(),
-                        color = Color.White,
-                        fontWeight = FontWeight.Bold
-                    )
+                    if (state.isLoading) {
+                        CircularProgressIndicator(
+                            color = Color.White,
+                            modifier = Modifier.size(22.dp)
+                        )
+                    } else {
+                        Text(
+                            text = stringResource(R.string.signup).uppercase(),
+                            color = Color.White,
+                            fontWeight = FontWeight.Bold
+                        )
+                    }
                 }
             }
 
